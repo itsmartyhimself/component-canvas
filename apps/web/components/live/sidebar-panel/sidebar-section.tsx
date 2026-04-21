@@ -31,14 +31,7 @@ export function SidebarSection({
   folders,
   leaves,
 }: SidebarSectionProps) {
-  const { searchMatch, hiddenDocIds, hiddenDocsHydrated } = useSidebarPanel()
-
-  // Before the post-mount hydration of `hiddenDocIds` from localStorage, SSR
-  // and the first client render must render identical markup. Only filter
-  // once the hydration flag flips true.
-  const visibleLeaves = hiddenDocsHydrated
-    ? leaves.filter((leaf) => !hiddenDocIds.has(leaf.id))
-    : leaves
+  const { searchMatch } = useSidebarPanel()
 
   const filteredFolderIds = searchMatch
     ? new Set(
@@ -47,7 +40,7 @@ export function SidebarSection({
             (folder) =>
               searchMatch.folders.has(folder.id) ||
               searchMatch.ancestors.has(folder.id) ||
-              visibleLeaves.some(
+              leaves.some(
                 (leaf) =>
                   leaf.folderId === folder.id &&
                   searchMatch.leaves.has(leaf.id),
@@ -62,8 +55,8 @@ export function SidebarSection({
     : folders
 
   const displayLeaves = searchMatch
-    ? visibleLeaves.filter((leaf) => searchMatch.leaves.has(leaf.id))
-    : visibleLeaves
+    ? leaves.filter((leaf) => searchMatch.leaves.has(leaf.id))
+    : leaves
 
   const addAction = section.actionable ? (
     <AddMenu

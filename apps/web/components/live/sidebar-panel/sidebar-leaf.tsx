@@ -1,10 +1,9 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback } from "react"
+import { useCallback, type CSSProperties } from "react"
 import {
   SidebarMenuItem,
-  SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/imports/shadcn/sidebar"
 import { Row } from "@/components/live/row"
@@ -27,6 +26,8 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   const selectedId = searchParams.get("component")
   const active = leaf.kind === "component" && selectedId === leaf.id
   const editing = renamingId === leaf.id
+
+  const isHidden = leaf.kind === "doc" && hiddenDocIds.has(leaf.id)
 
   const handleClick = useCallback(() => {
     if (leaf.disabled || leaf.loading) return
@@ -68,46 +69,41 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
           />
         )
 
+  const itemStyle: CSSProperties = {
+    position: "relative",
+    display: isHidden ? "none" : undefined,
+  }
+
+  const rowNode = (
+    <Row
+      label={leaf.name}
+      size={depth === 1 ? 28 : 32}
+      variant={depth === 1 ? "menu-sub-button" : "menu-button"}
+      depth={depth}
+      leading={leading}
+      active={active}
+      disabled={leaf.disabled}
+      loading={leaf.loading}
+      editing={editing}
+      editDefaultValue={leaf.name}
+      onCommitEdit={(value) => actions.commitRename(leaf.id, value)}
+      onCancelEdit={() => actions.cancelRename()}
+      onClick={handleClick}
+    />
+  )
+
   if (depth === 1) {
     return (
-      <SidebarMenuSubItem style={{ position: "relative" }}>
-        <SidebarMenuSubButton asChild>
-          <Row
-            label={leaf.name}
-            size={28}
-            variant="menu-sub-button"
-            depth={1}
-            leading={leading}
-            active={active}
-            disabled={leaf.disabled}
-            loading={leaf.loading}
-            editing={editing}
-            editDefaultValue={leaf.name}
-            onCommitEdit={(value) => actions.commitRename(leaf.id, value)}
-            onCancelEdit={() => actions.cancelRename()}
-            onClick={handleClick}
-          />
-        </SidebarMenuSubButton>
+      <SidebarMenuSubItem style={itemStyle}>
+        {rowNode}
         {actionNode}
       </SidebarMenuSubItem>
     )
   }
 
   return (
-    <SidebarMenuItem style={{ position: "relative" }}>
-      <Row
-        label={leaf.name}
-        size={32}
-        leading={leading}
-        active={active}
-        disabled={leaf.disabled}
-        loading={leaf.loading}
-        editing={editing}
-        editDefaultValue={leaf.name}
-        onCommitEdit={(value) => actions.commitRename(leaf.id, value)}
-        onCancelEdit={() => actions.cancelRename()}
-        onClick={handleClick}
-      />
+    <SidebarMenuItem style={itemStyle}>
+      {rowNode}
       {actionNode}
     </SidebarMenuItem>
   )

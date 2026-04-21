@@ -3,7 +3,6 @@
 import type { CSSProperties, ReactNode } from "react"
 import { Collapsible } from "radix-ui"
 import {
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/imports/shadcn/sidebar"
@@ -58,19 +57,17 @@ export function SidebarFolder({
       >
         <div style={{ position: "relative" }}>
           <Collapsible.Trigger asChild>
-            <SidebarMenuButton asChild>
-              <Row
-                label={folder.name}
-                size={32}
-                leading={leading}
-                trailing={{ kind: "chevron", expanded }}
-                expanded={expanded}
-                editing={editing}
-                editDefaultValue={folder.name}
-                onCommitEdit={(value) => actions.commitRename(folder.id, value)}
-                onCancelEdit={() => actions.cancelRename()}
-              />
-            </SidebarMenuButton>
+            <Row
+              label={folder.name}
+              size={32}
+              leading={leading}
+              trailing={{ kind: "chevron", expanded }}
+              expanded={expanded}
+              editing={editing}
+              editDefaultValue={folder.name}
+              onCommitEdit={(value) => actions.commitRename(folder.id, value)}
+              onCancelEdit={() => actions.cancelRename()}
+            />
           </Collapsible.Trigger>
           {!editing ? (
             <RowActionMenu

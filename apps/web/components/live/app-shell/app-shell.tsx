@@ -4,8 +4,9 @@ import { SidebarPanel } from "@/components/live/sidebar-panel"
 export function AppShell() {
   return (
     <main
-      className="flex flex-1"
+      className="flex"
       style={{
+        height: "100dvh",
         padding: "var(--spacing-4)",
         gap: "var(--spacing-4)",
         background: "var(--color-bg-primary)",

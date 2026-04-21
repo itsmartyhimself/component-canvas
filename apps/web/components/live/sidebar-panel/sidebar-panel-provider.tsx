@@ -18,10 +18,7 @@ import type {
   Registry,
   SectionId,
 } from "@/lib/registry/types"
-import {
-  DEMO_DEFAULT_HIDDEN_DOC_IDS,
-  DEMO_REGISTRY,
-} from "@/lib/registry/data"
+import { DEMO_REGISTRY } from "@/lib/registry/data"
 import { searchRegistry, type SearchMatch } from "@/lib/registry/search"
 
 const HIDDEN_DOCS_STORAGE_KEY = "cc.hiddenDocs"
@@ -62,7 +59,6 @@ export interface SidebarPanelContextValue {
   importDialogSection: SectionId | null
   openDocId: string | null
   hiddenDocIds: Set<string>
-  hiddenDocsHydrated: boolean
   actions: SidebarActions
 }
 
@@ -99,27 +95,29 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
   const [importDialogSection, setImportDialogSection] = useState<SectionId | null>(null)
   const [openDocId, setOpenDocId] = useState<string | null>(null)
   const [hiddenDocIds, setHiddenDocIds] = useState<Set<string>>(() => new Set())
-  const [hiddenDocsHydrated, setHiddenDocsHydrated] = useState(false)
+  const [hiddenDocsReady, setHiddenDocsReady] = useState(false)
 
+  // Load persisted hidden-doc ids after mount so SSR + first client render
+  // produce identical DOM (both see an empty set). We also render hidden rows
+  // with `display: none` in sidebar-leaf.tsx so this update does not change
+  // the DOM tree shape.
   useEffect(() => {
     if (typeof window === "undefined") return
     try {
       const raw = window.localStorage.getItem(HIDDEN_DOCS_STORAGE_KEY)
-      if (raw === null) {
-        setHiddenDocIds(new Set(DEMO_DEFAULT_HIDDEN_DOC_IDS))
-      } else {
+      if (raw !== null) {
         const parsed = JSON.parse(raw)
         if (Array.isArray(parsed)) setHiddenDocIds(new Set(parsed))
       }
     } catch {
-      setHiddenDocIds(new Set(DEMO_DEFAULT_HIDDEN_DOC_IDS))
+      // ignore malformed payload
     } finally {
-      setHiddenDocsHydrated(true)
+      setHiddenDocsReady(true)
     }
   }, [])
 
   useEffect(() => {
-    if (!hiddenDocsHydrated) return
+    if (!hiddenDocsReady) return
     if (typeof window === "undefined") return
     try {
       window.localStorage.setItem(
@@ -129,7 +127,7 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
     } catch {
       // localStorage unavailable; ignore.
     }
-  }, [hiddenDocIds, hiddenDocsHydrated])
+  }, [hiddenDocIds, hiddenDocsReady])
 
   const searchMatch = useMemo(
     () => searchRegistry(registry, searchQuery),
@@ -389,7 +387,6 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
-      hiddenDocsHydrated,
       actions,
     }),
     [
@@ -405,7 +402,6 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
-      hiddenDocsHydrated,
       actions,
     ],
   )

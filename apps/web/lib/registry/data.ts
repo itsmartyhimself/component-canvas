@@ -231,8 +231,6 @@ export const DEMO_REGISTRY: Registry = {
   user: USER,
 }
 
-export const DEMO_DEFAULT_HIDDEN_DOC_IDS: string[] = ["doc-motion"]
-
 export const DEMO_TEAMS_MULTI: Team[] = [
   TEAM,
   { id: "northwind", name: "Northwind", plan: "Starter plan", initial: "N" },

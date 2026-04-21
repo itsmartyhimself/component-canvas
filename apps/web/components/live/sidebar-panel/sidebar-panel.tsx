@@ -1,8 +1,6 @@
 "use client"
 
 import { Suspense, type CSSProperties } from "react"
-import { ScrollArea } from "radix-ui"
-import { SidebarProvider } from "@/components/imports/shadcn/sidebar"
 import { DocModal } from "@/components/live/doc-modal"
 import { ImportDialog } from "@/components/live/import-dialog"
 import { SidebarFooterZone } from "./sidebar-footer-zone"
@@ -13,21 +11,18 @@ import { SIDEBAR_WIDTH } from "./sidebar-panel.config"
 
 const asideStyle: CSSProperties = {
   width: SIDEBAR_WIDTH,
+  height: "100%",
 }
 
-const scrollRootStyle: CSSProperties = {
+const scrollAreaStyle: CSSProperties = {
+  flex: 1,
+  minHeight: 0,
+  overflowY: "auto",
+  overflowX: "hidden",
   overscrollBehavior: "contain",
-}
-
-const thumbStyle: CSSProperties = {
-  borderRadius: "var(--radius-full)",
-  background: "var(--color-border-secondary)",
-}
-
-const scrollbarStyle: CSSProperties = {
-  width: 8,
-  padding: 2,
-  background: "transparent",
+  scrollbarWidth: "thin",
+  scrollbarColor:
+    "var(--color-border-secondary) transparent",
 }
 
 export function SidebarPanel() {
@@ -35,35 +30,20 @@ export function SidebarPanel() {
     <SidebarPanelProvider>
       <aside
         aria-label="Component browser"
-        className="flex flex-col shrink-0 h-full"
+        className="flex flex-col shrink-0"
         style={asideStyle}
       >
         <div className="shrink-0" data-slot="sidebar-panel-header">
           <SidebarHeaderZone />
         </div>
-        <ScrollArea.Root
-          type="scroll"
-          className="flex-1 min-h-0 overflow-hidden"
-          style={scrollRootStyle}
+        <div
+          data-slot="sidebar-panel-scroll"
+          style={scrollAreaStyle}
         >
-          <ScrollArea.Viewport
-            className="h-full w-full"
-            data-slot="sidebar-panel-scroll"
-          >
-            <SidebarProvider className="contents">
-              <Suspense fallback={null}>
-                <SidebarTree />
-              </Suspense>
-            </SidebarProvider>
-          </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar
-            orientation="vertical"
-            className="flex touch-none select-none"
-            style={scrollbarStyle}
-          >
-            <ScrollArea.Thumb className="flex-1" style={thumbStyle} />
-          </ScrollArea.Scrollbar>
-        </ScrollArea.Root>
+          <Suspense fallback={null}>
+            <SidebarTree />
+          </Suspense>
+        </div>
         <div className="shrink-0" data-slot="sidebar-panel-footer">
           <SidebarFooterZone />
         </div>
