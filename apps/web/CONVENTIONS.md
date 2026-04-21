@@ -23,8 +23,6 @@ Two folders under `apps/web/components/`:
 - Primitives exist but never get Tailwind bindings.
 - If a token is missing, ask — don't invent.
 
-> **Color system not yet shipped.** Until `--color-bg-primary` / `--color-text-primary` etc. land in `:root` and get bound in `@theme inline {}`, Tailwind has no color utilities. Never use `bg-blue-500`, `text-gray-*`, etc. Use `style={{ color: "var(--token)" }}` with raw hex only as a last resort while bootstrapping. The banner at the top of `globals.css` must be deleted the moment the color tokens land.
-
 ## SVG Standards
 
 - Static SVG files live in `apps/web/public/SVGs/`.

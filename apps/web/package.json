@@ -9,12 +9,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@component-canvas/shared": "workspace:*",
     "@carbon/icons-react": "^11",
+    "@component-canvas/shared": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "framer-motion": "^12",
     "next": "16.2.1",
+    "radix-ui": "^1.4.3",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -24,6 +28,7 @@
     "agentation": "^3.0.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
+    "shadcn": "^4.3.1",
     "tailwindcss": "^4",
     "tw-animate-css": "^1",
     "typescript": "^5"

@@ -15,7 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="h-full overflow-hidden flex flex-col font-sans">
         {children}
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
