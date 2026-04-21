@@ -2,34 +2,42 @@
 
 Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 
+## Backend / Registry
+- Replace `lib/registry/data.ts` (DEMO-ONLY) with a real registry backed by the API: workspace manifest fetch, repo-connect, or uploaded source.
+- Swap the in-memory mutation path in `SidebarActions` for server mutations.
+- Replace `ImportDialog` stub form with the real import pipeline (link registry, workspace package, or uploaded source).
+- Persist `expandedIds` + selection outside URL (currently URL-only via `?component=`).
+- OAuth + workspace model; real avatar via `User.avatarUrl`.
+
 ## Sidebar
-- Search bar (fuzzy match across component titles + tags)
-- Component tree with category nesting (e.g. `Forms/Button/Primary`)
-- Import entrypoint (link registry, workspace package, or uploaded source)
-- Folder management (create, rename, move, delete)
-- Share / export current selection
-- Persist collapsed state (localStorage, then URL)
+- 64px icon-only collapsed mode (deferred in v1 — width is fixed at 280).
+- Virtualize the component tree once it grows past ~200 rows (react-virtual or hand-rolled).
+- Drag-to-reorder folders / leaves (@dnd-kit) and drag-to-move across sections.
+- Share / export current selection.
+- Multi-team switcher popover content (currently stubbed).
+
+## Playground
+- Replace the `/playground` route with a proper dev toolbar once we have more than 10 systems. `/playground` is a temporary review surface, not a product feature.
 
 ## Canvas
-- Zoom: cursor-centered scale-at, ⌘+wheel / pinch input
-- Pan: two-finger trackpad, space+drag, middle-button drag; `overscroll-behavior: contain`
-- Viewport resizing: preset breakpoints (mobile/tablet/desktop) + free-form handle
-- Minimap overlay
-- Toolbar overlay (zoom controls, fit-to-view, viewport presets)
-- Property / variant / state drawers
-- Docs overlay (MDX panel in screen-space)
-- Keyboard shortcuts (zoom, pan, viewport switching, focus)
+- Zoom: cursor-centered scale-at, ⌘+wheel / pinch input.
+- Pan: two-finger trackpad, space+drag, middle-button drag; `overscroll-behavior: contain`.
+- Viewport resizing: preset breakpoints (mobile/tablet/desktop) + free-form handle.
+- Minimap overlay.
+- Toolbar overlay (zoom controls, fit-to-view, viewport presets).
+- Property / variant / state drawers.
+- Docs overlay (MDX panel in screen-space).
+- Keyboard shortcuts (zoom, pan, viewport switching, focus).
 
 ## Component rendering / import pipeline
-- Sandboxed iframe host (`sandbox="allow-scripts"` + CSP + narrow `postMessage` protocol)
-- Build strategy decision: workspace package build vs in-browser `esbuild-wasm` / `swc-wasm` vs link registry
-- Metadata manifest schema (id, title, folder path, variants[], states[], docs, props schema, thumbnails)
-- Variant / state switching via `postMessage` (props update, not iframe reload)
-- Theme switching protocol
-- Size updates (when the canvas resizes the inner preview surface)
-- Error isolation (preview crash ≠ host crash)
+- Sandboxed iframe host (`sandbox="allow-scripts"` + CSP + narrow `postMessage` protocol).
+- Build strategy decision: workspace package build vs in-browser `esbuild-wasm` / `swc-wasm` vs link registry.
+- Metadata manifest schema (id, title, folder path, variants[], states[], docs, props schema, thumbnails).
+- Variant / state switching via `postMessage` (props update, not iframe reload).
+- Theme switching protocol.
+- Size updates (when the canvas resizes the inner preview surface).
+- Error isolation (preview crash ≠ host crash).
 
 ## Backend / persistence
-- Manifest storage and sync
-- Share URLs / permalinks
-- Auth + workspace model
+- Manifest storage and sync.
+- Share URLs / permalinks.

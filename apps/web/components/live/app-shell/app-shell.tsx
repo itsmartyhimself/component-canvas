@@ -1,5 +1,5 @@
 import { Canvas } from "./canvas"
-import { Sidebar } from "./sidebar"
+import { SidebarPanel } from "@/components/live/sidebar-panel"
 
 export function AppShell() {
   return (
@@ -8,10 +8,10 @@ export function AppShell() {
       style={{
         padding: "var(--spacing-4)",
         gap: "var(--spacing-4)",
-        background: "var(--color-bg-tertiary)",
+        background: "var(--color-bg-primary)",
       }}
     >
-      <Sidebar />
+      <SidebarPanel />
       <Canvas />
     </main>
   )
