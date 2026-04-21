@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { MouseEventHandler, ReactNode } from "react"
 
 export type IconButtonSize = 20 | 24 | 32
 
@@ -20,7 +20,7 @@ export interface IconButtonProps {
   ariaLabel: string
   disabled?: boolean
   active?: boolean
-  onClick?: () => void
+  onClick?: MouseEventHandler<HTMLButtonElement>
   className?: string
   type?: "button" | "submit" | "reset"
   bordered?: boolean

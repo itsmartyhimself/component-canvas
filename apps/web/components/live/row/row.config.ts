@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { MouseEventHandler, ReactNode } from "react"
 import type { CarbonIconName } from "@/lib/icons/registry"
 
 export type RowSize = 20 | 24 | 28 | 32 | 36
@@ -34,7 +34,7 @@ export interface RowProps {
   onCancelEdit?: () => void
   loading?: boolean
   disabled?: boolean
-  onClick?: () => void
+  onClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
   href?: string
   ariaLabel?: string
   className?: string

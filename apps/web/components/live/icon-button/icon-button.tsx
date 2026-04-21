@@ -86,7 +86,7 @@ function IconButtonBase(
           event.preventDefault()
           return
         }
-        onClick?.()
+        onClick?.(event)
       }}
       onMouseEnter={(event) => {
         setHovered(true)

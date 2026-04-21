@@ -296,7 +296,7 @@ function RowBase(props: RowProps, ref: Ref<HTMLButtonElement | HTMLAnchorElement
             event.preventDefault()
             return
           }
-          onClick?.()
+          onClick?.(event)
         }}
         data-active={active || undefined}
         data-state={expanded ? "open" : "closed"}
@@ -325,9 +325,9 @@ function RowBase(props: RowProps, ref: Ref<HTMLButtonElement | HTMLAnchorElement
       style={rootStyle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => {
+      onClick={(event) => {
         if (disabled || loading) return
-        onClick?.()
+        onClick?.(event)
       }}
       data-active={active || undefined}
       data-state={expanded ? "open" : "closed"}
