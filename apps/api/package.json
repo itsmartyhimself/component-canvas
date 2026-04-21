@@ -1,0 +1,21 @@
+{
+  "name": "@component-canvas/api",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -b",
+    "start": "node lib/index.js"
+  },
+  "dependencies": {
+    "hono": "^4",
+    "@hono/node-server": "^1",
+    "@component-canvas/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4",
+    "typescript": "^5.9",
+    "@types/node": "^22"
+  }
+}

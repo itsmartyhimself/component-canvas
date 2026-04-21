@@ -1,0 +1,41 @@
+{
+  "name": "component-canvas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:web\" \"pnpm run dev:api\"",
+    "start": "pnpm run dev",
+    "dev:web": "pnpm run --filter @component-canvas/web dev",
+    "dev:api": "pnpm run --filter @component-canvas/api dev",
+    "build": "pnpm run --filter @component-canvas/shared build && pnpm run --filter @component-canvas/web build && pnpm run --filter @component-canvas/api build",
+    "build:shared": "pnpm run --filter @component-canvas/shared build",
+    "lint": "eslint .",
+    "fix": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,mjs,json,css,md}\""
+  },
+  "devDependencies": {
+    "@carbon/icons": "^11",
+    "@eslint/js": "^9",
+    "concurrently": "^9.2.1",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10",
+    "eslint-plugin-react": "^7",
+    "eslint-plugin-react-hooks": "^5",
+    "globals": "^16",
+    "prettier": "^3",
+    "tsx": "^4",
+    "typescript": "^5.9",
+    "typescript-eslint": "^8"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "@carbon/icons",
+      "@carbon/icons-react",
+      "@carbon/icon-helpers",
+      "unrs-resolver"
+    ]
+  }
+}

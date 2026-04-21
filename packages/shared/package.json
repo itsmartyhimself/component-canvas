@@ -1,0 +1,18 @@
+{
+  "name": "@component-canvas/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "build:clear": "rm -rf lib/ tsconfig.tsbuildinfo"
+  },
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9"
+  }
+}

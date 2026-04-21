@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ============================================================
+   COLOR TOKENS GO HERE. Until they land, Tailwind has NO color
+   utilities bound. Never use bg-blue-500 / text-gray-*, etc.
+   Use style={{ color: "var(--token)" }} with raw hex only as
+   a last resort while bootstrapping.
+
+   DELETE THIS BANNER the moment the color system ships:
+   once --color-bg-primary / --color-text-primary / etc. exist
+   in :root and are bound below, this comment is obsolete.
+   ============================================================ */
+@theme inline {
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --radius-sm: var(--radius-1);
+  --radius-md: var(--radius-2);
+  --radius-lg: var(--radius-3);
+}
+
+/* ================================================================
+   TOKEN SYSTEM
+   Source of truth for all visual design values.
+   Never use default Tailwind design values in app components.
+   ================================================================ */
+
+:root {
+  /* === Spacing === */
+  --spacing-0: 0px;
+  --spacing-1: 2px;
+  --spacing-2: 4px;
+  --spacing-2-5: 6px;
+  --spacing-3: 8px;
+  --spacing-3-5: 10px;
+  --spacing-4: 12px;
+  --spacing-5: 16px;
+  --spacing-6: 20px;
+  --spacing-7: 24px;
+  --spacing-8: 28px;
+  --spacing-9: 32px;
+  --spacing-10: 40px;
+  --spacing-11: 48px;
+  --spacing-12: 64px;
+  --spacing-13: 80px;
+  --spacing-14: 120px;
+  --spacing-15: 160px;
+  --spacing-16: 200px;
+
+  /* === Radius === */
+  --radius-0: 2px;
+  --radius-1: 4px;
+  --radius-1-5: 6px;
+  --radius-2: 8px;
+  --radius-2-5: 10px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+  --radius-5: 20px;
+  --radius-6: 24px;
+  --radius-full: 9999px;
+
+  /* === Typography Variables === */
+  --type-1-size: 8px;
+  --type-1-weight: 500;
+  --type-1-lh: 1.5;
+  --type-1-ls: 0.01em;
+
+  --type-2-size: 10px;
+  --type-2-weight: 500;
+  --type-2-lh: 1.5;
+  --type-2-ls: 0.01em;
+
+  --type-3-size: 12px;
+  --type-3-weight: 400;
+  --type-3-lh: 1.5;
+  --type-3-ls: 0;
+
+  --type-4-size: 14px;
+  --type-4-weight: 400;
+  --type-4-lh: 1.5;
+  --type-4-ls: 0;
+
+  --type-5-size: 16px;
+  --type-5-weight: 400;
+  --type-5-lh: 1.5;
+  --type-5-ls: 0;
+
+  --type-6-size: 18px;
+  --type-6-weight: 400;
+  --type-6-lh: 1.25;
+  --type-6-ls: 0;
+
+  --type-7-size: 20px;
+  --type-7-weight: 400;
+  --type-7-lh: 1.25;
+  --type-7-ls: 0;
+
+  --type-8-size: 24px;
+  --type-8-weight: 400;
+  --type-8-lh: 1.25;
+  --type-8-ls: 0;
+
+  --type-9-size: 28px;
+  --type-9-weight: 400;
+  --type-9-lh: 1.15;
+  --type-9-ls: 0;
+
+  --type-10-size: 32px;
+  --type-10-weight: 400;
+  --type-10-lh: 1.15;
+  --type-10-ls: -0.01em;
+
+  --type-11-size: 36px;
+  --type-11-weight: 400;
+  --type-11-lh: 1.15;
+  --type-11-ls: -0.01em;
+
+  --type-12-size: 40px;
+  --type-12-weight: 400;
+  --type-12-lh: 1;
+  --type-12-ls: -0.015em;
+
+  --type-13-size: 48px;
+  --type-13-weight: 400;
+  --type-13-lh: 1;
+  --type-13-ls: -0.015em;
+
+  /* Cap-height ratio for Geist (used by .text-trim fallback) */
+  --cap-ratio: 0.72;
+}
+
+/* ================================================================
+   BASE LAYER
+   Resets, defaults, typography classes, SVG standards.
+   ================================================================ */
+
+@layer base {
+  :where(:focus) {
+    outline: none;
+  }
+
+  button {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+    font: inherit;
+    color: inherit;
+  }
+
+  /* SVG Standards:
+   * Static icons live in /public/SVGs (extracted from @carbon/icons via scripts/copy-icons.ts)
+   * Use @carbon/icons-react for programmatic icon use in components (size + currentColor)
+   * Never hardcode custom inline SVG paths — always source from Carbon
+   * Color via style={{ color: "var(--token)" }} so fill="currentColor" resolves correctly
+   * All SVGs must have viewBox attributes
+   */
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  body {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+
+  /* Typography Standards:
+   * Font: Geist is the only font used across the entire application.
+   *
+   * .type-* classes set font metrics only (size, weight, line-height, tracking).
+   * They do NOT include cap-to-baseline trimming.
+   *
+   * Trimming is opt-in via .text-trim:
+   *   - Native: text-box-trim (Chrome 133+, Safari 18.2+, Edge 133+)
+   *   - Fallback: pseudo-element negative margins (Firefox, older browsers)
+   *
+   * When to apply .text-trim:
+   *   Every text element UNLESS a red-flag applies:
+   *   - Parent has hardcoded height (buttons, tags, fixed containers)
+   *   - Element or ancestor has overflow:hidden / overflow:clip / overflow:scroll
+   *   - Element uses text-overflow:ellipsis or max-height animation
+   *
+   * Each .type-* class exposes --trim-lh for the fallback calc.
+   * --cap-ratio (on :root) defaults to 0.72 for Geist / most sans-serifs.
+   */
+
+  .type-1 {
+    font-size: var(--type-1-size);
+    font-weight: var(--type-1-weight);
+    line-height: var(--type-1-lh);
+    letter-spacing: var(--type-1-ls);
+    --trim-lh: var(--type-1-lh);
+  }
+
+  .type-2 {
+    font-size: var(--type-2-size);
+    font-weight: var(--type-2-weight);
+    line-height: var(--type-2-lh);
+    letter-spacing: var(--type-2-ls);
+    --trim-lh: var(--type-2-lh);
+  }
+
+  .type-3 {
+    font-size: var(--type-3-size);
+    font-weight: var(--type-3-weight);
+    line-height: var(--type-3-lh);
+    letter-spacing: var(--type-3-ls);
+    --trim-lh: var(--type-3-lh);
+  }
+
+  .type-4 {
+    font-size: var(--type-4-size);
+    font-weight: var(--type-4-weight);
+    line-height: var(--type-4-lh);
+    letter-spacing: var(--type-4-ls);
+    --trim-lh: var(--type-4-lh);
+  }
+
+  .type-5 {
+    font-size: var(--type-5-size);
+    font-weight: var(--type-5-weight);
+    line-height: var(--type-5-lh);
+    letter-spacing: var(--type-5-ls);
+    --trim-lh: var(--type-5-lh);
+  }
+
+  .type-6 {
+    font-size: var(--type-6-size);
+    font-weight: var(--type-6-weight);
+    line-height: var(--type-6-lh);
+    letter-spacing: var(--type-6-ls);
+    --trim-lh: var(--type-6-lh);
+  }
+
+  .type-7 {
+    font-size: var(--type-7-size);
+    font-weight: var(--type-7-weight);
+    line-height: var(--type-7-lh);
+    letter-spacing: var(--type-7-ls);
+    --trim-lh: var(--type-7-lh);
+  }
+
+  .type-8 {
+    font-size: var(--type-8-size);
+    font-weight: var(--type-8-weight);
+    line-height: var(--type-8-lh);
+    letter-spacing: var(--type-8-ls);
+    --trim-lh: var(--type-8-lh);
+  }
+
+  .type-9 {
+    font-size: var(--type-9-size);
+    font-weight: var(--type-9-weight);
+    line-height: var(--type-9-lh);
+    letter-spacing: var(--type-9-ls);
+    --trim-lh: var(--type-9-lh);
+  }
+
+  .type-10 {
+    font-size: var(--type-10-size);
+    font-weight: var(--type-10-weight);
+    line-height: var(--type-10-lh);
+    letter-spacing: var(--type-10-ls);
+    --trim-lh: var(--type-10-lh);
+  }
+
+  .type-11 {
+    font-size: var(--type-11-size);
+    font-weight: var(--type-11-weight);
+    line-height: var(--type-11-lh);
+    letter-spacing: var(--type-11-ls);
+    --trim-lh: var(--type-11-lh);
+  }
+
+  .type-12 {
+    font-size: var(--type-12-size);
+    font-weight: var(--type-12-weight);
+    line-height: var(--type-12-lh);
+    letter-spacing: var(--type-12-ls);
+    --trim-lh: var(--type-12-lh);
+  }
+
+  .type-13 {
+    font-size: var(--type-13-size);
+    font-weight: var(--type-13-weight);
+    line-height: var(--type-13-lh);
+    letter-spacing: var(--type-13-ls);
+    --trim-lh: var(--type-13-lh);
+  }
+
+  /* Cap-to-baseline trim: native (Chrome 133+, Safari 18.2+, Edge 133+) */
+  @supports (text-box-trim: both) and (text-box-edge: cap alphabetic) {
+    .text-trim {
+      text-box-trim: both;
+      text-box-edge: cap alphabetic;
+    }
+  }
+
+  /* Cap-to-baseline trim: pseudo-element fallback (Firefox, older browsers) */
+  @supports not (text-box-trim: both) {
+    .text-trim {
+      display: block;
+    }
+    .text-trim::before,
+    .text-trim::after {
+      content: '';
+      display: block;
+      height: 0;
+      width: 0;
+    }
+    .text-trim::before {
+      margin-bottom: calc((var(--trim-lh, 1) - var(--cap-ratio, 0.72)) * -0.5em);
+    }
+    .text-trim::after {
+      margin-top: calc((var(--trim-lh, 1) - var(--cap-ratio, 0.72)) * -0.5em);
+    }
+  }
+
+  /* Override hardcoded fill on SVG paths so they inherit currentColor */
+  .icon-colored path {
+    fill: currentColor;
+  }
+
+  .nested-radius-inner {
+    border-radius: max(
+      0px,
+      calc(var(--radius-outer, var(--radius-2)) - var(--space-pad, var(--spacing-2)))
+    );
+  }
+}
