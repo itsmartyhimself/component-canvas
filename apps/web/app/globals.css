@@ -414,4 +414,18 @@
       calc(var(--radius-outer, var(--radius-2)) - var(--space-pad, var(--spacing-2)))
     );
   }
+
+  /* Sidebar row action: hover/focus-reveal inside a menu item or sub-item.
+     The trigger stays mounted so keyboard nav + screen readers still reach it. */
+  [data-row-action] {
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+  [data-slot="sidebar-menu-item"]:hover [data-row-action],
+  [data-slot="sidebar-menu-item"]:focus-within [data-row-action],
+  [data-slot="sidebar-menu-sub-item"]:hover [data-row-action],
+  [data-slot="sidebar-menu-sub-item"]:focus-within [data-row-action],
+  [data-row-action][data-state="open"] {
+    opacity: 1;
+  }
 }

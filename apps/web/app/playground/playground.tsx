@@ -1,6 +1,17 @@
 "use client"
 
 import type { CSSProperties, ReactNode } from "react"
+import { AddMenuSpecimens } from "./specimens/add-menu-specimens"
+import { ButtonSpecimens } from "./specimens/button-specimens"
+import { DocModalSpecimens } from "./specimens/doc-modal-specimens"
+import { IconButtonSpecimens } from "./specimens/icon-button-specimens"
+import { ImportDialogSpecimens } from "./specimens/import-dialog-specimens"
+import { RowSpecimens } from "./specimens/row-specimens"
+import { SearchInputSpecimens } from "./specimens/search-input-specimens"
+import { SectionHeaderSpecimens } from "./specimens/section-header-specimens"
+import { SidebarPanelSpecimen } from "./specimens/sidebar-panel-specimen"
+import { TeamSwitcherSpecimens } from "./specimens/team-switcher-specimens"
+import { UserFooterSpecimens } from "./specimens/user-footer-specimens"
 
 interface PlaygroundSection {
   id: string
@@ -8,7 +19,51 @@ interface PlaygroundSection {
   render: () => ReactNode
 }
 
-const SECTIONS: PlaygroundSection[] = []
+const SECTIONS: PlaygroundSection[] = [
+  { id: "button", title: "Button System", render: () => <ButtonSpecimens /> },
+  { id: "row", title: "Row System", render: () => <RowSpecimens /> },
+  {
+    id: "section-header",
+    title: "SectionHeader",
+    render: () => <SectionHeaderSpecimens />,
+  },
+  {
+    id: "search-input",
+    title: "SearchInput",
+    render: () => <SearchInputSpecimens />,
+  },
+  {
+    id: "icon-button",
+    title: "IconButton",
+    render: () => <IconButtonSpecimens />,
+  },
+  {
+    id: "team-switcher",
+    title: "TeamSwitcher",
+    render: () => <TeamSwitcherSpecimens />,
+  },
+  {
+    id: "user-footer",
+    title: "UserFooter",
+    render: () => <UserFooterSpecimens />,
+  },
+  { id: "add-menu", title: "AddMenu", render: () => <AddMenuSpecimens /> },
+  {
+    id: "import-dialog",
+    title: "ImportDialog",
+    render: () => <ImportDialogSpecimens />,
+  },
+  {
+    id: "doc-modal",
+    title: "DocModal",
+    render: () => <DocModalSpecimens />,
+  },
+  {
+    id: "sidebar-panel",
+    title: "Full SidebarPanel",
+    render: () => <SidebarPanelSpecimen />,
+  },
+]
 
 const rootStyle: CSSProperties = {
   height: "100dvh",
@@ -63,7 +118,7 @@ export function PlaygroundSection({ title, children }: PlaygroundSectionProps) {
         gap: "var(--spacing-7)",
       }}
     >
-      <h2 className="type-7 text-trim" style={{ color: "var(--color-text-primary)" }}>
+      <h2 className="type-7" style={{ color: "var(--color-text-primary)" }}>
         {title}
       </h2>
       {children}
