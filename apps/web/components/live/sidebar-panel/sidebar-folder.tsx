@@ -19,13 +19,17 @@ interface SidebarFolderProps {
 }
 
 const subStyle: CSSProperties = {
-  borderLeft: "1px solid var(--sidebar-indent-rail)",
+  borderLeftColor: "var(--sidebar-indent-rail)",
   paddingLeft: "var(--spacing-3)",
   marginLeft: "var(--spacing-4)",
   display: "flex",
   flexDirection: "column",
   gap: "var(--spacing-1)",
   listStyle: "none",
+  paddingTop: 0,
+  paddingBottom: 0,
+  marginRight: 0,
+  paddingRight: 0,
 }
 
 export function SidebarFolder({
@@ -83,9 +87,7 @@ export function SidebarFolder({
         </div>
         <Collapsible.Content>
           {hasChildren ? (
-            <SidebarMenuSub asChild>
-              <ul style={subStyle}>{children}</ul>
-            </SidebarMenuSub>
+            <SidebarMenuSub style={subStyle}>{children}</SidebarMenuSub>
           ) : (
             <div
               className="type-3"
