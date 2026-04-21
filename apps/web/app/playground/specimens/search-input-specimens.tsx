@@ -20,16 +20,26 @@ export function SearchInputSpecimens() {
     >
       <SpecimenGroup title="States">
         <Specimen label={`empty, placeholder="Search"`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <SearchInput value={empty} onValueChange={setEmpty} />
+          <SearchInput value={empty} onValueChange={setEmpty} focusHotkey={false} />
         </Specimen>
         <Specimen label={`with value "Button"`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <SearchInput value={filled} onValueChange={setFilled} />
+          <SearchInput value={filled} onValueChange={setFilled} focusHotkey={false} />
         </Specimen>
         <Specimen label={`autoFocus (cursor lands here on mount)`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <SearchInput value={focused} onValueChange={setFocused} autoFocus />
+          <SearchInput
+            value={focused}
+            onValueChange={setFocused}
+            autoFocus
+            focusHotkey={false}
+          />
         </Specimen>
         <Specimen label={`disabled=true`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <SearchInput value={disabled} onValueChange={setDisabled} disabled />
+          <SearchInput
+            value={disabled}
+            onValueChange={setDisabled}
+            disabled
+            focusHotkey={false}
+          />
         </Specimen>
       </SpecimenGroup>
     </div>
