@@ -32,44 +32,44 @@ const scrollbarStyle: CSSProperties = {
 
 export function SidebarPanel() {
   return (
-    <SidebarProvider className="contents">
-      <SidebarPanelProvider>
-        <aside
-          aria-label="Component browser"
-          className="flex flex-col shrink-0 h-full"
-          style={asideStyle}
+    <SidebarPanelProvider>
+      <aside
+        aria-label="Component browser"
+        className="flex flex-col shrink-0 h-full"
+        style={asideStyle}
+      >
+        <div className="shrink-0" data-slot="sidebar-panel-header">
+          <SidebarHeaderZone />
+        </div>
+        <ScrollArea.Root
+          type="scroll"
+          className="flex-1 min-h-0 overflow-hidden"
+          style={scrollRootStyle}
         >
-          <div className="shrink-0" data-slot="sidebar-panel-header">
-            <SidebarHeaderZone />
-          </div>
-          <ScrollArea.Root
-            type="scroll"
-            className="flex-1 min-h-0 overflow-hidden"
-            style={scrollRootStyle}
+          <ScrollArea.Viewport
+            className="h-full w-full"
+            data-slot="sidebar-panel-scroll"
           >
-            <ScrollArea.Viewport
-              className="h-full w-full"
-              data-slot="sidebar-panel-scroll"
-            >
+            <SidebarProvider className="contents">
               <Suspense fallback={null}>
                 <SidebarTree />
               </Suspense>
-            </ScrollArea.Viewport>
-            <ScrollArea.Scrollbar
-              orientation="vertical"
-              className="flex touch-none select-none"
-              style={scrollbarStyle}
-            >
-              <ScrollArea.Thumb className="flex-1" style={thumbStyle} />
-            </ScrollArea.Scrollbar>
-          </ScrollArea.Root>
-          <div className="shrink-0" data-slot="sidebar-panel-footer">
-            <SidebarFooterZone />
-          </div>
-        </aside>
-        <ImportDialog />
-        <DocModal />
-      </SidebarPanelProvider>
-    </SidebarProvider>
+            </SidebarProvider>
+          </ScrollArea.Viewport>
+          <ScrollArea.Scrollbar
+            orientation="vertical"
+            className="flex touch-none select-none"
+            style={scrollbarStyle}
+          >
+            <ScrollArea.Thumb className="flex-1" style={thumbStyle} />
+          </ScrollArea.Scrollbar>
+        </ScrollArea.Root>
+        <div className="shrink-0" data-slot="sidebar-panel-footer">
+          <SidebarFooterZone />
+        </div>
+      </aside>
+      <ImportDialog />
+      <DocModal />
+    </SidebarPanelProvider>
   )
 }

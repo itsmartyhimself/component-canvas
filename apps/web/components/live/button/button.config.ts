@@ -83,19 +83,19 @@ const VARIANT_COLORS: Record<ButtonVariant, VariantColors> = {
     bg: "var(--color-text-primary)",
     color: "var(--color-bg-primary)",
     border: "transparent",
-    shadow: true,
+    shadow: false,
   },
   primary: {
     bg: "var(--color-bg-tertiary)",
     color: "var(--color-text-primary)",
     border: "var(--color-bg-secondary)",
-    shadow: true,
+    shadow: false,
   },
   secondary: {
     bg: "var(--color-border-primary)",
     color: "var(--color-text-secondary)",
     border: "var(--color-bg-tertiary)",
-    shadow: true,
+    shadow: false,
   },
   tertiary: {
     bg: "transparent",

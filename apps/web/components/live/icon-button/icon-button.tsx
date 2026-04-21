@@ -1,14 +1,26 @@
 "use client"
 
-import { forwardRef, useState, type CSSProperties, type Ref } from "react"
+import {
+  forwardRef,
+  useState,
+  type ButtonHTMLAttributes,
+  type CSSProperties,
+  type Ref,
+} from "react"
 import { cn } from "@/lib/utils"
 import {
   ICON_BUTTON_DIMENSIONS,
   type IconButtonProps,
 } from "./icon-button.config"
 
+type IconButtonComponentProps = IconButtonProps &
+  Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    keyof IconButtonProps | "children"
+  >
+
 function IconButtonBase(
-  props: IconButtonProps,
+  props: IconButtonComponentProps,
   ref: Ref<HTMLButtonElement>,
 ) {
   const {
@@ -21,6 +33,9 @@ function IconButtonBase(
     className,
     type = "button",
     bordered = true,
+    onMouseEnter,
+    onMouseLeave,
+    ...rest
   } = props
 
   const dims = ICON_BUTTON_DIMENSIONS[size]
@@ -40,7 +55,9 @@ function IconButtonBase(
     width: dims.size,
     height: dims.size,
     borderRadius: dims.radius,
-    border: bordered ? "1px solid var(--color-border-primary)" : "1px solid transparent",
+    border: bordered
+      ? "1px solid var(--color-border-primary)"
+      : "1px solid transparent",
     background,
     color: iconColor,
     display: "inline-flex",
@@ -48,7 +65,8 @@ function IconButtonBase(
     justifyContent: "center",
     cursor: disabled ? "not-allowed" : "pointer",
     opacity: disabled ? 0.6 : 1,
-    transition: "background-color 120ms ease, color 120ms ease, border-color 120ms ease",
+    transition:
+      "background-color 120ms ease, color 120ms ease, border-color 120ms ease",
     flexShrink: 0,
   }
 
@@ -58,17 +76,27 @@ function IconButtonBase(
       type={type}
       aria-label={ariaLabel}
       disabled={disabled}
-      onClick={() => {
-        if (disabled) return
-        onClick?.()
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       className={cn(
         "focus-visible:outline-2 focus-visible:outline-offset-2",
         className,
       )}
       style={rootStyle}
+      onClick={(event) => {
+        if (disabled) {
+          event.preventDefault()
+          return
+        }
+        onClick?.()
+      }}
+      onMouseEnter={(event) => {
+        setHovered(true)
+        onMouseEnter?.(event)
+      }}
+      onMouseLeave={(event) => {
+        setHovered(false)
+        onMouseLeave?.(event)
+      }}
+      {...rest}
     >
       {icon}
     </button>

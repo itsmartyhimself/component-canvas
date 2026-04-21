@@ -62,6 +62,7 @@ export interface SidebarPanelContextValue {
   importDialogSection: SectionId | null
   openDocId: string | null
   hiddenDocIds: Set<string>
+  hiddenDocsHydrated: boolean
   actions: SidebarActions
 }
 
@@ -388,6 +389,7 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
+      hiddenDocsHydrated,
       actions,
     }),
     [
@@ -403,6 +405,7 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
+      hiddenDocsHydrated,
       actions,
     ],
   )

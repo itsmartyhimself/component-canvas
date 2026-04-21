@@ -31,9 +31,14 @@ export function SidebarSection({
   folders,
   leaves,
 }: SidebarSectionProps) {
-  const { searchMatch, hiddenDocIds } = useSidebarPanel()
+  const { searchMatch, hiddenDocIds, hiddenDocsHydrated } = useSidebarPanel()
 
-  const visibleLeaves = leaves.filter((leaf) => !hiddenDocIds.has(leaf.id))
+  // Before the post-mount hydration of `hiddenDocIds` from localStorage, SSR
+  // and the first client render must render identical markup. Only filter
+  // once the hydration flag flips true.
+  const visibleLeaves = hiddenDocsHydrated
+    ? leaves.filter((leaf) => !hiddenDocIds.has(leaf.id))
+    : leaves
 
   const filteredFolderIds = searchMatch
     ? new Set(

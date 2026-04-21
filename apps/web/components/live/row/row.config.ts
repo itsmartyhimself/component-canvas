@@ -119,13 +119,13 @@ export const ROW_STATE: Record<
     background: "var(--color-text-primary)",
     foreground: "var(--color-bg-primary)",
     iconColor: "var(--color-bg-primary)",
-    fontWeight: 500,
+    fontWeight: 400,
   },
   expanded: {
     background: "var(--color-bg-secondary)",
     foreground: "var(--color-text-primary)",
     iconColor: "var(--color-text-primary)",
-    fontWeight: 500,
+    fontWeight: 400,
   },
   disabled: {
     background: "transparent",
