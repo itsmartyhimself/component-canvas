@@ -1,5 +1,10 @@
 "use client"
 
+// TODO(ROADMAP: "Sidebar" → hide-from-sidebar UX is one-way): hiding works, but
+// unhiding has no in-sidebar control because the row (and this menu with it) is
+// display:none once hidden. Needs a "Hidden items" affordance; tracked in
+// apps/web/ROADMAP.md under Sidebar.
+
 import type { CSSProperties } from "react"
 import { useState } from "react"
 import {
@@ -10,9 +15,15 @@ import {
 import { DropdownMenu } from "radix-ui"
 import { cn } from "@/lib/utils"
 
+// See row-action-menu.tsx — scope picks the correct shadcn group name on the
+// closest ancestor list item; wrong scope makes the trigger appear when an
+// outer item is hovered.
+type DocActionScope = "menu-item" | "menu-sub-item"
+
 interface DocActionMenuProps {
   ariaLabel: string
   hidden: boolean
+  scope: DocActionScope
   onToggleHidden: () => void
 }
 
@@ -68,9 +79,17 @@ const iconSlotStyle: CSSProperties = {
   flexShrink: 0,
 }
 
+const HOVER_CLASSES: Record<DocActionScope, string> = {
+  "menu-item":
+    "group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100",
+  "menu-sub-item":
+    "group-hover/menu-sub-item:opacity-100 group-focus-within/menu-sub-item:opacity-100",
+}
+
 export function DocActionMenu({
   ariaLabel,
   hidden,
+  scope,
   onToggleHidden,
 }: DocActionMenuProps) {
   const [open, setOpen] = useState(false)
@@ -83,6 +102,11 @@ export function DocActionMenu({
           aria-label={ariaLabel}
           data-row-action
           data-state={open ? "open" : "closed"}
+          className={cn(
+            "opacity-0 transition-opacity",
+            HOVER_CLASSES[scope],
+            "data-[state=open]:opacity-100",
+          )}
           style={triggerStyle}
           onClick={(event) => event.stopPropagation()}
           onPointerDown={(event) => event.stopPropagation()}

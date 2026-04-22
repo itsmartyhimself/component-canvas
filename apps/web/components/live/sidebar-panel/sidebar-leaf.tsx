@@ -46,6 +46,8 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
     return { kind: "icon", icon: "cube" } as const
   })()
 
+  const actionScope = depth === 1 ? "menu-sub-item" : "menu-item"
+
   const actionNode = editing
     ? null
     : leaf.kind === "doc"
@@ -53,6 +55,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
           <DocActionMenu
             ariaLabel={`Actions for ${leaf.name}`}
             hidden={hiddenDocIds.has(leaf.id)}
+            scope={actionScope}
             onToggleHidden={() => {
               if (hiddenDocIds.has(leaf.id)) actions.unhideDoc(leaf.id)
               else actions.hideDoc(leaf.id)
@@ -64,6 +67,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
             ariaLabel={`Actions for ${leaf.name}`}
             itemKind="leaf"
             itemName={leaf.name}
+            scope={actionScope}
             onRename={() => actions.startRename(leaf.id)}
             onConfirmDelete={() => actions.deleteEntry(leaf.id)}
           />
@@ -79,7 +83,6 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
       label={leaf.name}
       size={depth === 1 ? 28 : 32}
       variant={depth === 1 ? "menu-sub-button" : "menu-button"}
-      depth={depth}
       leading={leading}
       active={active}
       disabled={leaf.disabled}

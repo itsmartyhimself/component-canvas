@@ -12,10 +12,18 @@ import { AlertDialog, DropdownMenu } from "radix-ui"
 import { Button } from "@/components/live/button"
 import { cn } from "@/lib/utils"
 
+// `scope` must match the shadcn group name on the closest ancestor list item
+// ("menu-item" for top-level `SidebarMenuItem`, "menu-sub-item" for
+// `SidebarMenuSubItem`). Picking the wrong scope (or using both) makes the
+// trigger appear when an ancestor item is hovered — e.g. hovering a folder
+// revealing "..." on every nested leaf.
+type RowActionScope = "menu-item" | "menu-sub-item"
+
 interface BaseProps {
   ariaLabel: string
   itemName: string
   itemKind: "folder" | "leaf"
+  scope: RowActionScope
   onRename: () => void
   onConfirmDelete: () => void
 }
@@ -130,6 +138,13 @@ function ActionItem({ label, icon, onSelect }: ItemProps) {
   )
 }
 
+const HOVER_CLASSES: Record<RowActionScope, string> = {
+  "menu-item":
+    "group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100",
+  "menu-sub-item":
+    "group-hover/menu-sub-item:opacity-100 group-focus-within/menu-sub-item:opacity-100",
+}
+
 export function RowActionMenu(props: RowActionMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -158,6 +173,11 @@ export function RowActionMenu(props: RowActionMenuProps) {
             aria-label={props.ariaLabel}
             data-row-action
             data-state={menuOpen ? "open" : "closed"}
+            className={cn(
+              "opacity-0 transition-opacity",
+              HOVER_CLASSES[props.scope],
+              "data-[state=open]:opacity-100",
+            )}
             style={triggerStyle}
             onClick={(event) => event.stopPropagation()}
             onPointerDown={(event) => event.stopPropagation()}

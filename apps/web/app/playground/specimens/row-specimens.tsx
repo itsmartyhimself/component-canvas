@@ -9,14 +9,13 @@ import {
   SIDEBAR_WIDTH_SPECIMEN,
 } from "./_shared"
 
-const sizes = [20, 24, 28, 32, 36] as const
+const sizes = [24, 28, 32, 36] as const
 
 const subGroupStyle: CSSProperties = {
   borderLeft: "1px solid var(--sidebar-indent-rail)",
-  paddingLeft: "var(--spacing-3)",
   marginLeft: "var(--spacing-4)",
+  padding: "0 var(--spacing-3)",
   listStyle: "none",
-  padding: "0 0 0 var(--spacing-3)",
   display: "flex",
   flexDirection: "column",
   gap: "var(--spacing-1)",
@@ -179,14 +178,13 @@ export function RowSpecimens() {
         </Specimen>
       </SpecimenGroup>
 
-      <SpecimenGroup title="Depth 1 (with indent rail)">
-        <Specimen label={`depth=1 variant=menu-sub-button size=28`} width={SIDEBAR_WIDTH_SPECIMEN}>
+      <SpecimenGroup title="Sub-rows (inside an indent-rail container)">
+        <Specimen label={`variant=menu-sub-button size=28`} width={SIDEBAR_WIDTH_SPECIMEN}>
           <SubGroup>
             <li>
               <Row
                 label="Button"
                 variant="menu-sub-button"
-                depth={1}
                 leading={{ kind: "icon", icon: "cube" }}
               />
             </li>
@@ -194,7 +192,6 @@ export function RowSpecimens() {
               <Row
                 label="Input"
                 variant="menu-sub-button"
-                depth={1}
                 leading={{ kind: "icon", icon: "cube" }}
               />
             </li>
@@ -202,7 +199,6 @@ export function RowSpecimens() {
               <Row
                 label="Select"
                 variant="menu-sub-button"
-                depth={1}
                 leading={{ kind: "icon", icon: "cube" }}
                 active
               />

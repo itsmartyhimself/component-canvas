@@ -1,7 +1,7 @@
 import type { MouseEventHandler, ReactNode } from "react"
 import type { CarbonIconName } from "@/lib/icons/registry"
 
-export type RowSize = 20 | 24 | 28 | 32 | 36
+export type RowSize = 24 | 28 | 32 | 36
 
 export type RowVariant = "menu-button" | "menu-sub-button"
 
@@ -25,7 +25,6 @@ export interface RowProps {
   variant?: RowVariant
   leading?: RowLeading
   trailing?: RowTrailing
-  depth?: 0 | 1
   active?: boolean
   expanded?: boolean
   editing?: boolean
@@ -50,14 +49,6 @@ export interface RowDimension {
 }
 
 export const ROW_DIMENSIONS: Record<RowSize, RowDimension> = {
-  20: {
-    height: 20,
-    paddingX: "var(--spacing-3)",
-    paddingY: "0",
-    typeClass: "type-3",
-    gap: "var(--spacing-3)",
-    radius: "var(--radius-1-5)",
-  },
   24: {
     height: 24,
     paddingX: "var(--spacing-3)",

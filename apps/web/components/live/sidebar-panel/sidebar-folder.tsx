@@ -1,5 +1,10 @@
 "use client"
 
+// TODO(ROADMAP: "Sidebar" → folder rename / delete UI): folder rows intentionally
+// have no hover "..." menu — the chevron is the only trailing affordance. The
+// "manage folders" view + click-into-rename follow-ups are captured in
+// apps/web/ROADMAP.md under Sidebar.
+
 import type { CSSProperties, ReactNode } from "react"
 import { Collapsible } from "radix-ui"
 import {
@@ -8,7 +13,6 @@ import {
 } from "@/components/imports/shadcn/sidebar"
 import { Row } from "@/components/live/row"
 import type { FolderRecord } from "@/lib/registry/types"
-import { RowActionMenu } from "./row-action-menu"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
 interface SidebarFolderProps {
@@ -19,16 +23,16 @@ interface SidebarFolderProps {
 
 const subStyle: CSSProperties = {
   borderLeftColor: "var(--sidebar-indent-rail)",
-  paddingLeft: "var(--spacing-3)",
   marginLeft: "var(--spacing-4)",
+  marginRight: 0,
+  paddingLeft: "var(--spacing-3)",
+  paddingRight: "var(--spacing-3)",
+  paddingTop: "var(--spacing-2)",
+  paddingBottom: "var(--spacing-2)",
   display: "flex",
   flexDirection: "column",
   gap: "var(--spacing-1)",
   listStyle: "none",
-  paddingTop: 0,
-  paddingBottom: 0,
-  marginRight: 0,
-  paddingRight: 0,
 }
 
 export function SidebarFolder({
@@ -55,33 +59,19 @@ export function SidebarFolder({
         open={expanded}
         onOpenChange={() => actions.toggleExpanded(folder.id)}
       >
-        <div style={{ position: "relative" }}>
-          <Collapsible.Trigger asChild>
-            <Row
-              label={folder.name}
-              size={32}
-              leading={leading}
-              trailing={{ kind: "chevron", expanded }}
-              expanded={expanded}
-              editing={editing}
-              editDefaultValue={folder.name}
-              onCommitEdit={(value) => actions.commitRename(folder.id, value)}
-              onCancelEdit={() => actions.cancelRename()}
-            />
-          </Collapsible.Trigger>
-          {!editing ? (
-            <RowActionMenu
-              ariaLabel={`Actions for ${folder.name}`}
-              itemKind="folder"
-              itemName={folder.name || "New folder"}
-              onRename={() => actions.startRename(folder.id)}
-              onAddComponent={() => {
-                actions.openAddMenu(folder.sectionId)
-              }}
-              onConfirmDelete={() => actions.deleteEntry(folder.id)}
-            />
-          ) : null}
-        </div>
+        <Collapsible.Trigger asChild>
+          <Row
+            label={folder.name}
+            size={32}
+            leading={leading}
+            trailing={{ kind: "chevron", expanded }}
+            expanded={expanded}
+            editing={editing}
+            editDefaultValue={folder.name}
+            onCommitEdit={(value) => actions.commitRename(folder.id, value)}
+            onCancelEdit={() => actions.cancelRename()}
+          />
+        </Collapsible.Trigger>
         <Collapsible.Content>
           {hasChildren ? (
             <SidebarMenuSub style={subStyle}>{children}</SidebarMenuSub>

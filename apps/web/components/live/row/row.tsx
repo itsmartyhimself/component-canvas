@@ -23,8 +23,6 @@ import {
   type RowTrailing,
 } from "./row.config"
 
-const INDENT_SHIFT = "var(--spacing-4)"
-
 function resolveState(
   { hovered, active, expanded, disabled, loading }: {
     hovered: boolean
@@ -180,7 +178,6 @@ function RowBase(props: RowProps, ref: Ref<HTMLButtonElement | HTMLAnchorElement
     variant = "menu-button",
     leading = { kind: "none" },
     trailing = { kind: "none" },
-    depth = 0,
     active = false,
     expanded = false,
     editing = false,
@@ -219,7 +216,6 @@ function RowBase(props: RowProps, ref: Ref<HTMLButtonElement | HTMLAnchorElement
     cursor: disabled || loading ? "not-allowed" : "pointer",
     opacity: disabled ? 0.75 : 1,
     width: "100%",
-    marginLeft: depth === 1 ? INDENT_SHIFT : undefined,
     textAlign: "left" as const,
   }
 

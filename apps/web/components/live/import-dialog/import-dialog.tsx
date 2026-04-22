@@ -4,7 +4,7 @@
 // pipeline is tracked in apps/web/ROADMAP.md → "Backend / Registry".
 
 import type { CSSProperties } from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Dialog } from "radix-ui"
 import { Button } from "@/components/live/button"
 import type { SectionId } from "@/lib/registry/types"
@@ -76,8 +76,11 @@ export function ImportDialog({
     })
 
   const effectiveSection = defaultSection ?? importDialogSection ?? "library"
-  const foldersInSection = registry.folders.filter(
-    (folder) => folder.sectionId === effectiveSection,
+  // Stable reference — without useMemo this array is recreated every render,
+  // making the reset effect below fire on every keystroke and clearing `name`.
+  const foldersInSection = useMemo(
+    () => registry.folders.filter((folder) => folder.sectionId === effectiveSection),
+    [registry.folders, effectiveSection],
   )
 
   const [name, setName] = useState("")

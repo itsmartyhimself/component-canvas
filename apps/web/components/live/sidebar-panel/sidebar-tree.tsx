@@ -5,9 +5,10 @@
 // virtualised list (react-virtual or equivalent).
 
 import type { CSSProperties } from "react"
-import { SidebarMenu, SidebarMenuItem } from "@/components/imports/shadcn/sidebar"
-import { Row } from "@/components/live/row"
+import { SidebarMenu } from "@/components/imports/shadcn/sidebar"
+import type { LeafRecord } from "@/lib/registry/types"
 import { SidebarDivider } from "./sidebar-divider"
+import { SidebarLeaf } from "./sidebar-leaf"
 import { SidebarSection } from "./sidebar-section"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
@@ -19,21 +20,26 @@ const topPagesWrapperStyle: CSSProperties = {
 }
 
 export function SidebarTree() {
-  const { registry, actions } = useSidebarPanel()
+  const { registry } = useSidebarPanel()
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <SidebarMenu style={topPagesWrapperStyle}>
-        {registry.topPages.map((page) => (
-          <SidebarMenuItem key={page.id}>
-            <Row
-              label={page.label}
-              size={32}
-              leading={{ kind: "icon", icon: page.iconName }}
-              onClick={() => actions.openDoc(page.id)}
-            />
-          </SidebarMenuItem>
-        ))}
+        {registry.topPages.map((page) => {
+          // Top pages reuse the doc-leaf form so they share the DocActionMenu
+          // (hide/unhide) + hiddenDocIds persistence with design-system docs.
+          // sectionId is unused by SidebarLeaf's doc path — "library" is a
+          // harmless placeholder.
+          const asLeaf: LeafRecord = {
+            id: page.id,
+            name: page.label,
+            kind: "doc",
+            sectionId: "library",
+            iconName: page.iconName,
+            order: 0,
+          }
+          return <SidebarLeaf key={page.id} leaf={asLeaf} depth={0} />
+        })}
       </SidebarMenu>
       <SidebarDivider />
       {registry.sections.map((section, idx) => {

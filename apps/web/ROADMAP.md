@@ -15,6 +15,8 @@ Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 - Drag-to-reorder folders / leaves (@dnd-kit) and drag-to-move across sections.
 - Share / export current selection.
 - Multi-team switcher popover content (currently stubbed).
+- Hide-from-sidebar UX is one-way today: docs (and now top pages) can be hidden via their `...` menu, but once hidden the menu is hidden with them, so there is no in-sidebar control to bring them back. `actions.unhideDoc` exists but has no trigger. Needs a "Hidden items" affordance — maybe a collapsible "Hidden" group at the bottom of the sidebar, or a settings surface that lists `hiddenDocIds` with restore buttons.
+- Folder rename / delete UI: folder rows have no hover affordance after the "..." removal. Design a "manage folders" view reachable from the section header `+` popover, and/or Figma-style click-into-rename on the folder label. Until then, renaming only works on newly-created empty folders (auto-triggered inline rename); deletion has no UI path.
 
 ## Playground
 - Replace the `/playground` route with a proper dev toolbar once we have more than 10 systems. `/playground` is a temporary review surface, not a product feature.
