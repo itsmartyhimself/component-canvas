@@ -43,6 +43,20 @@ Built-in CSS easing curves are usually too weak. Kowalski prefers custom cubic-b
 
 For image reveals and scroll animations: **`cubic-bezier(0.77, 0, 0.175, 1)`**. Explore curves at **easings.co** and **easing.dev**. Duration and easing should match the product's tone — elegance tolerates softer timing, utility biases toward immediacy.
 
+**Easing decision:**
+```
+Is the element entering or exiting the viewport?
+├─ Yes → ease-out
+└─ No
+      ├─ Is it moving or morphing on screen?
+      │  └─ Yes → ease-in-out
+      └─ Is it a hover change?
+            ├─ Yes → ease
+            └─ Is it constant motion?
+                  ├─ Yes → linear
+                  └─ Default → ease-out
+```
+
 ## Natural Motion
 
 **Nothing should appear from nowhere.** Scaling from **`0`** feels wrong. Start from **`0.9`** or higher — **`0.93`** is a good default. A combined `scale(0.5)` with opacity (Clerk's toast) works because the fade masks the small scale. **Press states:** a button at **`scale(0.97)`** on press gives tactile feedback with almost no visual cost.
@@ -97,6 +111,24 @@ If not already using Framer Motion, prefer the native **Intersection Observer AP
 | Blur mask | **2px** | `filter: blur(2px)`, last resort |
 | Frame rate target | **60fps** | Minimum for smooth motion |
 | Scroll trigger offset | `-100px` | `useInView` margin |
+| Micro-interactions | 100–150ms | Hover states, button presses |
+| Standard UI | 150–250ms | Tooltips, dropdowns |
+| Modals / drawers | 200–300ms | Larger surface entries |
+
+Duration rules: larger elements animate slower than smaller ones. Exit animations can run ~20% faster than entrances. Match duration to travel distance — longer movement warrants longer duration.
+
+## Practical Tips
+
+| Scenario | Solution |
+|---|---|
+| Make buttons feel responsive | Add `transform: scale(0.97)` on `:active` |
+| Element appears from nowhere | Start from `scale(0.95)`, not `scale(0)` |
+| Shaky / jittery animations | Add `will-change: transform` |
+| Hover causes flicker | Animate child element, not parent |
+| Popover scales from wrong point | Set `transform-origin` to trigger location |
+| Sequential tooltips feel slow | Skip delay/animation after first tooltip |
+| Small buttons hard to tap | Use 44px minimum hit area (pseudo-element) |
+| Something still feels off | Add subtle blur (under 20px) to mask it |
 
 ## Decision Frameworks
 
