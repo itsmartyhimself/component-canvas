@@ -3,6 +3,10 @@
 // DEMO-ONLY — submits to the in-memory SidebarActions facade. The real import
 // pipeline is tracked in apps/web/ROADMAP.md → "Backend / Registry".
 
+// TODO(ROADMAP: "Motion" → import-dialog open/close): adopt --duration-fast
+// + --ease-out-soft, overlay opacity + content scale (0.95→1) + y(-4→0) on
+// entry. Exit ~20% faster than entry.
+
 import type { CSSProperties } from "react"
 import { useEffect, useMemo, useState } from "react"
 import { Dialog } from "radix-ui"

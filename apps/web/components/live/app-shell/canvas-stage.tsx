@@ -1,5 +1,10 @@
 "use client"
 
+// TODO(ROADMAP: "Motion" → canvas content swap): wrap the inner content in
+// AnimatePresence mode="wait" keyed by selectedId, fade + subtle y-slide using
+// --duration-base + --ease-out-soft. Pair with the sidebar's active pill so
+// selection feels continuous across the app.
+
 import { useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import { DEMO_REGISTRY } from "@/lib/registry/data"

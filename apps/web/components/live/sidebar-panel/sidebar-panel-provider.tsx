@@ -9,7 +9,9 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
+  type MutableRefObject,
   type ReactNode,
 } from "react"
 import type {
@@ -46,6 +48,8 @@ export interface SidebarActions {
   unhideDoc: (id: string) => void
 }
 
+export type RowRegistry = Map<string, HTMLElement>
+
 export interface SidebarPanelContextValue {
   registry: Registry
   expandedIds: Set<string>
@@ -60,6 +64,12 @@ export interface SidebarPanelContextValue {
   openDocId: string | null
   hiddenDocIds: Set<string>
   actions: SidebarActions
+  hoverId: string | null
+  setHoverId: (id: string | null) => void
+  registerRow: (id: string, el: HTMLElement | null) => void
+  rowRegistry: MutableRefObject<RowRegistry>
+  registryVersion: number
+  wrapperRef: MutableRefObject<HTMLDivElement | null>
 }
 
 const SidebarPanelContext = createContext<SidebarPanelContextValue | null>(null)
@@ -96,6 +106,27 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
   const [openDocId, setOpenDocId] = useState<string | null>(null)
   const [hiddenDocIds, setHiddenDocIds] = useState<Set<string>>(() => new Set())
   const [hiddenDocsReady, setHiddenDocsReady] = useState(false)
+
+  const [hoverId, setHoverIdState] = useState<string | null>(null)
+  const rowRegistry = useRef<RowRegistry>(new Map())
+  const [registryVersion, setRegistryVersion] = useState(0)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const setHoverId = useCallback((id: string | null) => {
+    setHoverIdState((prev) => (prev === id ? prev : id))
+  }, [])
+
+  const registerRow = useCallback((id: string, el: HTMLElement | null) => {
+    const reg = rowRegistry.current
+    if (el) {
+      if (reg.get(id) === el) return
+      reg.set(id, el)
+    } else {
+      if (!reg.has(id)) return
+      reg.delete(id)
+    }
+    setRegistryVersion((v) => v + 1)
+  }, [])
 
   // Load persisted hidden-doc ids after mount so SSR + first client render
   // produce identical DOM (both see an empty set). We also render hidden rows
@@ -388,6 +419,12 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       openDocId,
       hiddenDocIds,
       actions,
+      hoverId,
+      setHoverId,
+      registerRow,
+      rowRegistry,
+      registryVersion,
+      wrapperRef,
     }),
     [
       registry,
@@ -403,6 +440,10 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       openDocId,
       hiddenDocIds,
       actions,
+      hoverId,
+      setHoverId,
+      registerRow,
+      registryVersion,
     ],
   )
 

@@ -21,6 +21,13 @@ Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 ## Playground
 - Replace the `/playground` route with a proper dev toolbar once we have more than 10 systems. `/playground` is a temporary review surface, not a product feature.
 
+## Motion
+Token system (`--ease-*`, `--duration-*`) and traveling sidebar pill are in place. Still to do:
+- Canvas content swap on selection change: `AnimatePresence mode="wait"` keyed by `selectedId`, fade + subtle y-slide using `--duration-base` + `--ease-out-soft`. Pairs with the sidebar's active pill so selection feels continuous across the app.
+- Add-menu popover + import-dialog open/close: adopt `--duration-fast` + `--ease-out-soft`, origin-aware scale from trigger (Radix exposes `--radix-*-content-transform-origin`). Keep exits ~20% faster than entries per Kowalski.
+- Sidebar shell mount: one-shot fade + y-slide on first paint (low priority).
+- Review curves after a day of use — motion always reads better while building than the morning after.
+
 ## Canvas
 - Zoom: cursor-centered scale-at, ⌘+wheel / pinch input.
 - Pan: two-finger trackpad, space+drag, middle-button drag; `overscroll-behavior: contain`.

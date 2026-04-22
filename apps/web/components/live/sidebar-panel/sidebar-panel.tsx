@@ -12,9 +12,11 @@ import { DocModal } from "@/components/live/doc-modal"
 import { ImportDialog } from "@/components/live/import-dialog"
 import { SidebarFooterZone } from "./sidebar-footer-zone"
 import { SidebarHeaderZone } from "./sidebar-header-zone"
+import { SidebarHighlightLayer } from "./sidebar-highlight-layer"
 import { SidebarPanelProvider } from "./sidebar-panel-provider"
 import { SidebarTree } from "./sidebar-tree"
 import { SIDEBAR_FADE_HEIGHT, SIDEBAR_WIDTH } from "./sidebar-panel.config"
+import { useSidebarPanel } from "./use-sidebar-panel"
 
 const asideStyle: CSSProperties = {
   width: SIDEBAR_WIDTH,
@@ -42,10 +44,21 @@ const fadeBase: CSSProperties = {
   right: 0,
   height: SIDEBAR_FADE_HEIGHT,
   pointerEvents: "none",
-  transition: "opacity 120ms ease",
+  transition: "opacity var(--duration-micro) var(--ease-swift)",
 }
 
 export function SidebarPanel() {
+  return (
+    <SidebarPanelProvider>
+      <SidebarPanelInner />
+      <ImportDialog />
+      <DocModal />
+    </SidebarPanelProvider>
+  )
+}
+
+function SidebarPanelInner() {
+  const { setHoverId, wrapperRef } = useSidebarPanel()
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const [atTop, setAtTop] = useState(true)
   const [atBottom, setAtBottom] = useState(true)
@@ -69,53 +82,53 @@ export function SidebarPanel() {
   }, [recalc])
 
   return (
-    <SidebarPanelProvider>
-      <aside
-        aria-label="Component browser"
-        className="flex flex-col shrink-0"
-        style={asideStyle}
-      >
-        <div className="shrink-0" data-slot="sidebar-panel-header">
-          <SidebarHeaderZone />
-        </div>
-        <div style={scrollWrapperStyle}>
-          <div
-            ref={scrollRef}
-            onScroll={recalc}
-            data-slot="sidebar-panel-scroll"
-            style={scrollAreaStyle}
-          >
+    <aside
+      aria-label="Component browser"
+      className="flex flex-col shrink-0"
+      style={asideStyle}
+      onMouseLeave={() => setHoverId(null)}
+    >
+      <div className="shrink-0" data-slot="sidebar-panel-header">
+        <SidebarHeaderZone />
+      </div>
+      <div style={scrollWrapperStyle}>
+        <div
+          ref={scrollRef}
+          onScroll={recalc}
+          data-slot="sidebar-panel-scroll"
+          style={scrollAreaStyle}
+        >
+          <div ref={wrapperRef} style={{ position: "relative" }}>
+            <SidebarHighlightLayer />
             <Suspense fallback={null}>
               <SidebarTree />
             </Suspense>
           </div>
-          <div
-            aria-hidden
-            style={{
-              ...fadeBase,
-              top: 0,
-              background:
-                "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
-              opacity: atTop ? 0 : 1,
-            }}
-          />
-          <div
-            aria-hidden
-            style={{
-              ...fadeBase,
-              bottom: 0,
-              background:
-                "linear-gradient(to top, var(--color-bg-primary), transparent)",
-              opacity: atBottom ? 0 : 1,
-            }}
-          />
         </div>
-        <div className="shrink-0" data-slot="sidebar-panel-footer">
-          <SidebarFooterZone />
-        </div>
-      </aside>
-      <ImportDialog />
-      <DocModal />
-    </SidebarPanelProvider>
+        <div
+          aria-hidden
+          style={{
+            ...fadeBase,
+            top: 0,
+            background:
+              "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
+            opacity: atTop ? 0 : 1,
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            ...fadeBase,
+            bottom: 0,
+            background:
+              "linear-gradient(to top, var(--color-bg-primary), transparent)",
+            opacity: atBottom ? 0 : 1,
+          }}
+        />
+      </div>
+      <div className="shrink-0" data-slot="sidebar-panel-footer">
+        <SidebarFooterZone />
+      </div>
+    </aside>
   )
 }

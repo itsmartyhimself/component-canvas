@@ -1,17 +1,14 @@
 "use client"
 
-// TODO(ROADMAP: "Sidebar" → folder rename / delete UI): folder rows intentionally
-// have no hover "..." menu — the chevron is the only trailing affordance. The
-// "manage folders" view + click-into-rename follow-ups are captured in
-// apps/web/ROADMAP.md under Sidebar.
-
-import type { CSSProperties, ReactNode } from "react"
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react"
 import { Collapsible } from "radix-ui"
+import { AnimatePresence, motion } from "framer-motion"
 import {
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/imports/shadcn/sidebar"
 import { Row } from "@/components/live/row"
+import { ROW_SPRING } from "@/components/live/row/row.config"
 import type { FolderRecord } from "@/lib/registry/types"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
@@ -40,11 +37,14 @@ export function SidebarFolder({
   children,
   hasChildren,
 }: SidebarFolderProps) {
-  const {
-    effectiveExpandedIds,
-    renamingId,
-    actions,
-  } = useSidebarPanel()
+  const { effectiveExpandedIds, renamingId, actions, registerRow, setHoverId } =
+    useSidebarPanel()
+  const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
+
+  useEffect(() => {
+    registerRow(folder.id, rowRef.current)
+    return () => registerRow(folder.id, null)
+  }, [folder.id, registerRow])
 
   const expanded = effectiveExpandedIds.has(folder.id)
   const editing = renamingId === folder.id
@@ -61,6 +61,7 @@ export function SidebarFolder({
       >
         <Collapsible.Trigger asChild>
           <Row
+            ref={rowRef}
             label={folder.name}
             size={32}
             leading={leading}
@@ -70,24 +71,40 @@ export function SidebarFolder({
             editDefaultValue={folder.name}
             onCommitEdit={(value) => actions.commitRename(folder.id, value)}
             onCancelEdit={() => actions.cancelRename()}
+            onHoverChange={(h) => {
+              if (h) setHoverId(folder.id)
+            }}
           />
         </Collapsible.Trigger>
-        <Collapsible.Content>
-          {hasChildren ? (
-            <SidebarMenuSub style={subStyle}>{children}</SidebarMenuSub>
-          ) : (
-            <div
-              className="type-3"
-              style={{
-                color: "var(--color-text-tertiary)",
-                padding:
-                  "var(--spacing-2) var(--spacing-3) var(--spacing-2) var(--spacing-7)",
-              }}
-            >
-              Empty folder
-            </div>
-          )}
-        </Collapsible.Content>
+        <AnimatePresence initial={false}>
+          {expanded ? (
+            <Collapsible.Content forceMount asChild>
+              <motion.div
+                key="content"
+                initial={{ opacity: 0, height: 0, y: 20 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: 20 }}
+                transition={ROW_SPRING}
+                style={{ overflow: "hidden" }}
+              >
+                {hasChildren ? (
+                  <SidebarMenuSub style={subStyle}>{children}</SidebarMenuSub>
+                ) : (
+                  <div
+                    className="type-3"
+                    style={{
+                      color: "var(--color-text-tertiary)",
+                      padding:
+                        "var(--spacing-2) var(--spacing-3) var(--spacing-2) var(--spacing-7)",
+                    }}
+                  >
+                    Empty folder
+                  </div>
+                )}
+              </motion.div>
+            </Collapsible.Content>
+          ) : null}
+        </AnimatePresence>
       </Collapsible.Root>
     </SidebarMenuItem>
   )

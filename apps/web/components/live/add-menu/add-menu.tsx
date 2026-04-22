@@ -1,5 +1,9 @@
 "use client"
 
+// TODO(ROADMAP: "Motion" → add-menu popover open/close): adopt --duration-fast
+// + --ease-out-soft, origin-aware scale from trigger via
+// --radix-popover-content-transform-origin. Exit ~20% faster than entry.
+
 import type { CSSProperties, ReactNode } from "react"
 import { useEffect, useState } from "react"
 import {

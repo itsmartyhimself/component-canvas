@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, type CSSProperties } from "react"
+import { useCallback, useEffect, useRef, type CSSProperties } from "react"
 import {
   SidebarMenuItem,
   SidebarMenuSubItem,
@@ -21,7 +21,14 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { actions, renamingId, hiddenDocIds } = useSidebarPanel()
+  const { actions, renamingId, hiddenDocIds, registerRow, setHoverId } =
+    useSidebarPanel()
+  const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
+
+  useEffect(() => {
+    registerRow(leaf.id, rowRef.current)
+    return () => registerRow(leaf.id, null)
+  }, [leaf.id, registerRow])
 
   const selectedId = searchParams.get("component")
   const active = leaf.kind === "component" && selectedId === leaf.id
@@ -80,6 +87,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
 
   const rowNode = (
     <Row
+      ref={rowRef}
       label={leaf.name}
       size={depth === 1 ? 28 : 32}
       variant={depth === 1 ? "menu-sub-button" : "menu-button"}
@@ -92,6 +100,9 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
       onCommitEdit={(value) => actions.commitRename(leaf.id, value)}
       onCancelEdit={() => actions.cancelRename()}
       onClick={handleClick}
+      onHoverChange={(h) => {
+        if (h) setHoverId(leaf.id)
+      }}
     />
   )
 

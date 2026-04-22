@@ -34,6 +34,7 @@ export interface RowProps {
   loading?: boolean
   disabled?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
+  onHoverChange?: (hovered: boolean) => void
   href?: string
   ariaLabel?: string
   className?: string
@@ -87,7 +88,6 @@ export interface RowStateStyle {
   background: string
   foreground: string
   iconColor: string
-  fontWeight: number | "inherit"
 }
 
 export const ROW_STATE: Record<
@@ -98,44 +98,41 @@ export const ROW_STATE: Record<
     background: "transparent",
     foreground: "var(--color-text-primary)",
     iconColor: "var(--color-text-secondary)",
-    fontWeight: 400,
   },
   hover: {
-    background: "var(--color-bg-secondary)",
+    background: "transparent",
     foreground: "var(--color-text-primary)",
     iconColor: "var(--color-text-primary)",
-    fontWeight: 400,
   },
   active: {
     background: "var(--color-text-primary)",
     foreground: "var(--color-bg-primary)",
     iconColor: "var(--color-bg-primary)",
-    fontWeight: 400,
   },
   expanded: {
-    background: "var(--color-bg-secondary)",
+    background: "transparent",
     foreground: "var(--color-text-primary)",
     iconColor: "var(--color-text-primary)",
-    fontWeight: 400,
   },
   disabled: {
     background: "transparent",
     foreground: "var(--color-text-tertiary)",
     iconColor: "var(--color-text-tertiary)",
-    fontWeight: 400,
   },
   loading: {
     background: "var(--color-bg-secondary)",
     foreground: "var(--color-text-tertiary)",
     iconColor: "var(--color-text-tertiary)",
-    fontWeight: 400,
   },
 }
 
 export const ROW_ICON_SIZE = 16
 
-export const ROW_TRANSITION =
-  "background-color 120ms ease, color 120ms ease"
+export const ROW_HOVER_PILL = {
+  background: "var(--color-bg-secondary)",
+}
+
+export const ROW_SPRING = { type: "spring" as const, stiffness: 350, damping: 35 }
 
 export const DEFAULT_SIZE_FOR_VARIANT: Record<RowVariant, RowSize> = {
   "menu-button": 32,
