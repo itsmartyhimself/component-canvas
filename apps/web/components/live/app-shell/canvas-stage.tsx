@@ -1,17 +1,21 @@
 "use client"
 
-// TODO(ROADMAP: "Motion" → canvas content swap): wrap the inner content in
-// AnimatePresence mode="wait" keyed by selectedId, fade + subtle y-slide using
-// --duration-base + --ease-out-soft. Pair with the sidebar's active pill so
-// selection feels continuous across the app.
-
 import { useMemo } from "react"
 import { useSearchParams } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion"
 import { DEMO_REGISTRY } from "@/lib/registry/data"
+import { StageContent } from "./stage-content"
+import { useCanvasView } from "./canvas-view-context"
+
+// Kowalski: exit ~20% faster than entry, blur ≤2px, ease-out-soft throughout.
+const EASE_OUT_SOFT: [number, number, number, number] = [0.22, 1, 0.36, 1]
+const ENTER_DURATION = 0.22
+const EXIT_DURATION = 0.18
 
 export function CanvasStage() {
   const searchParams = useSearchParams()
   const selectedId = searchParams.get("component")
+  const { view, isAnimating, endAnimation } = useCanvasView()
 
   const selected = useMemo(() => {
     if (!selectedId) return null
@@ -19,29 +23,46 @@ export function CanvasStage() {
   }, [selectedId])
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center">
-        {selected ? (
-          <div className="flex flex-col items-center" style={{ gap: "var(--spacing-3)" }}>
-            <p className="type-5 text-trim" style={{ color: "var(--color-text-primary)" }}>
-              {selected.name}
-            </p>
-            <p
-              className="type-3 text-trim"
-              style={{ color: "var(--color-text-tertiary)" }}
-            >
-              {selected.id}
-            </p>
-          </div>
-        ) : (
-          <p
-            className="type-4 text-trim"
-            style={{ color: "var(--color-text-tertiary)" }}
-          >
-            Select a component to preview
-          </p>
-        )}
-      </div>
+    <div
+      className="absolute"
+      style={{
+        left: 0,
+        top: 0,
+        willChange: "transform",
+        transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})`,
+        transformOrigin: "0 0",
+        transition: isAnimating
+          ? "transform var(--duration-slow) var(--ease-out-soft)"
+          : "none",
+      }}
+      onTransitionEnd={(event) => {
+        if (event.propertyName === "transform") endAnimation()
+      }}
+    >
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={selected?.id ?? "empty"}
+          initial={{ opacity: 0, filter: "blur(2px)" }}
+          animate={{
+            opacity: 1,
+            filter: "blur(0px)",
+            transition: {
+              opacity: { duration: ENTER_DURATION, ease: EASE_OUT_SOFT },
+              filter: { duration: ENTER_DURATION, ease: EASE_OUT_SOFT },
+            },
+          }}
+          exit={{
+            opacity: 0,
+            filter: "blur(2px)",
+            transition: {
+              opacity: { duration: EXIT_DURATION, ease: EASE_OUT_SOFT },
+              filter: { duration: EXIT_DURATION, ease: EASE_OUT_SOFT },
+            },
+          }}
+        >
+          <StageContent selected={selected} />
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }

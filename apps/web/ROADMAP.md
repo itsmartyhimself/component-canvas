@@ -29,14 +29,16 @@ Token system (`--ease-*`, `--duration-*`) and traveling sidebar pill are in plac
 - Review curves after a day of use — motion always reads better while building than the morning after.
 
 ## Canvas
-- Zoom: cursor-centered scale-at, ⌘+wheel / pinch input.
-- Pan: two-finger trackpad, space+drag, middle-button drag; `overscroll-behavior: contain`.
+Three-layer scaffold (Viewport → Stage → Overlays), dotted background, pan + zoom-at-cursor, space+drag, middle-button drag, keyboard shortcuts (⌘0 reset, ⌘1 fit, ⌘± zoom) and fit-to-content selection snap are all in place. Remaining:
+- Size-aware fit margin: 24% flat margin today (`FIT_MARGIN` in `canvas-view-context.tsx`). Small components scale to fill too aggressively; a tiny button should stay small and sit in more air, a page flow should fit tight. Needs a bbox → margin function, likely with a max effective zoom and a min air threshold.
+- Overlay-vs-stage placement for future controls (variant toolbar, properties panel): deliberately unresolved. User wants to prototype components that render *around* the previewed component without being subject to zoom. Resolve once the first real variant toolbar ships.
+- Real content bbox from the iframe preview: `StageContent` mocks bbox per component id today; swap to measured bbox (ResizeObserver on the iframe content wrapper) once the import pipeline ships.
 - Viewport resizing: preset breakpoints (mobile/tablet/desktop) + free-form handle.
 - Minimap overlay.
-- Toolbar overlay (zoom controls, fit-to-view, viewport presets).
 - Property / variant / state drawers.
 - Docs overlay (MDX panel in screen-space).
-- Keyboard shortcuts (zoom, pan, viewport switching, focus).
+- Velocity-based inertial pan after flick gestures (current pan stops instantly on release).
+- Zoom range review: currently 0.1–4x. Confirm after dogfooding against real components.
 
 ## Component rendering / import pipeline
 - Sandboxed iframe host (`sandbox="allow-scripts"` + CSP + narrow `postMessage` protocol).

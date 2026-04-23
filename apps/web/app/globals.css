@@ -71,6 +71,9 @@
   --color-border-primary: var(--color-heather-300);
   --color-border-secondary: var(--color-heather-400);
 
+  /* Canvas surface markers (dotted infinite-canvas pattern) */
+  --color-canvas-dot: var(--color-heather-400);
+
   /* Text */
   --color-text-primary: var(--color-ink-300);
   --color-text-secondary: var(--color-ink-200);
