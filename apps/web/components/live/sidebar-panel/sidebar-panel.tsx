@@ -21,6 +21,7 @@ import { useSidebarPanel } from "./use-sidebar-panel"
 const asideStyle: CSSProperties = {
   width: SIDEBAR_WIDTH,
   height: "100%",
+  background: "var(--color-bg-primary)",
 }
 
 const scrollWrapperStyle: CSSProperties = {
@@ -38,11 +39,10 @@ const scrollAreaStyle: CSSProperties = {
   scrollbarColor: "var(--color-border-secondary) transparent",
 }
 
-const fadeBase: CSSProperties = {
-  position: "absolute",
-  left: 0,
-  right: 0,
+const stickyFadeBase: CSSProperties = {
+  position: "sticky",
   height: SIDEBAR_FADE_HEIGHT,
+  zIndex: 2,
   pointerEvents: "none",
   transition: "opacity var(--duration-micro) var(--ease-swift)",
 }
@@ -76,10 +76,9 @@ function SidebarPanelInner() {
     recalc()
     const observer = new ResizeObserver(recalc)
     observer.observe(el)
-    const inner = el.firstElementChild
-    if (inner instanceof Element) observer.observe(inner)
+    if (wrapperRef.current) observer.observe(wrapperRef.current)
     return () => observer.disconnect()
-  }, [recalc])
+  }, [recalc, wrapperRef])
 
   return (
     <aside
@@ -98,33 +97,35 @@ function SidebarPanelInner() {
           data-slot="sidebar-panel-scroll"
           style={scrollAreaStyle}
         >
+          <div
+            aria-hidden
+            style={{
+              ...stickyFadeBase,
+              top: 0,
+              marginBottom: -SIDEBAR_FADE_HEIGHT,
+              background:
+                "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
+              opacity: atTop ? 0 : 1,
+            }}
+          />
           <div ref={wrapperRef} style={{ position: "relative" }}>
             <SidebarHighlightLayer />
             <Suspense fallback={null}>
               <SidebarTree />
             </Suspense>
           </div>
+          <div
+            aria-hidden
+            style={{
+              ...stickyFadeBase,
+              bottom: 0,
+              marginTop: -SIDEBAR_FADE_HEIGHT,
+              background:
+                "linear-gradient(to top, var(--color-bg-primary), transparent)",
+              opacity: atBottom ? 0 : 1,
+            }}
+          />
         </div>
-        <div
-          aria-hidden
-          style={{
-            ...fadeBase,
-            top: 0,
-            background:
-              "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
-            opacity: atTop ? 0 : 1,
-          }}
-        />
-        <div
-          aria-hidden
-          style={{
-            ...fadeBase,
-            bottom: 0,
-            background:
-              "linear-gradient(to top, var(--color-bg-primary), transparent)",
-            opacity: atBottom ? 0 : 1,
-          }}
-        />
       </div>
       <div className="shrink-0" data-slot="sidebar-panel-footer">
         <SidebarFooterZone />
