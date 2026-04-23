@@ -5,9 +5,9 @@ import { ZoomFit, ZoomIn, ZoomOut } from "@carbon/icons-react"
 import { IconButton } from "@/components/live/icon-button"
 import { useCanvasView } from "./canvas-view-context"
 
-// TODO(ROADMAP: Canvas → "overlay-vs-stage controls"): future variant toolbar
-// and properties panel placement is deliberately unresolved. This overlay only
-// owns zoom controls for now; revisit when the first variant toolbar ships.
+// Variant/Size/Properties panels live in `components/live/canvas-controls/`,
+// mounted from `canvas.tsx` so they can subscribe to the same controls context
+// as `StageContent`. This file owns the zoom pill only.
 
 const ZOOM_STEP = 1.2
 

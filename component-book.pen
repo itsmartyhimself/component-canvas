@@ -714,7 +714,7 @@
       "id": "gX0me",
       "x": -265,
       "y": 556,
-      "name": "Size-selector-closed",
+      "name": "Size-selector-closed-final",
       "context": "Closed state indicating selected size.\n\nDont include this wrapper with the \"closed\" text, its just for the ai agent context. the actual state/layer is the \"Trigger - Closed\" inside here",
       "layout": "vertical",
       "gap": 8,
@@ -877,7 +877,7 @@
       "id": "SkVh6",
       "x": -153,
       "y": 556,
-      "name": "Size-selector-hover",
+      "name": "Size-selector-hover-final",
       "context": "Hovered state, revealing a \"button\" which should be clicked in order to reveal other size options.\n\nDont include this wrapper with the \"closed\" text, its just for the ai agent context. the actual state/layer is the \"Trigger - Hover\" inside here",
       "layout": "vertical",
       "gap": 8,
@@ -1067,7 +1067,7 @@
       "id": "HaYGF",
       "x": -11,
       "y": 556,
-      "name": "Size-selector-open",
+      "name": "Size-selector-open-final",
       "context": "expanded state, here we see the selected one still, but are now able to hover over the other sizes and click to select them. Upon clicking to select, the config collapses to the closed state but now depicting the new selected size. If the user clicks OUTSIDE of this open state without having selected a new size - the config collapses to initial closed state, and thus still depicting the original size.\n\n\n\nDont include this wrapper with the \"closed\" text, its just for the ai agent context. the actual state/layer is the \"Segment - Open\" inside here",
       "layout": "vertical",
       "gap": 8,
@@ -10099,7 +10099,7 @@
       "id": "W6w7o",
       "x": 178,
       "y": 556,
-      "name": "Hover on L",
+      "name": "Size-selector-hover on L-final",
       "layout": "vertical",
       "gap": 8,
       "alignItems": "center",
@@ -10754,7 +10754,7 @@
       "id": "cMGwM",
       "x": 307,
       "y": 928,
-      "name": "tRow",
+      "name": "tRow-final",
       "gap": 40,
       "alignItems": "end",
       "children": [
@@ -10762,6 +10762,7 @@
           "type": "frame",
           "id": "UHoDc",
           "name": "t1w",
+          "context": "and make sure you do NOT create these components with the \"Default\" text string things abvoe, they are just for YOUR context. the actual thrigger thing is just the 24x24 thing. not this wrapper with the text.",
           "layout": "vertical",
           "gap": 6,
           "alignItems": "center",
@@ -10810,6 +10811,7 @@
           "type": "frame",
           "id": "TDYDd",
           "name": "t2w",
+          "context": "the \"properties\" thing should be rendered as a tooltip. probably use a shadcn tooltip. Not sure how the actual properties panel should open, if it should open like a modal or a popover. maybe popover. So the trigger component should probably have a popover shadcn base",
           "layout": "vertical",
           "gap": 6,
           "alignItems": "center",
@@ -10892,6 +10894,7 @@
           "type": "frame",
           "id": "zgkIT",
           "name": "t3w",
+          "context": "active state for when the panel is open",
           "layout": "vertical",
           "gap": 6,
           "alignItems": "center",
@@ -10938,7 +10941,8 @@
       "id": "unkMm",
       "x": 627,
       "y": -14,
-      "name": "Panel-B-Enhanced",
+      "name": "Panel-B-Enhanced-final",
+      "context": "Here is the actual properties panel, and as you can see, the sizes and variants are rendered in here as well, just centralizing everything in here also. so even if the variant and size toggle panels are rendered, its still possible to select and change them here too.",
       "width": 300,
       "fill": "#ffffff",
       "cornerRadius": 16,
@@ -11448,6 +11452,7 @@
           "type": "frame",
           "id": "bipfX",
           "name": "Form Section",
+          "context": "this is the form section, so in case a button system has like TextOnly, or Text+Icon forms for each variant, they would be toggled here.",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 10,
@@ -11637,6 +11642,7 @@
           "type": "frame",
           "id": "LIXkF",
           "name": "Options Section",
+          "context": "im guessing this is for boleans.",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 10,
@@ -11990,6 +11996,7 @@
           "type": "frame",
           "id": "vXaYW",
           "name": "State Section",
+          "context": "just a summary description of the rendering",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 10,
@@ -16922,6 +16929,340 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "7TVMN",
+      "x": -471,
+      "y": 677,
+      "name": "Variant-toggle-final",
+      "context": "Hardcode 36px height. Absolutely positioned 12px and center underneath the active-preview window in the same wrapper.\n\nThis one essentially is changing the variant of the nested component. so it should pull the props from the code to understand how many variants there are and what their names should be in this component. then the user can toggle between them and the variant in the nested component in the preview active frame will change accordingly.\n\nThis one always sits center bottom 12px underneath the active frame",
+      "fill": "#ffffffff",
+      "cornerRadius": 14,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "#dfe0e7ff"
+      },
+      "gap": 6,
+      "padding": 6,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vOhUe",
+          "name": "STATE",
+          "context": "Hardcode 24px height",
+          "height": 24,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "padding": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DmNEf",
+              "name": "STATE",
+              "fill": "#9b9295ff",
+              "content": "STATE",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GOvBT",
+          "name": "Variant",
+          "context": "Hardcode 24px height",
+          "height": 24,
+          "fill": "#f6f6f9ff",
+          "cornerRadius": 8,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "padding": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Aw0Tc",
+              "name": "Open",
+              "fill": "#6d6467ff",
+              "content": "Open",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RzJ6j",
+          "name": "Variant",
+          "context": "Hardcode 24px height",
+          "height": 24,
+          "fill": "#f6f6f9ff",
+          "cornerRadius": 8,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "padding": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Gdti4",
+              "name": "Closed",
+              "fill": "#6d6467ff",
+              "content": "Closed",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wwoCb",
+          "name": "Variant",
+          "context": "Hardcode 24px height",
+          "height": 24,
+          "fill": "#121111ff",
+          "cornerRadius": 8,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "padding": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "5Z81z",
+              "name": "Active",
+              "fill": "#ffffffff",
+              "content": "Active",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ypuYG",
+          "name": "Variant",
+          "context": "Hardcode 24px height",
+          "height": 24,
+          "fill": "#f6f6f9ff",
+          "cornerRadius": 8,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "padding": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "RF89s",
+              "name": "Selection",
+              "fill": "#6d6467ff",
+              "content": "Selection",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jbCAa",
+      "x": 41,
+      "y": 677,
+      "name": "Trigger — Closed",
+      "height": 36,
+      "fill": "#ffffffff",
+      "cornerRadius": 14,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "#dfe0e7ff"
+      },
+      "gap": 6,
+      "padding": 6,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "QudVW",
+          "name": "SIZE label",
+          "height": 24,
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Z4rVt",
+              "name": "bc1labeltxt",
+              "fill": "#9b9295ff",
+              "content": "SIZE",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uxNqP",
+          "name": "Medium",
+          "width": 26,
+          "height": 24,
+          "fill": "#121111ff",
+          "cornerRadius": 8,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "R7GcX",
+              "name": "box--medium 1",
+              "clip": true,
+              "width": 16,
+              "height": 16,
+              "fill": {
+                "type": "color",
+                "color": "#ffffffff",
+                "enabled": false
+              },
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "GBlUA",
+                  "x": 2,
+                  "y": 4.5,
+                  "name": "Vector",
+                  "geometry": "M22 19l-20 0c-0.53026-0.00055-1.03865-0.21145-1.4136-0.5864-0.37495-0.37495-0.58584-0.88334-0.5864-1.4136l0-17 2 0 0 17 20 0 0-17 2 0 0 17c-0.00055 0.53026-0.21145 1.03865-0.5864 1.4136-0.37495 0.37495-0.88334 0.58585-1.4136 0.5864z",
+                  "fill": "#ffffffff",
+                  "width": 12,
+                  "height": 9.5,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  }
+                },
+                {
+                  "type": "path",
+                  "id": "DCQfQ",
+                  "x": 6,
+                  "y": 4.5,
+                  "name": "Vector",
+                  "geometry": "M6 0l-1.515 5-0.485 1.977-0.465-1.977-1.535-5-2 0 0 14 2 0 0-8-0.158-1.996 0.579 1.996 1.579 4.626 1.579-4.626 0.58-2-0.159 2 0 8 2 0 0-14-2 0z",
+                  "fill": "#ffffffff",
+                  "width": 4,
+                  "height": 7,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  }
+                },
+                {
+                  "type": "path",
+                  "id": "gU07Z",
+                  "x": 2,
+                  "y": 2,
+                  "name": "Vector",
+                  "geometry": "M0 0l24 0 0 2-24 0 0-2z",
+                  "fill": "#ffffffff",
+                  "width": 12,
+                  "height": 1,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  }
+                },
+                {
+                  "type": "path",
+                  "id": "QYB72",
+                  "x": 0,
+                  "y": 0,
+                  "name": "<Transparent Rectangle>",
+                  "geometry": "M0 0l32 0 0 32-32 0 0-32z",
+                  "width": 16,
+                  "height": 16,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "dhxS8",
+      "x": 207,
+      "y": 944,
+      "name": "t1btn-trigger",
+      "width": 24,
+      "height": 24,
+      "fill": "#ffffff",
+      "cornerRadius": 40,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "#dfe0e7"
+      },
+      "layout": "vertical",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon_font",
+          "id": "Cq3tX",
+          "width": 14,
+          "height": 14,
+          "iconFontName": "sliders-horizontal",
+          "iconFontFamily": "lucide",
+          "fill": "#9b9295"
         }
       ]
     }

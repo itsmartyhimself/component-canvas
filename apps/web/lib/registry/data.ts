@@ -28,6 +28,7 @@ const FOLDERS: FolderRecord[] = [
   { id: "navigation", sectionId: "library", name: "Navigation", order: 1 },
   { id: "feedback", sectionId: "library", name: "Feedback", order: 2 },
   { id: "media", sectionId: "library", name: "Media", order: 3 },
+  { id: "lib-buttons", sectionId: "library", name: "Button Demo", order: 4 },
 
   // FRONTEND
   { id: "landing", sectionId: "frontend", name: "Landing", order: 0 },
@@ -105,6 +106,10 @@ const LEAVES: LeafRecord[] = [
     { id: "cmp-dialog", name: "Dialog" },
     { id: "cmp-banner", name: "Banner" },
     { id: "cmp-badge", name: "Badge" },
+  ]),
+  // LIBRARY → Button Demo (manifest-backed; leaf id matches buttonManifest.id)
+  ...componentLeaves("lib-buttons", "library", [
+    { id: "button-demo", name: "Button" },
   ]),
 
   // FRONTEND → Landing

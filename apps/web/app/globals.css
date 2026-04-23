@@ -440,6 +440,15 @@
     transition: opacity var(--duration-micro) var(--ease-swift);
   }
 
+  /* Hide native scrollbar on horizontal scroll regions where gradient fades
+     carry the overflow affordance. */
+  .scrollbar-hidden {
+    scrollbar-width: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

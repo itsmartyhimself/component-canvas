@@ -14,12 +14,12 @@ import {
 export type CanvasView = { x: number; y: number; zoom: number }
 export type ContentBbox = { width: number; height: number }
 
-export const ZOOM_MIN = 0.1
-export const ZOOM_MAX = 4
+export const ZOOM_MIN = 0.5
+export const ZOOM_MAX = 2
 export const FIT_MARGIN = 0.24
 // TODO(ROADMAP: Canvas → size-aware fit margin): replace FIT_MARGIN with a
 // function of bbox size so tiny components don't scale to fill the viewport.
-const MIN_VISIBLE_RATIO = 0.2
+const MIN_VISIBLE_RATIO = 0.5
 
 const clampZoom = (z: number) => Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z))
 
@@ -29,6 +29,7 @@ type CanvasViewContextValue = {
   viewportRef: RefObject<HTMLDivElement | null>
   contentBboxRef: RefObject<ContentBbox | null>
   setContentBbox: (bbox: ContentBbox) => void
+  updateContentBboxBounds: (bbox: ContentBbox) => void
   panBy: (dx: number, dy: number) => void
   zoomAt: (clientX: number, clientY: number, nextZoom: number) => void
   zoomByAt: (factor: number, clientX: number, clientY: number) => void
@@ -99,6 +100,17 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
       setView(computeFit(bbox))
     },
     [computeFit],
+  )
+
+  // Silent variant: only updates the bbox ref so pan-bound math stays correct
+  // when the rendered component resizes mid-interaction (prop tweaks). Avoids
+  // snapping the user's view back to fit on every prop change.
+  const updateContentBboxBounds = useCallback(
+    (bbox: ContentBbox) => {
+      contentBboxRef.current = bbox
+      setView((v) => applyPanBounds(v))
+    },
+    [applyPanBounds],
   )
 
   const panBy = useCallback(
@@ -180,6 +192,7 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
       viewportRef,
       contentBboxRef,
       setContentBbox,
+      updateContentBboxBounds,
       panBy,
       zoomAt,
       zoomByAt,
@@ -192,6 +205,7 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
       view,
       isAnimating,
       setContentBbox,
+      updateContentBboxBounds,
       panBy,
       zoomAt,
       zoomByAt,

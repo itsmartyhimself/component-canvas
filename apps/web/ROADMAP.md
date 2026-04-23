@@ -31,14 +31,16 @@ Token system (`--ease-*`, `--duration-*`) and traveling sidebar pill are in plac
 ## Canvas
 Three-layer scaffold (Viewport → Stage → Overlays), dotted background, pan + zoom-at-cursor, space+drag, middle-button drag, keyboard shortcuts (⌘0 reset, ⌘1 fit, ⌘± zoom) and fit-to-content selection snap are all in place. Remaining:
 - Size-aware fit margin: 24% flat margin today (`FIT_MARGIN` in `canvas-view-context.tsx`). Small components scale to fill too aggressively; a tiny button should stay small and sit in more air, a page flow should fit tight. Needs a bbox → margin function, likely with a max effective zoom and a min air threshold.
-- Overlay-vs-stage placement for future controls (variant toolbar, properties panel): deliberately unresolved. User wants to prototype components that render *around* the previewed component without being subject to zoom. Resolve once the first real variant toolbar ships.
-- Real content bbox from the iframe preview: `StageContent` mocks bbox per component id today; swap to measured bbox (ResizeObserver on the iframe content wrapper) once the import pipeline ships.
+- Overlay-vs-stage placement for control panels: **resolved for v1 as viewport-edge** (32px offsets on the overlays layer, panels never scale with zoom). v2 to explore stage-projected anchoring so panels can track the rendered component's bbox without inheriting the zoom transform — see `// TODO(canvas-controls anchoring v2)` in `canvas-controls.tsx`.
+- Real content bbox from manifest preview: now measured live via `ResizeObserver` for manifest-backed leaves; mock-table fallback remains for unmatched ids. Swap mock fallback for measured bbox once the iframe import pipeline ships.
 - Viewport resizing: preset breakpoints (mobile/tablet/desktop) + free-form handle.
 - Minimap overlay.
-- Property / variant / state drawers.
+- Slot-aware properties panel: today the Slots section just shows "Set / Empty"; needs a real slot picker once a component with slots is registered.
+- Properties panel: expand the "State" block from a JSON dump into per-prop editable inputs once the manifest declares slot/text content props.
+- Size selector hover hint: currently the "expand" affordance uses Carbon's `Maximize` glyph as a temporary stand-in for the pen's custom box-arrows icon — swap when a closer Carbon match (or custom SVG) is available.
 - Docs overlay (MDX panel in screen-space).
 - Velocity-based inertial pan after flick gestures (current pan stops instantly on release).
-- Zoom range review: currently 0.1–4x. Confirm after dogfooding against real components.
+- Zoom range review: tightened to 0.5–2x (was 0.1–4x); pan keeps 50% of the bbox visible (was 20%). Reconfirm after a week of dogfooding.
 
 ## Component rendering / import pipeline
 - Sandboxed iframe host (`sandbox="allow-scripts"` + CSP + narrow `postMessage` protocol).
