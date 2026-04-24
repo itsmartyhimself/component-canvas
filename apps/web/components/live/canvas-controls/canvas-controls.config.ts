@@ -18,6 +18,8 @@ export const VARIANT_GAP = 6 // pen gap on 7TVMN
 export const CHIP_HEIGHT = 24 // pen chip height
 export const CHIP_RADIUS = 8 // pen chip cornerRadius
 export const CHIP_PAD_X = 8 // pen chip padding
+export const CHIP_MAX_WIDTH = 64 // long variant names truncate at this cap
+export const VARIANT_INLINE_MAX = 4 // beyond this we switch to selected-chip + … popover
 
 // Colors (pen: #121111 / #f6f6f9 / #6d6467 / #9b9295).
 export const COLOR_ACTIVE_BG = "var(--color-text-primary)"
@@ -41,8 +43,9 @@ export const SIZE_CHIP_W = 26 // 26x24 size pills
 export const SIZE_CHIP_H = 24
 export const SIZE_EXPAND_HINT_PAD_X = 6
 
-// Overflow scroll + gradient fades (variant-toggle pill + panel varRow).
-export const PILL_MAX_WIDTH = 360
+// Overflow scroll + gradient fades (properties panel varRow).
+// The canvas-level variant-toggle no longer uses these — it diverges from the
+// pen on purpose (see variant-toggle.tsx header).
 export const PANEL_VAROPTS_WIDTH = 160
 export const PANEL_VAROPTS_HEIGHT = 24
 export const SCROLL_FADE_WIDTH = 20
