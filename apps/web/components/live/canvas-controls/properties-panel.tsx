@@ -1,7 +1,5 @@
 "use client"
 
-// Matches pen `unkMm` — Panel-B-Enhanced-final.
-
 import {
   useCallback,
   useEffect,
@@ -126,10 +124,6 @@ const closeButtonStyle: CSSProperties = {
   borderRadius: "var(--radius-1-5)",
 }
 
-// --- Variant tab row (pen varRow / varOpts) ---
-// Fixed-width horizontal scroll region with gradient fades that only appear
-// when the tabs actually overflow. Pattern mirrors sidebar-panel.tsx.
-
 const varOptsWrapStyle: CSSProperties = {
   position: "relative",
   width: PANEL_VAROPTS_WIDTH,
@@ -151,9 +145,7 @@ const varOptsRowStyle: CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 16,
-  // Anchor to the right edge so the selected tab is visible first when the
-  // row overflows — matches the visual weight of the pen (active tab on the
-  // left in a 3-tab example).
+  // Anchor right so the selected tab is visible when the row overflows.
   marginLeft: "auto",
 }
 
@@ -270,8 +262,6 @@ function VariantTabs({
   )
 }
 
-// --- Size pill row (pen sizeRow / szPills) ---
-
 function SizePills({
   options,
   value,
@@ -315,8 +305,6 @@ function SizePills({
     </div>
   )
 }
-
-// --- Form chip grid (pen Form Section) ---
 
 function FormChipGrid({
   options,
@@ -367,8 +355,6 @@ function FormChipGrid({
   )
 }
 
-// --- iOS-style switch (pen Options rows) ---
-
 function Switch({
   checked,
   onChange,
@@ -411,8 +397,7 @@ function Switch({
   )
 }
 
-// --- Diamond icon (pen Slots rows; Carbon has no Diamond) ---
-
+// Carbon Icons has no diamond; custom SVG.
 function DiamondIcon({ color = "currentColor" }: { color?: string }) {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
@@ -429,8 +414,6 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </div>
   )
 }
-
-// --- Root ---
 
 export function PropertiesPanel() {
   const { manifest, props, setProp, reset } = useCanvasControls()
@@ -459,7 +442,6 @@ export function PropertiesPanel() {
               transformOrigin: "var(--radix-popover-content-transform-origin)",
             }}
           >
-            {/* Header */}
             <div style={headerStyle}>
               <span
                 style={{
@@ -482,7 +464,6 @@ export function PropertiesPanel() {
             </div>
             <div style={dividerStyle} />
 
-            {/* Component Section */}
             {(controls.variants || controls.sizes) && (
               <>
                 <div
@@ -519,7 +500,6 @@ export function PropertiesPanel() {
               </>
             )}
 
-            {/* Form Section */}
             {controls.forms && (
               <>
                 <Section title="Form">
@@ -533,7 +513,6 @@ export function PropertiesPanel() {
               </>
             )}
 
-            {/* Options Section */}
             {controls.booleans && controls.booleans.length > 0 && (
               <>
                 <Section title="Options">
@@ -580,7 +559,6 @@ export function PropertiesPanel() {
               </>
             )}
 
-            {/* Slots Section */}
             {controls.slots && controls.slots.length > 0 && (
               <>
                 <Section title="Slots">
@@ -623,7 +601,6 @@ export function PropertiesPanel() {
               </>
             )}
 
-            {/* State Section */}
             <Section title="State">
               <div
                 style={{
@@ -656,7 +633,6 @@ export function PropertiesPanel() {
             </Section>
             <div style={dividerStyle} />
 
-            {/* Reset */}
             <button
               type="button"
               onClick={reset}

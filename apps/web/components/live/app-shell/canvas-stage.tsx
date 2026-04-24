@@ -6,7 +6,6 @@ import { DEMO_REGISTRY } from "@/lib/registry/data"
 import { StageContent } from "./stage-content"
 import { useCanvasView } from "./canvas-view-context"
 
-// Kowalski: exit ~20% faster than entry, blur ≤2px, ease-out-soft throughout.
 const EASE_OUT_SOFT: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const ENTER_DURATION = 0.22
 const EXIT_DURATION = 0.18

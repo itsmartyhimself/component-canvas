@@ -15,9 +15,7 @@ import {
 import { DropdownMenu } from "radix-ui"
 import { cn } from "@/lib/utils"
 
-// See row-action-menu.tsx — scope picks the correct shadcn group name on the
-// closest ancestor list item; wrong scope makes the trigger appear when an
-// outer item is hovered.
+// See row-action-menu.tsx for scope rules; wrong value makes the trigger bleed to ancestor hovers.
 type DocActionScope = "menu-item" | "menu-sub-item"
 
 interface DocActionMenuProps {

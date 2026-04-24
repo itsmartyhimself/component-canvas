@@ -1,19 +1,15 @@
 "use client"
 
-// Closed → pen `6QcVJ` (Trigger — Closed inside Size-selector-closed-final).
-// Hover  → pen `iuOgz` (Trigger — Hover inside Size-selector-hover-final).
-// Open   → pen `KVtKG` (Segment — Open inside Size-selector-open-final).
-//
-// One pill that swaps its children inline as state advances:
-//   closed  : [SIZE label, active size chip]
-//   hovered : [SIZE label, active size chip, expand hint chip]
-//   open    : [SIZE label, ...all size chips]
-// Flexbox grows horizontally to fit each state. Click outside the pill while
-// open → collapses without committing (per pen context on KVtKG).
-
-import { useEffect, useRef, useState, type CSSProperties } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react"
 import { Maximize } from "@carbon/icons-react"
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { BoxIcon } from "./box-icon"
 import {
   COLOR_ACTIVE_BG,
@@ -23,6 +19,7 @@ import {
   LABEL_FONT_SIZE,
   LABEL_FONT_WEIGHT,
   LABEL_PAD_X,
+  MOTION_ENTER,
   PILL_BG,
   PILL_BORDER,
   PILL_HEIGHT,
@@ -42,17 +39,33 @@ type SizeSelectorProps = {
   onChange: (next: string) => void
 }
 
-const pillStyle: CSSProperties = {
+const WIDTH_TRANSITION = "width 220ms var(--ease-standard)"
+
+const PILL_OVERHEAD = PILL_PADDING * 2 + 2
+
+const COLOR_TRANSITION =
+  "background-color var(--duration-micro) var(--ease-standard), color var(--duration-micro) var(--ease-standard), opacity var(--duration-micro) var(--ease-standard)"
+
+const pillOuterStyle: CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   height: PILL_HEIGHT,
   padding: PILL_PADDING,
-  gap: SIZE_GAP,
   borderRadius: PILL_RADIUS,
   background: PILL_BG,
   border: PILL_BORDER,
   boxShadow: PILL_SHADOW,
   pointerEvents: "auto",
+  overflow: "hidden",
+  transition: WIDTH_TRANSITION,
+}
+
+const pillInnerStyle: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: SIZE_GAP,
+  width: "max-content",
+  flexShrink: 0,
 }
 
 const labelStyle: CSSProperties = {
@@ -117,20 +130,44 @@ function openChipStyle(active: boolean, hovered: boolean): CSSProperties {
     cursor: "pointer",
     userSelect: "none",
     border: 0,
+    transition: COLOR_TRANSITION,
   }
+}
+
+const groupRowStyle: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: SIZE_GAP,
 }
 
 export function SizeSelector({ options, value, onChange }: SizeSelectorProps) {
   const [open, setOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const [hoverLocked, setHoverLocked] = useState(false)
   const [hoveredOpt, setHoveredOpt] = useState<string | null>(null)
-  const ref = useRef<HTMLDivElement | null>(null)
+  const pillRef = useRef<HTMLDivElement | null>(null)
+  const innerRef = useRef<HTMLDivElement | null>(null)
+  const [width, setWidth] = useState<number | null>(null)
+  const reduce = useReducedMotion()
+  const enterTransition = reduce ? { duration: 0 } : MOTION_ENTER
+  const exitTransition = reduce
+    ? { duration: 0 }
+    : { duration: 0.22, ease: [0.32, 0.72, 0, 1] as const }
 
-  // Click outside collapses without committing.
+  useLayoutEffect(() => {
+    const el = innerRef.current
+    if (!el) return
+    const measure = () => setWidth(el.getBoundingClientRect().width)
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   useEffect(() => {
     if (!open) return
     const onPointerDown = (event: PointerEvent) => {
-      const root = ref.current
+      const root = pillRef.current
       if (!root) return
       if (event.target instanceof Node && root.contains(event.target)) return
       setOpen(false)
@@ -139,80 +176,99 @@ export function SizeSelector({ options, value, onChange }: SizeSelectorProps) {
     return () => document.removeEventListener("pointerdown", onPointerDown)
   }, [open])
 
+  const outerStyle: CSSProperties = {
+    ...pillOuterStyle,
+    width: width != null ? width + PILL_OVERHEAD : "auto",
+  }
+
   return (
     <div
-      ref={ref}
-      style={pillStyle}
+      ref={pillRef}
+      style={outerStyle}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        setHovered(false)
+        setHoverLocked(false)
+      }}
       role="group"
       aria-label="Size"
     >
-      <span style={labelStyle}>SIZE</span>
+      <div ref={innerRef} style={pillInnerStyle}>
+        <span style={labelStyle}>SIZE</span>
 
-      {open ? (
-        <ToggleGroupPrimitive.Root
-          type="single"
-          value={value}
-          onValueChange={(next) => {
-            if (!next) return
-            onChange(next)
-            setOpen(false)
-          }}
-          aria-label="Size options"
-          asChild
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: SIZE_GAP,
-            }}
-          >
-            {options.map((opt) => {
-              const active = opt === value
-              const chipHovered = hoveredOpt === opt
-              return (
-                <ToggleGroupPrimitive.Item
-                  key={opt}
-                  value={opt}
-                  style={openChipStyle(active, chipHovered)}
-                  onMouseEnter={() => setHoveredOpt(opt)}
-                  onMouseLeave={() =>
-                    setHoveredOpt((cur) => (cur === opt ? null : cur))
-                  }
-                >
-                  <BoxIcon
-                    size={opt}
-                    color={active ? COLOR_ACTIVE_FG : COLOR_INACTIVE_FG}
-                  />
-                </ToggleGroupPrimitive.Item>
-              )
-            })}
+        {open ? (
+          <div style={groupRowStyle}>
+            <ToggleGroupPrimitive.Root
+              type="single"
+              value={value}
+              onValueChange={(next) => {
+                if (!next) return
+                onChange(next)
+                setOpen(false)
+                setHoverLocked(true)
+              }}
+              aria-label="Size options"
+              asChild
+            >
+              <div style={groupRowStyle}>
+                {options.map((opt) => {
+                  const active = opt === value
+                  const chipHovered = hoveredOpt === opt
+                  return (
+                    <ToggleGroupPrimitive.Item
+                      key={opt}
+                      value={opt}
+                      style={openChipStyle(active, chipHovered)}
+                      onMouseEnter={() => setHoveredOpt(opt)}
+                      onMouseLeave={() =>
+                        setHoveredOpt((cur) => (cur === opt ? null : cur))
+                      }
+                    >
+                      <BoxIcon
+                        size={opt}
+                        color={active ? COLOR_ACTIVE_FG : COLOR_INACTIVE_FG}
+                      />
+                    </ToggleGroupPrimitive.Item>
+                  )
+                })}
+              </div>
+            </ToggleGroupPrimitive.Root>
           </div>
-        </ToggleGroupPrimitive.Root>
-      ) : (
-        <>
-          <button
-            type="button"
-            style={activeChipClosedStyle}
-            aria-label={`Selected size ${value}`}
-            onClick={() => setOpen(true)}
-          >
-            <BoxIcon size={value} color={COLOR_ACTIVE_FG} />
-          </button>
-          {hovered && (
+        ) : (
+          <div style={groupRowStyle}>
             <button
               type="button"
-              style={expandHintStyle}
-              aria-label="Show size options"
+              style={activeChipClosedStyle}
+              aria-label={`Selected size ${value}`}
               onClick={() => setOpen(true)}
             >
-              <Maximize size={14} />
+              <BoxIcon size={value} color={COLOR_ACTIVE_FG} />
             </button>
-          )}
-        </>
-      )}
+            <AnimatePresence initial={false} mode="popLayout">
+              {hovered && !hoverLocked && (
+                <motion.button
+                  key="hint"
+                  type="button"
+                  style={expandHintStyle}
+                  aria-label="Show size options"
+                  onClick={() => setOpen(true)}
+                  initial={{ opacity: 0, x: -6, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{
+                    opacity: 0,
+                    x: -6,
+                    scale: 0.95,
+                    transition: exitTransition,
+                  }}
+                  transition={enterTransition}
+                >
+                  <Maximize size={14} />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

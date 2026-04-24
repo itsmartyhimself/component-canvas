@@ -1,28 +1,14 @@
 "use client"
 
-// Diverges from pen `7TVMN` on purpose. The original design capped the pill at
-// 360px and used horizontal overflow scroll with gradient fades. That pattern
-// is unusable on the canvas surface because wheel events belong to the pan/zoom
-// layer — you can't actually scroll the chip row without moving the whole
-// canvas.
-//
-// New model:
-//   • Pill hugs its children (no fixed max-width).
-//   • Each chip hugs its label up to CHIP_MAX_WIDTH; overflowing text truncates
-//     via text-overflow: ellipsis (CSS picks the pixel boundary, so the glyph
-//     is the single-character U+2026 and we don't hard-cap at N characters).
-//   • ≤ 1 variant → don't render the toggle at all.
-//   • 2–4 variants → plain inline row.
-//   • 5+ variants → only the selected chip is inline, followed by a `…`
-//     trigger that opens a Radix popover listing every variant. Selecting in
-//     the popover swaps the single inline chip — nothing else rearranges.
-//
-// Truncation tooltip: native `title` attribute mounted only when the chip is
-// actually clipped (measured via scrollWidth vs clientWidth). Desktop-only app
-// per apps/web/CLAUDE.md, so native hover is acceptable and costs zero bundle.
-
-import { useEffect, useRef, useState, type CSSProperties } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react"
 import { Popover as PopoverPrimitive } from "radix-ui"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { OverflowMenuHorizontal } from "@carbon/icons-react"
 import {
   CHIP_FONT_SIZE,
@@ -39,6 +25,7 @@ import {
   LABEL_FONT_SIZE,
   LABEL_FONT_WEIGHT,
   LABEL_PAD_X,
+  MOTION_ENTER,
   PANEL_ROW_TEXT_SIZE,
   PILL_BG,
   PILL_BORDER,
@@ -51,6 +38,13 @@ import {
   VARIANT_INLINE_MAX,
 } from "./canvas-controls.config"
 
+const COLOR_TRANSITION =
+  "background-color var(--duration-micro) var(--ease-standard), color var(--duration-micro) var(--ease-standard)"
+
+const WIDTH_TRANSITION = "width 220ms var(--ease-standard)"
+
+const PILL_OVERHEAD = PILL_PADDING * 2 + 2
+
 type VariantToggleProps = {
   options: string[]
   value: string
@@ -59,17 +53,26 @@ type VariantToggleProps = {
   ariaLabel?: string
 }
 
-const containerStyle: CSSProperties = {
+const pillOuterStyle: CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   height: PILL_HEIGHT,
   padding: PILL_PADDING,
-  gap: VARIANT_GAP,
   borderRadius: PILL_RADIUS,
   background: PILL_BG,
   border: PILL_BORDER,
   boxShadow: PILL_SHADOW,
   pointerEvents: "auto",
+  overflow: "hidden",
+  transition: WIDTH_TRANSITION,
+}
+
+const pillInnerStyle: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: VARIANT_GAP,
+  width: "max-content",
+  flexShrink: 0,
 }
 
 const labelFrameStyle: CSSProperties = {
@@ -115,13 +118,10 @@ function chipStyle(active: boolean): CSSProperties {
     userSelect: "none",
     overflow: "hidden",
     border: 0,
+    transition: COLOR_TRANSITION,
   }
 }
 
-// Text label renders inside a block span so `text-overflow: ellipsis` has a
-// reliable inline flow to act on. Applying ellipsis directly to the flex
-// button is inconsistent across engines and was producing center-clipped text
-// instead of an `…` on the right.
 const chipLabelStyle: CSSProperties = {
   display: "block",
   minWidth: 0,
@@ -181,45 +181,82 @@ function popoverRowStyle(active: boolean): CSSProperties {
     width: "100%",
     textAlign: "left",
     whiteSpace: "nowrap",
+    transition: COLOR_TRANSITION,
   }
 }
 
-function Chip({
-  label,
-  active,
-  onClick,
-  ariaPressed,
-}: {
-  label: string
-  active: boolean
-  onClick: () => void
-  ariaPressed?: boolean
-}) {
-  const labelRef = useRef<HTMLSpanElement | null>(null)
+function useMeasuredWidth<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null)
+  const [width, setWidth] = useState<number | null>(null)
+
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const measure = () => setWidth(el.getBoundingClientRect().width)
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  return { ref, width }
+}
+
+function useTruncationRef() {
+  const ref = useRef<HTMLSpanElement | null>(null)
   const [truncated, setTruncated] = useState(false)
 
   useEffect(() => {
-    const el = labelRef.current
+    const el = ref.current
     if (!el) return
     const check = () => setTruncated(el.scrollWidth > el.clientWidth + 1)
     check()
     const ro = new ResizeObserver(check)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [label])
+  }, [])
+
+  return { ref, truncated }
+}
+
+function Chip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  const { ref, truncated } = useTruncationRef()
 
   return (
     <button
       type="button"
       onClick={onClick}
       style={chipStyle(active)}
-      aria-pressed={ariaPressed ?? active}
+      aria-pressed={active}
       title={truncated ? label : undefined}
     >
-      <span ref={labelRef} style={chipLabelStyle}>
+      <span ref={ref} style={chipLabelStyle}>
         {label}
       </span>
     </button>
+  )
+}
+
+function StaticChip({ label }: { label: string }) {
+  const { ref, truncated } = useTruncationRef()
+
+  return (
+    <span
+      style={{ ...chipStyle(true), cursor: "default" }}
+      title={truncated ? label : undefined}
+    >
+      <span ref={ref} style={chipLabelStyle}>
+        {label}
+      </span>
+    </span>
   )
 }
 
@@ -230,113 +267,148 @@ export function VariantToggle({
   label,
   ariaLabel,
 }: VariantToggleProps) {
+  const { ref: innerRef, width } = useMeasuredWidth<HTMLDivElement>()
+
   if (options.length <= 1) return null
 
   const usePopover = options.length > VARIANT_INLINE_MAX
   const groupLabel = ariaLabel ?? label ?? "Variant"
+  const outerStyle: CSSProperties = {
+    ...pillOuterStyle,
+    width: width != null ? width + PILL_OVERHEAD : "auto",
+  }
+
+  if (!usePopover) {
+    return (
+      <div style={outerStyle} role="group" aria-label={groupLabel}>
+        <div ref={innerRef} style={pillInnerStyle}>
+          {label && <span style={labelFrameStyle}>{label}</span>}
+          <div style={rowStyle}>
+            {options.map((opt) => (
+              <Chip
+                key={opt}
+                label={opt}
+                active={opt === value}
+                onClick={() => {
+                  if (opt !== value) onChange(opt)
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div style={containerStyle} role="group" aria-label={groupLabel}>
-      {label && <span style={labelFrameStyle}>{label}</span>}
-      <div style={rowStyle}>
-        {usePopover ? (
-          <OverflowVariantRow
-            options={options}
-            value={value}
-            onChange={onChange}
-            ariaLabel={groupLabel}
-          />
-        ) : (
-          options.map((opt) => (
-            <Chip
-              key={opt}
-              label={opt}
-              active={opt === value}
-              onClick={() => {
-                if (opt !== value) onChange(opt)
-              }}
-            />
-          ))
-        )}
-      </div>
-    </div>
+    <OverflowPopover
+      options={options}
+      value={value}
+      onChange={onChange}
+      ariaLabel={groupLabel}
+    >
+      <PopoverPrimitive.Anchor asChild>
+        <div style={outerStyle} role="group" aria-label={groupLabel}>
+          <div ref={innerRef} style={pillInnerStyle}>
+            {label && <span style={labelFrameStyle}>{label}</span>}
+            <div style={rowStyle}>
+              <StaticChip label={value} />
+              <PopoverPrimitive.Trigger asChild>
+                <button
+                  type="button"
+                  style={dotsButtonStyle}
+                  aria-label={`Show all ${groupLabel.toLowerCase()} options`}
+                  aria-haspopup="listbox"
+                >
+                  <OverflowMenuHorizontal size={14} />
+                </button>
+              </PopoverPrimitive.Trigger>
+            </div>
+          </div>
+        </div>
+      </PopoverPrimitive.Anchor>
+    </OverflowPopover>
   )
 }
 
-function OverflowVariantRow({
+function OverflowPopover({
   options,
   value,
   onChange,
   ariaLabel,
+  children,
 }: {
   options: string[]
   value: string
   onChange: (next: string) => void
   ariaLabel: string
+  children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
+  const reduce = useReducedMotion()
 
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
-      <Chip
-        label={value}
-        active
-        onClick={() => setOpen((prev) => !prev)}
-        ariaPressed={open}
-      />
-      <PopoverPrimitive.Trigger asChild>
-        <button
-          type="button"
-          style={dotsButtonStyle}
-          aria-label={`Show all ${ariaLabel.toLowerCase()} options`}
-          aria-haspopup="listbox"
-        >
-          <OverflowMenuHorizontal size={14} />
-        </button>
-      </PopoverPrimitive.Trigger>
-      <PopoverPrimitive.Portal>
-        <PopoverPrimitive.Content
-          side="top"
-          align="end"
-          sideOffset={8}
-          style={{
-            ...popoverContentStyle,
-            transformOrigin: "var(--radix-popover-content-transform-origin)",
-          }}
-          role="listbox"
-          aria-label={ariaLabel}
-        >
-          {options.map((opt) => {
-            const active = opt === value
-            return (
-              <button
-                key={opt}
-                type="button"
-                role="option"
-                aria-selected={active}
-                onClick={() => {
-                  if (opt !== value) onChange(opt)
-                  setOpen(false)
+      {children}
+      <AnimatePresence>
+        {open && (
+          <PopoverPrimitive.Portal forceMount>
+            <PopoverPrimitive.Content
+              forceMount
+              side="top"
+              align="end"
+              sideOffset={8}
+              asChild
+            >
+              <motion.div
+                key="popover-content"
+                initial={{ opacity: 0, scale: 0.96, y: 4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 4 }}
+                transition={reduce ? { duration: 0 } : MOTION_ENTER}
+                style={{
+                  ...popoverContentStyle,
+                  transformOrigin:
+                    "var(--radix-popover-content-transform-origin)",
                 }}
-                style={popoverRowStyle(active)}
-                onMouseEnter={(event) => {
-                  if (active) return
-                  event.currentTarget.style.background =
-                    "var(--color-bg-secondary)"
-                  event.currentTarget.style.color = "var(--color-text-primary)"
-                }}
-                onMouseLeave={(event) => {
-                  if (active) return
-                  event.currentTarget.style.background = "transparent"
-                  event.currentTarget.style.color = COLOR_INACTIVE_FG
-                }}
+                role="listbox"
+                aria-label={ariaLabel}
               >
-                {opt}
-              </button>
-            )
-          })}
-        </PopoverPrimitive.Content>
-      </PopoverPrimitive.Portal>
+                {options.map((opt) => {
+                  const active = opt === value
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      role="option"
+                      aria-selected={active}
+                      onClick={() => {
+                        if (opt !== value) onChange(opt)
+                        setOpen(false)
+                      }}
+                      style={popoverRowStyle(active)}
+                      onMouseEnter={(event) => {
+                        if (active) return
+                        event.currentTarget.style.background =
+                          "var(--color-bg-secondary)"
+                        event.currentTarget.style.color =
+                          "var(--color-text-primary)"
+                      }}
+                      onMouseLeave={(event) => {
+                        if (active) return
+                        event.currentTarget.style.background = "transparent"
+                        event.currentTarget.style.color = COLOR_INACTIVE_FG
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  )
+                })}
+              </motion.div>
+            </PopoverPrimitive.Content>
+          </PopoverPrimitive.Portal>
+        )}
+      </AnimatePresence>
     </PopoverPrimitive.Root>
   )
 }

@@ -1,9 +1,7 @@
 "use client"
 
-// Approximation of the pen's `box--small/medium/large/extra-large` glyphs.
-// Pen paths are fully custom SVG per size; this renders a "monitor with a size
-// letter" silhouette that reads the same at 16x16 but stays trivially
-// maintainable. Letter is stylized, not a real type run.
+// Monitor+letter silhouette. The per-size SVG paths in the design are custom;
+// this readable approximation stays maintainable at 16×16.
 
 import type { CSSProperties } from "react"
 

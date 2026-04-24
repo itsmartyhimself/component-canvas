@@ -94,7 +94,6 @@ export function useCanvasInput() {
       if (!(e.metaKey || e.ctrlKey)) return
       if (isTypingTarget(e.target)) return
 
-      // ⌘0 → reset, ⌘1 → fit, ⌘+/⌘= → zoom in, ⌘- → zoom out
       if (e.key === "0") {
         e.preventDefault()
         reset()

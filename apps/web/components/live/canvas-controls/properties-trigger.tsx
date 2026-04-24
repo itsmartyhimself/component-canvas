@@ -1,8 +1,5 @@
 "use client"
 
-// Matches pen `dhxS8` (t1btn-trigger) + `cMGwM` trigger row (default / hover
-// with "Properties" tooltip / active-blue).
-
 import {
   forwardRef,
   useState,
