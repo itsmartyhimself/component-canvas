@@ -1,4 +1,4 @@
-export const EDGE_OFFSET = 24
+export const EDGE_OFFSET = 20
 export const PAIR_GAP = 24
 
 export const PILL_RADIUS = 14
@@ -37,8 +37,8 @@ export const PANEL_VAROPTS_WIDTH = 160
 export const PANEL_VAROPTS_HEIGHT = 24
 export const SCROLL_FADE_WIDTH = 20
 
-export const TRIGGER_SIZE = 24
-export const TRIGGER_ICON = 14
+export const TRIGGER_SIZE = 36
+export const TRIGGER_ICON = 16
 export const TRIGGER_ACTIVE_BG = "#0095ff"
 
 export const PANEL_WIDTH = 300
