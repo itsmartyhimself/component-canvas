@@ -1,10 +1,12 @@
 "use client"
 
 import {
+  forwardRef,
   useState,
   type AriaAttributes,
   type CSSProperties,
   type ReactNode,
+  type Ref,
 } from "react"
 import { motion } from "framer-motion"
 import { Button as ShadcnButton } from "@/components/imports/shadcn/button"
@@ -38,22 +40,25 @@ const springTransition = {
   damping: 25,
 }
 
-export function Button({
-  label,
-  size = "small",
-  variant = "primary",
-  form = "label",
-  icon,
-  fill = false,
-  loading = false,
-  disabled = false,
-  onClick,
-  href,
-  type = "button",
-  ariaLabel,
-  className,
-  ...rest
-}: ButtonComponentProps) {
+function ButtonBase(
+  {
+    label,
+    size = "small",
+    variant = "primary",
+    form = "label",
+    icon,
+    fill = false,
+    loading = false,
+    disabled = false,
+    onClick,
+    href,
+    type = "button",
+    ariaLabel,
+    className,
+    ...rest
+  }: ButtonComponentProps,
+  ref: Ref<HTMLButtonElement | HTMLAnchorElement>,
+) {
   validateButtonProps(variant, form, label, ariaLabel, icon)
 
   const [isHovered, setIsHovered] = useState(false)
@@ -126,6 +131,7 @@ export function Button({
 
   const buttonElement = (
     <ShadcnButton
+      ref={ref as Ref<HTMLButtonElement>}
       variant={null}
       size={null}
       asChild={!!href}
@@ -145,7 +151,13 @@ export function Button({
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >
-      {href ? <a href={href}>{inner}</a> : inner}
+      {href ? (
+        <a ref={ref as Ref<HTMLAnchorElement>} href={href}>
+          {inner}
+        </a>
+      ) : (
+        inner
+      )}
     </ShadcnButton>
   )
 
@@ -166,3 +178,6 @@ export function Button({
     </motion.div>
   )
 }
+
+export const Button = forwardRef(ButtonBase)
+Button.displayName = "Button"

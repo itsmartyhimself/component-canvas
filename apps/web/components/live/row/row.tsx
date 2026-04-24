@@ -6,12 +6,25 @@ import {
   useState,
   type CSSProperties,
   type KeyboardEvent,
+  type ReactElement,
   type ReactNode,
   type Ref,
 } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/imports/shadcn/tooltip"
+import { tooltipStyle } from "@/components/live/canvas-controls/tooltip-style"
 import { CARBON_ICONS } from "@/lib/icons/registry"
 import { cn } from "@/lib/utils"
+import {
+  SIDEBAR_EASE_OUT_SOFT,
+  SIDEBAR_LABEL_ENTER_MS,
+  SIDEBAR_LABEL_EXIT_MS,
+  SIDEBAR_WIDTH_DURATION_MS,
+} from "@/components/live/sidebar-panel/sidebar-panel.config"
 import {
   DEFAULT_SIZE_FOR_VARIANT,
   ROW_DIMENSIONS,
@@ -142,7 +155,10 @@ function LeadingIconSlot({
     justifyContent: "center",
     flexShrink: 0,
     color: iconColor,
-    transform: "translateY(2px)",
+    // 2px baseline shift aligns the glyph with text cap-height in expanded
+    // rows. In collapsed rows there's no text; smoothly drop to 0 so the
+    // icon sits at visual centre of the 28x28 square. The movement is 2px
+    // over 260ms — imperceptible but prevents a snap.
   }
 
   const layerStyle: CSSProperties = {
@@ -237,6 +253,13 @@ function renderTrailing(
   }
 }
 
+const COLLAPSED_SIZE = 28
+
+function labelTransition(collapsed: boolean): string {
+  const ms = collapsed ? SIDEBAR_LABEL_EXIT_MS : SIDEBAR_LABEL_ENTER_MS
+  return `max-width ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, opacity ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, margin ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}`
+}
+
 function RowBase(
   props: RowProps,
   ref: Ref<HTMLButtonElement | HTMLAnchorElement>,
@@ -260,13 +283,21 @@ function RowBase(
     href,
     ariaLabel,
     className,
+    collapsed = false,
+    tooltipLabel,
     ...rest
   } = props
 
-  const size = sizeProp ?? DEFAULT_SIZE_FOR_VARIANT[variant]
-  const dims = ROW_DIMENSIONS[size]
+  // effectiveSize is what the row BECOMES when collapsed (28x28 square). CSS
+  // transitions on height/padding smooth the change from 32 → 28 for folder
+  // rows in lockstep with the aside width change.
+  const effectiveSize = collapsed
+    ? COLLAPSED_SIZE
+    : (sizeProp ?? DEFAULT_SIZE_FOR_VARIANT[variant])
+  const dims = ROW_DIMENSIONS[effectiveSize]
   const [internalHovered, setInternalHovered] = useState(false)
-  const isHovered = internalHovered && !editing
+  const isEditing = editing && !collapsed
+  const isHovered = internalHovered && !isEditing
 
   const state = resolveState({
     hovered: isHovered,
@@ -276,18 +307,34 @@ function RowBase(
     loading,
   })
 
+  // Collapsed: icon needs 6px horizontal padding to centre in the 28px row
+  // (28 − 16 icon = 12 / 2 = 6 each side). Keep vertical padding consistent
+  // with the row's natural paddingY so the icon is vertically centred.
+  const paddingStyle = collapsed
+    ? `${dims.paddingY} var(--spacing-2-5)`
+    : `${dims.paddingY} ${dims.paddingX}`
+
   const rootStyle: CSSProperties = {
     position: "relative",
     height: dims.height,
-    padding: `${dims.paddingY} ${dims.paddingX}`,
+    padding: paddingStyle,
     borderRadius: dims.radius,
-    gap: dims.gap,
+    // Child spacing is managed by marginLeft on label/trailing so it can
+    // CSS-transition when collapsing. Row gap itself doesn't transition.
+    gap: 0,
     background: state.background,
     color: state.foreground,
-    transition:
-      "color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard)",
+    transition: [
+      `color var(--duration-fast) var(--ease-standard)`,
+      `background-color var(--duration-fast) var(--ease-standard)`,
+      `height ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+      `padding ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+    ].join(", "),
     cursor: disabled || loading ? "not-allowed" : "pointer",
     opacity: disabled ? 0.75 : 1,
+    // Width inherits from the parent (SidebarMenu / SidebarGroup) so it
+    // follows the aside width automatically via flex. No explicit width
+    // prevents the snap at t=0 of the collapse.
     width: "100%",
     textAlign: "left" as const,
   }
@@ -322,8 +369,21 @@ function RowBase(
     [handleCommit, onCancelEdit],
   )
 
+  const labelStyle: CSSProperties = {
+    color: state.foreground,
+    position: "relative",
+    zIndex: 1,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    flex: collapsed ? "0 0 0px" : 1,
+    maxWidth: collapsed ? 0 : 999,
+    opacity: collapsed ? 0 : 1,
+    marginLeft: collapsed ? 0 : "var(--spacing-3)",
+    transition: labelTransition(collapsed),
+  }
 
-  const labelNode = editing ? (
+  const labelSlot = isEditing ? (
     <input
       autoFocus
       defaultValue={editDefaultValue ?? label}
@@ -340,23 +400,21 @@ function RowBase(
         padding: 0,
         position: "relative",
         zIndex: 1,
+        marginLeft: "var(--spacing-3)",
       }}
     />
   ) : (
     <span
-      className={cn(dims.typeClass, "min-w-0 flex-1 truncate")}
-      style={{
-        color: state.foreground,
-        position: "relative",
-        zIndex: 1,
-      }}
+      aria-hidden={collapsed || undefined}
+      className={cn(dims.typeClass, "truncate")}
+      style={labelStyle}
     >
       {label}
     </span>
   )
 
   const leadingNode = (
-    <span style={{ position: "relative", zIndex: 1 }}>
+    <span style={{ position: "relative", zIndex: 1, flexShrink: 0 }}>
       <LeadingIconSlot
         leading={leading}
         iconColor={state.iconColor}
@@ -365,65 +423,75 @@ function RowBase(
     </span>
   )
 
-  const trailingNode = (
-    <span style={{ position: "relative", zIndex: 1 }}>
-      {renderTrailing(trailing, state.iconColor, state.foreground)}
-    </span>
-  )
+  const trailingNode =
+    trailing.kind !== "none" ? (
+      <span
+        aria-hidden={collapsed || undefined}
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "inline-flex",
+          alignItems: "center",
+          overflow: "hidden",
+          flexShrink: 0,
+          maxWidth: collapsed ? 0 : 40,
+          opacity: collapsed ? 0 : 1,
+          marginLeft: collapsed ? 0 : "var(--spacing-3)",
+          transition: labelTransition(collapsed),
+        }}
+      >
+        {renderTrailing(trailing, state.iconColor, state.foreground)}
+      </span>
+    ) : null
 
   const inner = (
     <>
       {leadingNode}
-      {labelNode}
+      {labelSlot}
       {trailingNode}
     </>
   )
 
-  if (href) {
-    return (
-      <a
-        ref={ref as Ref<HTMLAnchorElement>}
-        href={href}
-        aria-label={ariaLabel}
-        aria-current={active ? "page" : undefined}
-        className={cn(
-          "flex items-center w-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2",
-          className,
-        )}
-        style={rootStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={(event) => {
-          if (disabled || loading) {
-            event.preventDefault()
-            return
-          }
-          onClick?.(event)
-        }}
-        data-active={active || undefined}
-        data-state={expanded ? "open" : "closed"}
-        {...(rest as Record<string, unknown>)}
-      >
-        {inner}
-      </a>
-    )
-  }
+  const commonClassName = cn(
+    "flex items-center overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2",
+    className,
+  )
 
-  return (
+  const buttonOrAnchor: ReactElement = href ? (
+    <a
+      ref={ref as Ref<HTMLAnchorElement>}
+      href={href}
+      aria-label={ariaLabel ?? (collapsed ? tooltipLabel ?? label : undefined)}
+      aria-current={active ? "page" : undefined}
+      className={commonClassName}
+      style={rootStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={(event) => {
+        if (disabled || loading) {
+          event.preventDefault()
+          return
+        }
+        onClick?.(event)
+      }}
+      data-active={active || undefined}
+      data-state={expanded ? "open" : "closed"}
+      {...(rest as Record<string, unknown>)}
+    >
+      {inner}
+    </a>
+  ) : (
     <button
       ref={ref as Ref<HTMLButtonElement>}
       type="button"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? (collapsed ? tooltipLabel ?? label : undefined)}
       aria-current={active ? "page" : undefined}
       aria-expanded={
         trailing.kind === "chevron" ? Boolean(trailing.expanded) : undefined
       }
       aria-disabled={disabled || loading || undefined}
       disabled={disabled || loading}
-      className={cn(
-        "flex items-center w-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2",
-        className,
-      )}
+      className={commonClassName}
       style={rootStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -438,6 +506,19 @@ function RowBase(
       {inner}
     </button>
   )
+
+  if (collapsed && tooltipLabel) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{buttonOrAnchor}</TooltipTrigger>
+        <TooltipContent side="right" sideOffset={8} style={tooltipStyle}>
+          {tooltipLabel}
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  return buttonOrAnchor
 }
 
 export const Row = forwardRef(RowBase)

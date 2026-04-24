@@ -12,11 +12,11 @@ const wrapperStyle: CSSProperties = {
 }
 
 export function SidebarFooterZone() {
-  const { registry } = useSidebarPanel()
+  const { registry, collapsed } = useSidebarPanel()
   return (
     <div style={wrapperStyle}>
       <SidebarDivider />
-      <UserFooter user={registry.user} />
+      <UserFooter user={registry.user} collapsed={collapsed} />
     </div>
   )
 }

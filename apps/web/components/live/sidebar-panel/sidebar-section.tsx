@@ -13,6 +13,12 @@ import type {
 } from "@/lib/registry/types"
 import { SidebarFolder } from "./sidebar-folder"
 import { SidebarLeaf } from "./sidebar-leaf"
+import {
+  SIDEBAR_EASE_OUT_SOFT,
+  SIDEBAR_LABEL_ENTER_MS,
+  SIDEBAR_LABEL_EXIT_MS,
+  SIDEBAR_WIDTH_DURATION_MS,
+} from "./sidebar-panel.config"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
 interface SidebarSectionProps {
@@ -26,12 +32,31 @@ const emptyHintStyle: CSSProperties = {
   color: "var(--color-text-tertiary)",
 }
 
+// Section header uses the grid-template-rows: 0fr/1fr trick so height
+// collapses without hardcoding a fixed pixel value. Browser-interpolated at
+// the style-recalc level (no JS per frame). Height + opacity transition in
+// lockstep with the aside width for unified "everything moves together"
+// motion.
+function headerCollapseStyle(collapsed: boolean): CSSProperties {
+  const labelMs = collapsed ? SIDEBAR_LABEL_EXIT_MS : SIDEBAR_LABEL_ENTER_MS
+  return {
+    display: "grid",
+    gridTemplateRows: collapsed ? "0fr" : "1fr",
+    opacity: collapsed ? 0 : 1,
+    pointerEvents: collapsed ? "none" : undefined,
+    transition: [
+      `grid-template-rows ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+      `opacity ${labelMs}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+    ].join(", "),
+  }
+}
+
 export function SidebarSection({
   section,
   folders,
   leaves,
 }: SidebarSectionProps) {
-  const { searchMatch } = useSidebarPanel()
+  const { searchMatch, collapsed } = useSidebarPanel()
 
   const filteredFolderIds = searchMatch
     ? new Set(
@@ -74,15 +99,21 @@ export function SidebarSection({
 
   return (
     <SidebarGroup>
-      <SectionHeader label={section.label} action={addAction} />
+      <div style={headerCollapseStyle(collapsed)}>
+        <div style={{ overflow: "hidden", minHeight: 0 }}>
+          <SectionHeader label={section.label} action={addAction} />
+        </div>
+      </div>
       <SidebarMenu>
         {section.kind === "folders" ? (
           <>
             {displayFolders.length === 0 ? (
               <li className="type-3" style={emptyHintStyle}>
-                {searchMatch
-                  ? "No matches in this section."
-                  : "No folders yet. Click + to add one."}
+                {collapsed
+                  ? null
+                  : searchMatch
+                    ? "No matches in this section."
+                    : "No folders yet. Click + to add one."}
               </li>
             ) : (
               displayFolders.map((folder) => {
@@ -107,7 +138,7 @@ export function SidebarSection({
           <>
             {displayLeaves.length === 0 ? (
               <li className="type-3" style={emptyHintStyle}>
-                No items.
+                {collapsed ? null : "No items."}
               </li>
             ) : (
               displayLeaves

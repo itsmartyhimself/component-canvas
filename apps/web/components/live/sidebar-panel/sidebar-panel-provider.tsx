@@ -22,6 +22,7 @@ import type {
 } from "@/lib/registry/types"
 import { DEMO_REGISTRY } from "@/lib/registry/data"
 import { searchRegistry, type SearchMatch } from "@/lib/registry/search"
+import { SIDEBAR_COLLAPSED_STORAGE_KEY } from "./sidebar-panel.config"
 
 const HIDDEN_DOCS_STORAGE_KEY = "cc.hiddenDocs"
 
@@ -46,6 +47,10 @@ export interface SidebarActions {
   closeDoc: () => void
   hideDoc: (id: string) => void
   unhideDoc: (id: string) => void
+  setCollapsed: (next: boolean) => void
+  toggleCollapsed: () => void
+  expandIfCollapsed: () => void
+  requestAddFocus: () => void
 }
 
 export type RowRegistry = Map<string, HTMLElement>
@@ -63,6 +68,7 @@ export interface SidebarPanelContextValue {
   importDialogSection: SectionId | null
   openDocId: string | null
   hiddenDocIds: Set<string>
+  collapsed: boolean
   actions: SidebarActions
   hoverId: string | null
   setHoverId: (id: string | null) => void
@@ -70,6 +76,9 @@ export interface SidebarPanelContextValue {
   rowRegistry: MutableRefObject<RowRegistry>
   registryVersion: number
   wrapperRef: MutableRefObject<HTMLDivElement | null>
+  addButtonRef: MutableRefObject<HTMLButtonElement | null>
+  pendingAddFocus: boolean
+  clearPendingAddFocus: () => void
 }
 
 const SidebarPanelContext = createContext<SidebarPanelContextValue | null>(null)
@@ -107,10 +116,15 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
   const [hiddenDocIds, setHiddenDocIds] = useState<Set<string>>(() => new Set())
   const [hiddenDocsReady, setHiddenDocsReady] = useState(false)
 
+  const [collapsed, setCollapsedState] = useState<boolean>(false)
+  const [collapsedReady, setCollapsedReady] = useState(false)
+  const [pendingAddFocus, setPendingAddFocus] = useState(false)
+
   const [hoverId, setHoverIdState] = useState<string | null>(null)
   const rowRegistry = useRef<RowRegistry>(new Map())
   const [registryVersion, setRegistryVersion] = useState(0)
   const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const addButtonRef = useRef<HTMLButtonElement | null>(null)
 
   const setHoverId = useCallback((id: string | null) => {
     setHoverIdState((prev) => (prev === id ? prev : id))
@@ -159,6 +173,36 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       // localStorage unavailable; ignore.
     }
   }, [hiddenDocIds, hiddenDocsReady])
+
+  // Same pattern as hiddenDocIds: SSR and first client render must match, so
+  // read persisted collapsed state after mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    try {
+      const raw = window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY)
+      if (raw !== null) {
+        const parsed = JSON.parse(raw)
+        if (typeof parsed === "boolean") setCollapsedState(parsed)
+      }
+    } catch {
+      // ignore malformed payload
+    } finally {
+      setCollapsedReady(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!collapsedReady) return
+    if (typeof window === "undefined") return
+    try {
+      window.localStorage.setItem(
+        SIDEBAR_COLLAPSED_STORAGE_KEY,
+        JSON.stringify(collapsed),
+      )
+    } catch {
+      // localStorage unavailable; ignore.
+    }
+  }, [collapsed, collapsedReady])
 
   const searchMatch = useMemo(
     () => searchRegistry(registry, searchQuery),
@@ -365,6 +409,49 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  const setCollapsed = useCallback((next: boolean) => {
+    setCollapsedState(next)
+  }, [])
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsedState((prev) => !prev)
+  }, [])
+
+  const expandIfCollapsed = useCallback(() => {
+    setCollapsedState((prev) => (prev ? false : prev))
+  }, [])
+
+  const requestAddFocus = useCallback(() => {
+    setCollapsedState(false)
+    setPendingAddFocus(true)
+  }, [])
+
+  // Side effects of collapsing: close folders, cancel any pending rename,
+  // drop focus from elements that are about to unmount, clear any queued
+  // add-button focus request. Runs in an effect so the state updater stays
+  // pure (safe under StrictMode double-invoke).
+  useEffect(() => {
+    if (!collapsed) return
+    setExpandedIds(new Set())
+    setPendingAddFocus(false)
+    if (renamingId !== null) cancelRename()
+    if (typeof document !== "undefined") {
+      const active = document.activeElement
+      if (
+        active instanceof HTMLElement &&
+        active.closest("[aria-label='Component browser']")
+      ) {
+        active.blur()
+      }
+    }
+    // cancelRename is stable (memoized); renamingId is the only moving piece.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collapsed])
+
+  const clearPendingAddFocus = useCallback(() => {
+    setPendingAddFocus(false)
+  }, [])
+
   const actions = useMemo<SidebarActions>(
     () => ({
       toggleExpanded,
@@ -383,6 +470,10 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       closeDoc,
       hideDoc,
       unhideDoc,
+      setCollapsed,
+      toggleCollapsed,
+      expandIfCollapsed,
+      requestAddFocus,
     }),
     [
       toggleExpanded,
@@ -401,6 +492,10 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       closeDoc,
       hideDoc,
       unhideDoc,
+      setCollapsed,
+      toggleCollapsed,
+      expandIfCollapsed,
+      requestAddFocus,
     ],
   )
 
@@ -418,6 +513,7 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
+      collapsed,
       actions,
       hoverId,
       setHoverId,
@@ -425,6 +521,9 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       rowRegistry,
       registryVersion,
       wrapperRef,
+      addButtonRef,
+      pendingAddFocus,
+      clearPendingAddFocus,
     }),
     [
       registry,
@@ -439,11 +538,14 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
       importDialogSection,
       openDocId,
       hiddenDocIds,
+      collapsed,
       actions,
       hoverId,
       setHoverId,
       registerRow,
       registryVersion,
+      pendingAddFocus,
+      clearPendingAddFocus,
     ],
   )
 

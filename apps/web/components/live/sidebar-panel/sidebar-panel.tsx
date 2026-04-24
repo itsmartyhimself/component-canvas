@@ -7,21 +7,30 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type TransitionEvent,
 } from "react"
-import { DocModal } from "@/components/live/doc-modal"
-import { ImportDialog } from "@/components/live/import-dialog"
+import { TooltipProvider } from "@/components/imports/shadcn/tooltip"
 import { SidebarFooterZone } from "./sidebar-footer-zone"
 import { SidebarHeaderZone } from "./sidebar-header-zone"
 import { SidebarHighlightLayer } from "./sidebar-highlight-layer"
-import { SidebarPanelProvider } from "./sidebar-panel-provider"
 import { SidebarTree } from "./sidebar-tree"
-import { SIDEBAR_FADE_HEIGHT, SIDEBAR_WIDTH } from "./sidebar-panel.config"
+import {
+  SIDEBAR_EASE_OUT_SOFT,
+  SIDEBAR_FADE_HEIGHT,
+  SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_COLLAPSED,
+  SIDEBAR_WIDTH_DURATION_MS,
+} from "./sidebar-panel.config"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
-const asideStyle: CSSProperties = {
-  width: SIDEBAR_WIDTH,
+const asideBaseStyle: CSSProperties = {
   height: "100%",
   background: "var(--color-bg-primary)",
+  // Isolates layout work from the canvas sibling during the width transition.
+  contain: "layout",
+  // Clips labels/trailing/section-headers so they don't overflow the narrow
+  // rail during collapse.
+  overflow: "hidden",
 }
 
 const scrollWrapperStyle: CSSProperties = {
@@ -47,18 +56,27 @@ const stickyFadeBase: CSSProperties = {
   transition: "opacity var(--duration-micro) var(--ease-swift)",
 }
 
+// CSS transition on width — off the main thread, interruptible, honors
+// prefers-reduced-motion via the @media rule in globals.css.
+const asideTransition = `width ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`
+
 export function SidebarPanel() {
   return (
-    <SidebarPanelProvider>
+    <TooltipProvider delayDuration={500} skipDelayDuration={150}>
       <SidebarPanelInner />
-      <ImportDialog />
-      <DocModal />
-    </SidebarPanelProvider>
+    </TooltipProvider>
   )
 }
 
 function SidebarPanelInner() {
-  const { setHoverId, wrapperRef } = useSidebarPanel()
+  const {
+    collapsed,
+    setHoverId,
+    wrapperRef,
+    pendingAddFocus,
+    clearPendingAddFocus,
+    addButtonRef,
+  } = useSidebarPanel()
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const [atTop, setAtTop] = useState(true)
   const [atBottom, setAtBottom] = useState(true)
@@ -80,11 +98,32 @@ function SidebarPanelInner() {
     return () => observer.disconnect()
   }, [recalc, wrapperRef])
 
+  // Focus-after-expand: after the width transition completes on the aside,
+  // if a pending add-focus request exists, focus the in-sidebar + button so
+  // the user sees where the action lives.
+  const handleTransitionEnd = useCallback(
+    (event: TransitionEvent<HTMLElement>) => {
+      if (event.target !== event.currentTarget) return
+      if (event.propertyName !== "width") return
+      if (!collapsed && pendingAddFocus) {
+        addButtonRef.current?.focus()
+        clearPendingAddFocus()
+      }
+    },
+    [collapsed, pendingAddFocus, addButtonRef, clearPendingAddFocus],
+  )
+
   return (
     <aside
       aria-label="Component browser"
       className="flex flex-col shrink-0"
-      style={asideStyle}
+      data-collapsed={collapsed || undefined}
+      style={{
+        ...asideBaseStyle,
+        width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
+        transition: asideTransition,
+      }}
+      onTransitionEnd={handleTransitionEnd}
       onMouseLeave={() => setHoverId(null)}
     >
       <div className="shrink-0" data-slot="sidebar-panel-header">

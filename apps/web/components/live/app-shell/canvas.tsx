@@ -7,16 +7,26 @@
 // Dots live on Viewport so they stay at constant visual size while panning/
 // zooming. Stage content scales; overlays don't.
 
-import { Suspense } from "react"
+import { Suspense, type CSSProperties } from "react"
 import { useSearchParams } from "next/navigation"
 import { CanvasStage } from "./canvas-stage"
 import { CanvasBackground } from "./canvas-background"
+import { SidebarToggle } from "./sidebar-toggle"
 import { useCanvasView } from "./canvas-view-context"
 import { useCanvasInput } from "./use-canvas-input"
 import {
   CanvasControls,
   CanvasControlsProvider,
 } from "@/components/live/canvas-controls"
+import { EDGE_OFFSET } from "@/components/live/canvas-controls/canvas-controls.config"
+
+const sidebarToggleSlotStyle: CSSProperties = {
+  position: "absolute",
+  top: EDGE_OFFSET,
+  left: EDGE_OFFSET,
+  pointerEvents: "auto",
+  zIndex: 10,
+}
 
 function CanvasScene() {
   const searchParams = useSearchParams()
@@ -49,6 +59,9 @@ export function Canvas() {
       <Suspense fallback={null}>
         <CanvasScene />
       </Suspense>
+      <div style={sidebarToggleSlotStyle}>
+        <SidebarToggle />
+      </div>
     </section>
   )
 }

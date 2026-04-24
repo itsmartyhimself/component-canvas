@@ -21,8 +21,14 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { actions, renamingId, hiddenDocIds, registerRow, setHoverId } =
-    useSidebarPanel()
+  const {
+    actions,
+    renamingId,
+    hiddenDocIds,
+    registerRow,
+    setHoverId,
+    collapsed,
+  } = useSidebarPanel()
   const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
 
   useEffect(() => {
@@ -38,6 +44,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
 
   const handleClick = useCallback(() => {
     if (leaf.disabled || leaf.loading) return
+    if (collapsed) actions.expandIfCollapsed()
     if (leaf.kind === "doc") {
       actions.openDoc(leaf.id)
       return
@@ -45,7 +52,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
     const params = new URLSearchParams(searchParams.toString())
     params.set("component", leaf.id)
     router.push(`${pathname}?${params.toString()}`)
-  }, [leaf, actions, pathname, router, searchParams])
+  }, [leaf, actions, pathname, router, searchParams, collapsed])
 
   const leading = (() => {
     if (leaf.kind === "nav") return { kind: "dot" } as const
@@ -55,7 +62,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
 
   const actionScope = depth === 1 ? "menu-sub-item" : "menu-item"
 
-  const actionNode = editing
+  const actionNode = editing || collapsed
     ? null
     : leaf.kind === "doc"
       ? (
@@ -103,6 +110,8 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
       onHoverChange={(h) => {
         if (h) setHoverId(leaf.id)
       }}
+      collapsed={collapsed}
+      tooltipLabel={collapsed ? leaf.name : undefined}
     />
   )
 

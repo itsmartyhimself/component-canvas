@@ -38,6 +38,8 @@ export interface RowProps {
   href?: string
   ariaLabel?: string
   className?: string
+  collapsed?: boolean
+  tooltipLabel?: string
 }
 
 export interface RowDimension {

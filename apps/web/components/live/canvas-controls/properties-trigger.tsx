@@ -19,20 +19,10 @@ import {
   TRIGGER_ICON,
   TRIGGER_SIZE,
 } from "./canvas-controls.config"
+import { tooltipStyle } from "./tooltip-style"
 
 type PropertiesTriggerProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   open: boolean
-}
-
-const tooltipStyle: CSSProperties = {
-  background: "var(--color-text-primary)",
-  color: "var(--color-bg-primary)",
-  padding: "6px 10px",
-  borderRadius: "var(--radius-2)",
-  border: "none",
-  fontSize: 12,
-  fontWeight: 500,
-  lineHeight: 1,
 }
 
 export const PropertiesTrigger = forwardRef<HTMLButtonElement, PropertiesTriggerProps>(

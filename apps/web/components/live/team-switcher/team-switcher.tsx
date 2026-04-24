@@ -3,22 +3,47 @@
 import type { CSSProperties } from "react"
 import { ChevronSort } from "@carbon/icons-react"
 import { Popover } from "radix-ui"
+import {
+  SIDEBAR_EASE_OUT_SOFT,
+  SIDEBAR_LABEL_ENTER_MS,
+  SIDEBAR_LABEL_EXIT_MS,
+} from "@/components/live/sidebar-panel/sidebar-panel.config"
 import type { Team } from "@/lib/registry/types"
 
 export interface TeamSwitcherProps {
   teams: Team[]
   activeTeamId?: string
+  collapsed?: boolean
 }
 
 const rowStyle: CSSProperties = {
   display: "flex",
   alignItems: "center",
-  gap: "var(--spacing-3)",
+  // Child spacing is managed by marginLeft on labels/chevron for CSS-
+  // transitionability (gap itself doesn't transition).
+  gap: 0,
   width: "100%",
   padding: "var(--spacing-2)",
   borderRadius: "var(--radius-2)",
   background: "transparent",
   cursor: "pointer",
+  border: 0,
+  outline: "none",
+}
+
+const collapsedRowStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 0,
+  width: "100%",
+  // Vertical 4px matches expanded row's uniform 4px padding so the tile stays
+  // at the same Y when toggling. Horizontal 0 lets the 28px tile fit in the
+  // 28px content area without overflow.
+  padding: "var(--spacing-2) 0",
+  borderRadius: "var(--radius-2)",
+  background: "transparent",
+  cursor: "default",
   border: 0,
   outline: "none",
 }
@@ -35,22 +60,28 @@ const tileStyle: CSSProperties = {
   flexShrink: 0,
 }
 
-const linesStyle: CSSProperties = {
+const linesBaseStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   minWidth: 0,
-  flex: 1,
   alignItems: "flex-start",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
 }
 
-const chevronStyle: CSSProperties = {
-  width: 20,
+const chevronBaseStyle: CSSProperties = {
   height: 20,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   color: "var(--color-text-tertiary)",
   flexShrink: 0,
+  overflow: "hidden",
+}
+
+function labelTransition(collapsed: boolean): string {
+  const ms = collapsed ? SIDEBAR_LABEL_EXIT_MS : SIDEBAR_LABEL_ENTER_MS
+  return `max-width ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, opacity ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, margin ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}`
 }
 
 const popoverContentStyle: CSSProperties = {
@@ -66,18 +97,35 @@ const popoverContentStyle: CSSProperties = {
   zIndex: 40,
 }
 
-export function TeamSwitcher({ teams, activeTeamId }: TeamSwitcherProps) {
+export function TeamSwitcher({
+  teams,
+  activeTeamId,
+  collapsed = false,
+}: TeamSwitcherProps) {
   const activeTeam = teams.find((team) => team.id === activeTeamId) ?? teams[0]
   if (!activeTeam) return null
 
   const hasMultipleTeams = teams.length > 1
 
-  const content = (
+  const tile = (
+    <span style={tileStyle} className="type-4">
+      {activeTeam.initial}
+    </span>
+  )
+
+  const labels = (
     <>
-      <span style={tileStyle} className="type-4">
-        {activeTeam.initial}
-      </span>
-      <span style={linesStyle}>
+      <span
+        aria-hidden={collapsed || undefined}
+        style={{
+          ...linesBaseStyle,
+          flex: collapsed ? "0 0 0px" : 1,
+          maxWidth: collapsed ? 0 : 999,
+          opacity: collapsed ? 0 : 1,
+          marginLeft: collapsed ? 0 : "var(--spacing-3)",
+          transition: labelTransition(collapsed),
+        }}
+      >
         <span
           className="type-3 truncate"
           style={{ color: "var(--color-text-primary)" }}
@@ -92,17 +140,31 @@ export function TeamSwitcher({ teams, activeTeamId }: TeamSwitcherProps) {
         </span>
       </span>
       {hasMultipleTeams ? (
-        <span style={chevronStyle}>
+        <span
+          aria-hidden={collapsed || undefined}
+          style={{
+            ...chevronBaseStyle,
+            maxWidth: collapsed ? 0 : 20,
+            width: collapsed ? 0 : 20,
+            opacity: collapsed ? 0 : 1,
+            marginLeft: collapsed ? 0 : "var(--spacing-3)",
+            transition: labelTransition(collapsed),
+          }}
+        >
           <ChevronSort size={16} />
         </span>
       ) : null}
     </>
   )
 
-  if (!hasMultipleTeams) {
+  if (collapsed || !hasMultipleTeams) {
     return (
-      <div aria-label={`Team ${activeTeam.name}`} style={rowStyle}>
-        {content}
+      <div
+        aria-label={`Team ${activeTeam.name}`}
+        style={collapsed ? collapsedRowStyle : rowStyle}
+      >
+        {tile}
+        {labels}
       </div>
     )
   }
@@ -111,7 +173,8 @@ export function TeamSwitcher({ teams, activeTeamId }: TeamSwitcherProps) {
     <Popover.Root>
       <Popover.Trigger asChild>
         <button type="button" aria-label="Switch team" style={rowStyle}>
-          {content}
+          {tile}
+          {labels}
         </button>
       </Popover.Trigger>
       <Popover.Portal>

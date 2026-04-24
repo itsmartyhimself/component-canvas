@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react"
+import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from "react"
 import { Collapsible } from "radix-ui"
 import { AnimatePresence, motion } from "framer-motion"
 import {
@@ -37,8 +37,14 @@ export function SidebarFolder({
   children,
   hasChildren,
 }: SidebarFolderProps) {
-  const { effectiveExpandedIds, renamingId, actions, registerRow, setHoverId } =
-    useSidebarPanel()
+  const {
+    effectiveExpandedIds,
+    renamingId,
+    actions,
+    registerRow,
+    setHoverId,
+    collapsed,
+  } = useSidebarPanel()
   const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
 
   useEffect(() => {
@@ -46,19 +52,27 @@ export function SidebarFolder({
     return () => registerRow(folder.id, null)
   }, [folder.id, registerRow])
 
-  const expanded = effectiveExpandedIds.has(folder.id)
+  const expanded = !collapsed && effectiveExpandedIds.has(folder.id)
   const editing = renamingId === folder.id
 
   const leading = folder.iconName
     ? ({ kind: "icon", icon: folder.iconName } as const)
     : ({ kind: "folder", expanded } as const)
 
+  const handleClick = useCallback(() => {
+    if (collapsed) {
+      actions.expandIfCollapsed()
+      if (!effectiveExpandedIds.has(folder.id)) {
+        actions.toggleExpanded(folder.id)
+      }
+      return
+    }
+    actions.toggleExpanded(folder.id)
+  }, [collapsed, actions, effectiveExpandedIds, folder.id])
+
   return (
     <SidebarMenuItem>
-      <Collapsible.Root
-        open={expanded}
-        onOpenChange={() => actions.toggleExpanded(folder.id)}
-      >
+      <Collapsible.Root open={expanded} onOpenChange={() => undefined}>
         <Collapsible.Trigger asChild>
           <Row
             ref={rowRef}
@@ -71,9 +85,12 @@ export function SidebarFolder({
             editDefaultValue={folder.name}
             onCommitEdit={(value) => actions.commitRename(folder.id, value)}
             onCancelEdit={() => actions.cancelRename()}
+            onClick={handleClick}
             onHoverChange={(h) => {
               if (h) setHoverId(folder.id)
             }}
+            collapsed={collapsed}
+            tooltipLabel={collapsed ? folder.name : undefined}
           />
         </Collapsible.Trigger>
         <AnimatePresence initial={false}>
