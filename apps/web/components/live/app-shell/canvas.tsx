@@ -11,7 +11,6 @@ import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { CanvasStage } from "./canvas-stage"
 import { CanvasBackground } from "./canvas-background"
-import { CanvasOverlays } from "./canvas-overlays"
 import { useCanvasView } from "./canvas-view-context"
 import { useCanvasInput } from "./use-canvas-input"
 import {
@@ -50,7 +49,6 @@ export function Canvas() {
       <Suspense fallback={null}>
         <CanvasScene />
       </Suspense>
-      <CanvasOverlays />
     </section>
   )
 }

@@ -2,6 +2,7 @@
 
 import {
   forwardRef,
+  useEffect,
   useState,
   type ButtonHTMLAttributes,
   type CSSProperties,
@@ -37,6 +38,16 @@ const tooltipStyle: CSSProperties = {
 export const PropertiesTrigger = forwardRef<HTMLButtonElement, PropertiesTriggerProps>(
   function PropertiesTrigger({ open, ...rest }, ref) {
     const [hovered, setHovered] = useState(false)
+    const [showTooltip, setShowTooltip] = useState(false)
+
+    useEffect(() => {
+      if (open || !hovered) {
+        setShowTooltip(false)
+        return
+      }
+      const id = setTimeout(() => setShowTooltip(true), 120)
+      return () => clearTimeout(id)
+    }, [open, hovered])
 
     const background = open ? TRIGGER_ACTIVE_BG : "var(--color-bg-primary)"
     const iconColor = open
@@ -63,7 +74,7 @@ export const PropertiesTrigger = forwardRef<HTMLButtonElement, PropertiesTrigger
 
     return (
       <TooltipProvider delayDuration={120}>
-        <Tooltip open={!open && hovered ? true : undefined}>
+        <Tooltip open={showTooltip}>
           <TooltipTrigger asChild>
             <button
               {...rest}

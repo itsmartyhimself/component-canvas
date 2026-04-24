@@ -1,4 +1,4 @@
-export const EDGE_OFFSET = 32
+export const EDGE_OFFSET = 24
 export const PAIR_GAP = 24
 
 export const PILL_RADIUS = 14
