@@ -7,6 +7,7 @@ import {
   SIDEBAR_EASE_OUT_SOFT,
   SIDEBAR_LABEL_ENTER_MS,
   SIDEBAR_LABEL_EXIT_MS,
+  SIDEBAR_WIDTH_DURATION_MS,
 } from "@/components/live/sidebar-panel/sidebar-panel.config"
 import type { Team } from "@/lib/registry/types"
 
@@ -16,36 +17,25 @@ export interface TeamSwitcherProps {
   collapsed?: boolean
 }
 
-const rowStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  // Child spacing is managed by marginLeft on labels/chevron for CSS-
-  // transitionability (gap itself doesn't transition).
-  gap: 0,
-  width: "100%",
-  padding: "var(--spacing-2)",
-  borderRadius: "var(--radius-2)",
-  background: "transparent",
-  cursor: "pointer",
-  border: 0,
-  outline: "none",
-}
-
-const collapsedRowStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 0,
-  width: "100%",
-  // Vertical 4px matches expanded row's uniform 4px padding so the tile stays
-  // at the same Y when toggling. Horizontal 0 lets the 28px tile fit in the
-  // 28px content area without overflow.
-  padding: "var(--spacing-2) 0",
-  borderRadius: "var(--radius-2)",
-  background: "transparent",
-  cursor: "default",
-  border: 0,
-  outline: "none",
+// One row style for both states. Padding transitions (4px each side → 0
+// horizontal) over the same duration as the aside width so the tile slides
+// from x=12 → x=8 in lockstep with the collapse — no JSX swap, no jump.
+// Tile sits at flex-start always; in collapsed mode the row content area
+// equals the tile width, so flex-start coincides with visual centre.
+function teamRowStyle(collapsed: boolean): CSSProperties {
+  return {
+    display: "flex",
+    alignItems: "center",
+    gap: 0,
+    width: "100%",
+    padding: collapsed ? "var(--spacing-2) 0" : "var(--spacing-2)",
+    borderRadius: "var(--radius-2)",
+    background: "transparent",
+    cursor: collapsed ? "default" : "pointer",
+    border: 0,
+    outline: "none",
+    transition: `padding ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+  }
 }
 
 const tileStyle: CSSProperties = {
@@ -161,7 +151,7 @@ export function TeamSwitcher({
     return (
       <div
         aria-label={`Team ${activeTeam.name}`}
-        style={collapsed ? collapsedRowStyle : rowStyle}
+        style={teamRowStyle(collapsed)}
       >
         {tile}
         {labels}
@@ -172,7 +162,7 @@ export function TeamSwitcher({
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button type="button" aria-label="Switch team" style={rowStyle}>
+        <button type="button" aria-label="Switch team" style={teamRowStyle(false)}>
           {tile}
           {labels}
         </button>
