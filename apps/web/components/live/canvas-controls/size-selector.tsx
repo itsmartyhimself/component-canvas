@@ -101,7 +101,7 @@ const expandHintStyle: CSSProperties = {
   height: SIZE_CHIP_H,
   padding: `0 ${SIZE_EXPAND_HINT_PAD_X}px`,
   borderRadius: CHIP_RADIUS,
-  background: "var(--color-bg-secondary)",
+  background: "var(--color-bg-hover)",
   color: COLOR_MUTED,
   display: "inline-flex",
   alignItems: "center",
@@ -115,7 +115,7 @@ function openChipStyle(active: boolean, hovered: boolean): CSSProperties {
   const background = active
     ? COLOR_ACTIVE_BG
     : hovered
-      ? "var(--color-bg-secondary)"
+      ? "var(--color-bg-hover)"
       : "transparent"
   return {
     width: SIZE_CHIP_W,

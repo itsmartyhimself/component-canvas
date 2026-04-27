@@ -1,0 +1,1 @@
+export { PaintGate } from "./PaintGate"

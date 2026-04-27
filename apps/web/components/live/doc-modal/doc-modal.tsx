@@ -26,7 +26,7 @@ const contentStyle: CSSProperties = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "min(560px, calc(100vw - var(--spacing-11)))",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   borderRadius: "var(--radius-3)",
   padding: "var(--spacing-7)",

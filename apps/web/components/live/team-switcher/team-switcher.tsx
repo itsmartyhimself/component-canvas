@@ -88,7 +88,7 @@ const popoverContentStyle: CSSProperties = {
   minWidth: 240,
   padding: "var(--spacing-5)",
   borderRadius: "var(--radius-2)",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   boxShadow: "var(--shadow-layered)",
   display: "flex",

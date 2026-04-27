@@ -17,7 +17,10 @@ export const VARIANT_INLINE_MAX = 4
 
 export const COLOR_ACTIVE_BG = "var(--color-text-primary)"
 export const COLOR_ACTIVE_FG = "var(--color-bg-primary)"
-export const COLOR_INACTIVE_BG = "var(--color-bg-secondary)"
+// Inactive chip fill inside the elevated PropertiesPanel popover only.
+// Canvas-floating pills (variant-toggle, size-selector) sit on bg-primary
+// and use var(--color-bg-hover) directly at the call site.
+export const COLOR_INACTIVE_BG = "var(--color-bg-hover-elevated)"
 export const COLOR_INACTIVE_FG = "var(--color-text-secondary)"
 export const COLOR_MUTED = "var(--color-text-tertiary)"
 

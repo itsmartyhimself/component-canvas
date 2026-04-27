@@ -100,7 +100,7 @@ const popoverContentStyle: CSSProperties = {
   minWidth: 180,
   padding: "var(--spacing-2)",
   borderRadius: "var(--radius-2)",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   boxShadow: "var(--shadow-layered)",
   display: "flex",
@@ -195,7 +195,7 @@ export function UserFooter({ user, collapsed = false }: UserFooterProps) {
             background: "transparent",
           }}
           onMouseEnter={(event) => {
-            event.currentTarget.style.background = "var(--color-bg-secondary)"
+            event.currentTarget.style.background = "var(--color-bg-hover-elevated)"
           }}
           onMouseLeave={(event) => {
             event.currentTarget.style.background = "transparent"

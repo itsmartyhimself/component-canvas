@@ -19,7 +19,6 @@ import {
   COLOR_INACTIVE_BG,
   COLOR_INACTIVE_FG,
   COLOR_MUTED,
-  EDGE_OFFSET,
   FORM_CHIP_FONT,
   FORM_CHIP_GAP,
   FORM_CHIP_HEIGHT,
@@ -45,19 +44,14 @@ import {
   SWITCH_W,
 } from "./canvas-controls.config"
 
-const PANEL_FADE_BG = "var(--color-bg-primary)"
-
-const triggerWrap: CSSProperties = {
-  position: "absolute",
-  top: EDGE_OFFSET,
-  right: EDGE_OFFSET,
-  pointerEvents: "auto",
-}
+// Tracks the panel surface so the inline scroll fades match whatever color
+// the panel is painted with — including the dark-mode bump to bg-elevated.
+const PANEL_FADE_BG = "var(--color-bg-elevated)"
 
 const panelStyle: CSSProperties = {
   width: PANEL_WIDTH,
   borderRadius: PANEL_RADIUS,
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   boxShadow: "var(--shadow-medium)",
   padding: 0,
@@ -390,7 +384,7 @@ function Switch({
           height: SWITCH_KNOB,
           borderRadius: SWITCH_KNOB / 2,
           background: "var(--color-bg-primary)",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+          boxShadow: "var(--shadow-small)",
         }}
       />
     </button>
@@ -427,8 +421,7 @@ export function PropertiesPanel() {
   )
 
   return (
-    <div style={triggerWrap}>
-      <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
+    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
         <PopoverPrimitive.Trigger asChild>
           <PropertiesTrigger open={open} />
         </PopoverPrimitive.Trigger>
@@ -604,7 +597,7 @@ export function PropertiesPanel() {
             <Section title="State">
               <div
                 style={{
-                  background: "var(--color-bg-secondary)",
+                  background: "var(--color-bg-hover-elevated)",
                   borderRadius: 8,
                   padding: 12,
                   display: "flex",
@@ -656,6 +649,5 @@ export function PropertiesPanel() {
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
       </PopoverPrimitive.Root>
-    </div>
   )
 }

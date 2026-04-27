@@ -226,7 +226,7 @@ function renderTrailing(
             padding: "0 var(--spacing-2)",
             height: 16,
             borderRadius: "var(--radius-1-5)",
-            background: "var(--color-bg-secondary)",
+            background: "var(--color-bg-hover)",
           }}
         >
           {trailing.content}
@@ -242,7 +242,7 @@ function renderTrailing(
             height: 20,
             borderRadius: "var(--radius-1-5)",
             border: "1px solid var(--color-border-primary)",
-            background: "var(--color-bg-primary)",
+            background: "var(--color-bg-elevated)",
           }}
         >
           {trailing.label}

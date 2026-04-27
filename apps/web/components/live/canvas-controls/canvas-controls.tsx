@@ -11,6 +11,9 @@ import { useCanvasControls } from "./canvas-controls-context"
 import { VariantToggle } from "./variant-toggle"
 import { SizeSelector } from "./size-selector"
 import { PropertiesPanel } from "./properties-panel"
+import { DarkModeTrigger } from "@/components/live/dark-mode"
+
+const TOP_RIGHT_GAP = 8
 
 const bottomLeftClusterStyle: CSSProperties = {
   position: "absolute",
@@ -22,18 +25,27 @@ const bottomLeftClusterStyle: CSSProperties = {
   pointerEvents: "auto",
 }
 
+const topRightClusterStyle: CSSProperties = {
+  position: "absolute",
+  top: EDGE_OFFSET,
+  right: EDGE_OFFSET,
+  display: "flex",
+  alignItems: "center",
+  gap: TOP_RIGHT_GAP,
+  pointerEvents: "auto",
+}
+
 export function CanvasControls() {
   const { manifest, props, setProp } = useCanvasControls()
 
-  if (!manifest) return null
-
-  const { variants, sizes } = manifest.controls
+  const variants = manifest?.controls.variants ?? null
+  const sizes = manifest?.controls.sizes ?? null
   const variantValue = variants ? String(props[variants.prop]) : null
   const sizeValue = sizes ? String(props[sizes.prop]) : null
 
   return (
     <>
-      {(variants || sizes) && (
+      {manifest && (variants || sizes) && (
         <div style={bottomLeftClusterStyle}>
           {variants && variantValue !== null && (
             <VariantToggle
@@ -53,7 +65,10 @@ export function CanvasControls() {
           )}
         </div>
       )}
-      <PropertiesPanel />
+      <div style={topRightClusterStyle}>
+        {manifest && <PropertiesPanel />}
+        <DarkModeTrigger />
+      </div>
     </>
   )
 }

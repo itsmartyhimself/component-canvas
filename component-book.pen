@@ -17265,6 +17265,151 @@
           "fill": "#9b9295"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "beJLO",
+      "x": 1014,
+      "y": -2765,
+      "name": "Darkmode",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "O6RHc",
+          "name": "Base",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          },
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "4Ohcd",
+              "name": "Color",
+              "context": "This one replaces the #ffffffff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#0c0c0dff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "o6KGL",
+              "name": "Color",
+              "context": "This one replaces the #f6f6f9ff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#161617ff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "KHQuy",
+              "name": "Color",
+              "context": "This one replaces the #eff0f5ff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#1e1e24ff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "43UvS",
+              "name": "Color",
+              "context": "This one replaces the #e6e7efff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#26262bff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "MPscQ",
+              "name": "Color",
+              "context": "This one replaces the #9b9295ff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#64656dff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "dK56M",
+              "name": "Color",
+              "context": "This one replaces the #6d6467ff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#8d8e96ff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            },
+            {
+              "type": "frame",
+              "id": "Tihgo",
+              "name": "Color",
+              "context": "This one replaces the #121111ff in darkmode (and its primitive/semantic function)",
+              "clip": true,
+              "width": "fit_content(160)",
+              "height": "fit_content(1080)",
+              "fill": "#f6f6f9ff",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 10
+            }
+          ]
+        }
+      ]
     }
   ]
 }

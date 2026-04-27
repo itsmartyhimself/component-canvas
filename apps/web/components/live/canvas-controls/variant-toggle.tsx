@@ -19,7 +19,6 @@ import {
   CHIP_RADIUS,
   COLOR_ACTIVE_BG,
   COLOR_ACTIVE_FG,
-  COLOR_INACTIVE_BG,
   COLOR_INACTIVE_FG,
   COLOR_MUTED,
   LABEL_FONT_SIZE,
@@ -109,7 +108,9 @@ function chipStyle(active: boolean): CSSProperties {
     alignItems: "center",
     justifyContent: "flex-start",
     cursor: "pointer",
-    background: active ? COLOR_ACTIVE_BG : COLOR_INACTIVE_BG,
+    // Pill bg is bg-primary, so the inactive chip uses bg-hover directly —
+    // not COLOR_INACTIVE_BG, which is for the elevated panel context.
+    background: active ? COLOR_ACTIVE_BG : "var(--color-bg-hover)",
     color: active ? COLOR_ACTIVE_FG : COLOR_INACTIVE_FG,
     fontSize: CHIP_FONT_SIZE,
     fontWeight: CHIP_FONT_WEIGHT,
@@ -136,7 +137,7 @@ const dotsButtonStyle: CSSProperties = {
   height: CHIP_HEIGHT,
   padding: `0 ${SIZE_EXPAND_HINT_PAD_X}px`,
   borderRadius: CHIP_RADIUS,
-  background: "var(--color-bg-secondary)",
+  background: "var(--color-bg-hover)",
   color: COLOR_MUTED,
   display: "inline-flex",
   alignItems: "center",
@@ -152,7 +153,7 @@ const popoverContentStyle: CSSProperties = {
   overflowY: "auto",
   padding: 4,
   borderRadius: 12,
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   boxShadow: "var(--shadow-medium)",
   outline: "none",
@@ -390,7 +391,7 @@ function OverflowPopover({
                       onMouseEnter={(event) => {
                         if (active) return
                         event.currentTarget.style.background =
-                          "var(--color-bg-secondary)"
+                          "var(--color-bg-hover-elevated)"
                         event.currentTarget.style.color =
                           "var(--color-text-primary)"
                       }}

@@ -122,7 +122,7 @@ export const ROW_STATE: Record<
     iconColor: "var(--color-text-tertiary)",
   },
   loading: {
-    background: "var(--color-bg-secondary)",
+    background: "var(--color-bg-hover)",
     foreground: "var(--color-text-tertiary)",
     iconColor: "var(--color-text-tertiary)",
   },
@@ -131,7 +131,7 @@ export const ROW_STATE: Record<
 export const ROW_ICON_SIZE = 16
 
 export const ROW_HOVER_PILL = {
-  background: "var(--color-bg-secondary)",
+  background: "var(--color-bg-hover)",
 }
 
 export const ROW_SPRING = { type: "spring" as const, stiffness: 350, damping: 35 }

@@ -40,7 +40,7 @@ const wrapperStyle: CSSProperties = {
   padding: "0 var(--spacing-3)",
   borderRadius: SEARCH_INPUT_RADIUS,
   border: "1px solid var(--color-border-primary)",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   color: "var(--color-text-primary)",
   transition: "border-color 120ms ease, background-color 120ms ease",
 }
@@ -64,7 +64,7 @@ const kbdStyle: CSSProperties = {
   borderRadius: "var(--radius-1-5)",
   border: "1px solid var(--color-border-primary)",
   color: "var(--color-text-tertiary)",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   flexShrink: 0,
 }
 

@@ -24,7 +24,7 @@ const contentStyle: CSSProperties = {
   minWidth: 240,
   padding: "var(--spacing-2)",
   borderRadius: "var(--radius-2)",
-  background: "var(--color-bg-primary)",
+  background: "var(--color-bg-elevated)",
   border: "1px solid var(--color-border-primary)",
   boxShadow: "var(--shadow-layered)",
   display: "flex",
@@ -84,7 +84,7 @@ function MenuItem({
       style={itemStyle}
       onClick={onSelect}
       onMouseEnter={(event) => {
-        event.currentTarget.style.background = "var(--color-bg-secondary)"
+        event.currentTarget.style.background = "var(--color-bg-hover-elevated)"
       }}
       onMouseLeave={(event) => {
         event.currentTarget.style.background = "transparent"

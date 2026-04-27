@@ -48,8 +48,8 @@ function IconButtonBase(
       : "var(--color-text-secondary)"
 
   const background = active
-    ? "var(--color-bg-secondary)"
-    : "var(--color-bg-primary)"
+    ? "var(--color-bg-hover)"
+    : "var(--color-bg-elevated)"
 
   const rootStyle: CSSProperties = {
     width: dims.size,

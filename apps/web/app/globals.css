@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Dark-mode variant — makes Tailwind / shadcn / radix dark: utilities
+   respond to class="dark" on <html> instead of the OS media query, so
+   token overrides below and any dark: utilities flip on the same toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ================================================================
    THEME BINDINGS
    Semantic tokens aliased to Tailwind / shadcn color names.
@@ -73,6 +78,18 @@
 
   /* Canvas surface markers (dotted infinite-canvas pattern) */
   --color-canvas-dot: rgba(0, 0, 0, 0.07);
+
+  /* Elevation tokens — see the DARK MODE block for the full ladder.
+     · bg-elevated: card/popover/modal surface that needs to pop above the page
+     · bg-hover: hover/active fill on a bg-primary surface (sidebar, page)
+     · bg-hover-elevated: hover/active fill on a bg-elevated surface, AND
+       passive chip/badge fills inside elevated surfaces.
+     Light values match today's "+1 step" pattern so light is unchanged.
+     Dark values bump one step further — dark separation needs more contrast
+     when shadows are off. */
+  --color-bg-elevated: var(--color-bg-primary);
+  --color-bg-hover: var(--color-bg-secondary);
+  --color-bg-hover-elevated: var(--color-bg-secondary);
 
   /* Text */
   --color-text-primary: var(--color-ink-300);
@@ -215,6 +232,63 @@
 }
 
 /* ================================================================
+   DARK MODE
+   Toggle: add/remove class="dark" on <html>. The inline script in
+   app/layout.tsx sets it before first paint from localStorage / system
+   preference, and DarkModeProvider keeps it in sync at runtime.
+
+   Source of truth: this block. We only override semantic tokens — the
+   primitives above keep their literal palette names. Dark hex values
+   come from component-book.pen → Darkmode frame.
+
+   Shadows are disabled in dark mode (invisible on dark surfaces) — use
+   the 1px borders that already wrap surfaces for separation instead.
+   ================================================================ */
+
+html.dark {
+  /* Surfaces — per component-book.pen → Darkmode frame */
+  --color-bg-primary: #0C0C0D;
+  --color-bg-secondary: #161617;
+  --color-bg-tertiary: #1E1E24;
+
+  /* Borders — semi-transparent white so they adapt to whichever surface
+     they land on. At 20% over #0C0C0D ≈ #3B3B3C; over #161617 (elevated)
+     ≈ #42-43; over #1E1E24 ≈ #48 — all comfortably visible without
+     shadows. Secondary at 30% (~#54545A) keeps the hierarchy where
+     border-secondary > border-primary in emphasis. */
+  --color-border-primary: rgba(246, 246, 249, 0.20);
+  --color-border-secondary: rgba(246, 246, 249, 0.30);
+
+  --color-text-primary: #F6F6F9;
+  --color-text-secondary: #8D8E96;
+  --color-text-tertiary: #64656D;
+
+  /* Canvas dot — light low-alpha against dark canvas */
+  --color-canvas-dot: rgba(255, 255, 255, 0.07);
+
+  /* Elevation ladder — the surface stack in dark.
+     · bg-primary  (#0C0C0D)  — page / sidebar
+     · bg-elevated (#161617)  — cards, popovers, modals on the page
+     · bg-hover    (#1E1E24)  — hover/active feedback on bg-primary
+     · bg-hover-elevated (#26262B) — hover/active feedback on bg-elevated;
+                                     also passive chips inside elevated cards.
+     Each rung = +1 luminance step. Without shadows this is what carries
+     elevation in dark. The #26262B value is solid (not semi-transparent)
+     so it composites cleanly on whichever surface it lands on. */
+  --color-bg-elevated: var(--color-bg-secondary);
+  --color-bg-hover: var(--color-bg-tertiary);
+  --color-bg-hover-elevated: #26262B;
+
+  /* Shadows disabled — express elevation through surface lightening + the
+     stronger semi-transparent borders above, not drop shadows. */
+  --shadow-small: none;
+  --shadow-medium: none;
+  --shadow-large: none;
+  --shadow-layered: none;
+  --color-shadow-base: transparent;
+}
+
+/* ================================================================
    BASE LAYER
    Resets, defaults, typography classes, SVG standards.
    ================================================================ */
@@ -261,6 +335,13 @@
     background: var(--color-bg-primary);
     color: var(--color-text-primary);
     font-family: var(--font-geist-sans), system-ui, sans-serif;
+    transition: opacity 80ms ease;
+  }
+
+  /* PaintGate: hide until React hydrates + settles two RAFs.
+     Flipped by <PaintGate /> writing data-ready="true" on <html>. */
+  html:not([data-ready]) body {
+    opacity: 0;
   }
 
   /* Typography Standards:
