@@ -93,18 +93,13 @@ export interface RowStateStyle {
 }
 
 export const ROW_STATE: Record<
-  "default" | "hover" | "active" | "expanded" | "disabled" | "loading",
+  "default" | "active" | "expanded" | "disabled" | "loading",
   RowStateStyle
 > = {
   default: {
     background: "transparent",
     foreground: "var(--color-text-primary)",
     iconColor: "var(--color-text-secondary)",
-  },
-  hover: {
-    background: "transparent",
-    foreground: "var(--color-text-primary)",
-    iconColor: "var(--color-text-primary)",
   },
   active: {
     background: "var(--color-text-primary)",

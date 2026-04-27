@@ -3,7 +3,6 @@
 import {
   forwardRef,
   useCallback,
-  useState,
   type CSSProperties,
   type KeyboardEvent,
   type ReactElement,
@@ -38,13 +37,11 @@ import {
 } from "./row.config"
 
 function resolveState({
-  hovered,
   active,
   expanded,
   disabled,
   loading,
 }: {
-  hovered: boolean
   active: boolean
   expanded: boolean
   disabled: boolean
@@ -53,7 +50,6 @@ function resolveState({
   if (loading) return ROW_STATE.loading
   if (disabled) return ROW_STATE.disabled
   if (active) return ROW_STATE.active
-  if (hovered) return ROW_STATE.hover
   if (expanded) return ROW_STATE.expanded
   return ROW_STATE.default
 }
@@ -136,16 +132,22 @@ function LeadingIconSlot({
   leading,
   iconColor,
   foreground,
+  collapsed,
 }: {
   leading: RowLeading
   iconColor: string
   foreground: string
+  collapsed: boolean
 }) {
   if (leading.kind === "none") return null
 
   const identity = leadingIdentity(leading)
   const node = renderLeadingNode(leading, iconColor, foreground)
 
+  // 2px down aligns the glyph with text cap-height; 0 in collapsed rows
+  // where the icon centres in a 28×28 square with no text to align to.
+  // Transition piggybacks the row's collapse duration so the shift eases
+  // in lockstep with the height/padding change.
   const slotStyle: CSSProperties = {
     position: "relative",
     width: ROW_ICON_SIZE,
@@ -155,10 +157,8 @@ function LeadingIconSlot({
     justifyContent: "center",
     flexShrink: 0,
     color: iconColor,
-    // 2px baseline shift aligns the glyph with text cap-height in expanded
-    // rows. In collapsed rows there's no text; smoothly drop to 0 so the
-    // icon sits at visual centre of the 28x28 square. The movement is 2px
-    // over 260ms — imperceptible but prevents a snap.
+    transform: collapsed ? "translateY(0)" : "translateY(2px)",
+    transition: `transform ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
   }
 
   const layerStyle: CSSProperties = {
@@ -295,12 +295,9 @@ function RowBase(
     ? COLLAPSED_SIZE
     : (sizeProp ?? DEFAULT_SIZE_FOR_VARIANT[variant])
   const dims = ROW_DIMENSIONS[effectiveSize]
-  const [internalHovered, setInternalHovered] = useState(false)
   const isEditing = editing && !collapsed
-  const isHovered = internalHovered && !isEditing
 
   const state = resolveState({
-    hovered: isHovered,
     active,
     expanded,
     disabled,
@@ -340,12 +337,10 @@ function RowBase(
   }
 
   const handleMouseEnter = useCallback(() => {
-    setInternalHovered(true)
     onHoverChange?.(true)
   }, [onHoverChange])
 
   const handleMouseLeave = useCallback(() => {
-    setInternalHovered(false)
     onHoverChange?.(false)
   }, [onHoverChange])
 
@@ -419,6 +414,7 @@ function RowBase(
         leading={leading}
         iconColor={state.iconColor}
         foreground={state.foreground}
+        collapsed={collapsed}
       />
     </span>
   )
