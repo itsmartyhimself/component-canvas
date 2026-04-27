@@ -47,10 +47,12 @@ export function SidebarFolder({
   } = useSidebarPanel()
   const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
 
+  // See sidebar-leaf.tsx — `collapsed` is in deps because Row swaps a Tooltip
+  // wrap around its inner button on collapse, remounting the DOM node.
   useEffect(() => {
     registerRow(folder.id, rowRef.current)
     return () => registerRow(folder.id, null)
-  }, [folder.id, registerRow])
+  }, [folder.id, registerRow, collapsed])
 
   const expanded = !collapsed && effectiveExpandedIds.has(folder.id)
   const editing = renamingId === folder.id

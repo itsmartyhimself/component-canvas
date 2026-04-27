@@ -31,10 +31,13 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   } = useSidebarPanel()
   const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
 
+  // `collapsed` is in deps because Row swaps a Tooltip wrap around its inner
+  // button when collapsed flips, which remounts the button at a new tree
+  // position. Re-running this effect re-registers the fresh DOM node.
   useEffect(() => {
     registerRow(leaf.id, rowRef.current)
     return () => registerRow(leaf.id, null)
-  }, [leaf.id, registerRow])
+  }, [leaf.id, registerRow, collapsed])
 
   const selectedId = searchParams.get("component")
   const active = leaf.kind === "component" && selectedId === leaf.id
