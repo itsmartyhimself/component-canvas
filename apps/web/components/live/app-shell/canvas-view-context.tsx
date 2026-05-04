@@ -52,6 +52,7 @@ export function useCanvasView() {
 export function CanvasViewProvider({ children }: { children: ReactNode }) {
   const viewportRef = useRef<HTMLDivElement | null>(null)
   const contentBboxRef = useRef<ContentBbox | null>(null)
+  const initialFitDoneRef = useRef(false)
   const [view, setView] = useState<CanvasView>({ x: 0, y: 0, zoom: 1 })
   const [isAnimating, setIsAnimating] = useState(false)
 
@@ -96,7 +97,11 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
   const setContentBbox = useCallback(
     (bbox: ContentBbox) => {
       contentBboxRef.current = bbox
-      setIsAnimating(true)
+      // First fit must snap — browser animates from (0,0) otherwise, even if never painted.
+      if (initialFitDoneRef.current) {
+        setIsAnimating(true)
+      }
+      initialFitDoneRef.current = true
       setView(computeFit(bbox))
     },
     [computeFit],
