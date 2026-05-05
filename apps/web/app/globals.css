@@ -30,10 +30,11 @@
 
   /* Shadcn semantics — used by the shadcn base button if ever imported directly.
      The live/button wrapper passes variant={null}/size={null} and doesn't depend
-     on these, but mapping keeps the base safe and on-palette.
-     --color-destructive is intentionally unmapped (no red in the palette). */
+     on these, but mapping keeps the base safe and on-palette. */
   --color-primary: var(--color-text-primary);
   --color-primary-foreground: var(--color-bg-primary);
+  --color-destructive: var(--color-tag-danger-ink);
+  --color-destructive-foreground: var(--color-bg-primary);
   --color-accent: var(--color-border-secondary);
   --color-accent-foreground: var(--color-text-primary);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -96,6 +97,20 @@
   --color-text-secondary: var(--color-ink-200);
   --color-text-tertiary: var(--color-ink-100);
 
+  /* === Tag Colors (ink = foreground/icon/border, wash = soft background fill) === */
+  --color-tag-archive-ink: #7E5422;
+  --color-tag-archive-wash: #FFE1BB;
+  --color-tag-danger-ink: #E15072;
+  --color-tag-danger-wash: #FEF1F1;
+  --color-tag-highlight-ink: #3C4209;
+  --color-tag-highlight-wash: #F8FFBB;
+  --color-tag-info-ink: #0EA6E7;
+  --color-tag-info-wash: #DAEAFE;
+  --color-tag-success-ink: #1D8D44;
+  --color-tag-success-wash: #ECFDF5;
+  --color-tag-warning-ink: #F49E0A;
+  --color-tag-warning-wash: #FEFAF1;
+
   /* Shadow base */
   --color-shadow-base: var(--color-shadow);
 
@@ -105,6 +120,11 @@
   --shadow-medium: 0px 8px 12px rgba(var(--shadow-rgb), 0.05);
   --shadow-large: 0px 24px 24px rgba(var(--shadow-rgb), 0.08);
   --shadow-layered: var(--shadow-small), var(--shadow-medium), var(--shadow-large);
+
+  /* === Gradients === */
+  --gradient-dawn: linear-gradient(180deg, #AFCBE3 0%, #D3DBEE 30%, #E5C4CB 85%, #C0C4E1 100%);
+  --gradient-dusk: linear-gradient(180deg, #040405 0%, #22273C 17%, #6B8D9C 48%, #F5F6F1 100%);
+  --gradient-daylight: linear-gradient(180deg, #FCE576 5%, #F5F7EE 57%, #F7F8F5 100%);
 
   /* === Spacing === */
   --spacing-0: 0px;
