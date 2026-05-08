@@ -126,6 +126,7 @@
   --gradient-dawn: linear-gradient(180deg, #AFCBE3 0%, #D3DBEE 30%, #E5C4CB 85%, #C0C4E1 100%);
   --gradient-dusk: linear-gradient(180deg, #040405 0%, #22273C 17%, #6B8D9C 48%, #F5F6F1 100%);
   --gradient-daylight: linear-gradient(180deg, #FCE576 5%, #F5F7EE 57%, #F7F8F5 100%);
+  --gradient-twilight: linear-gradient(180deg, #ffffff 40%, #e7eefe 80%, #c0d2fc 100%);
 
   /* === Spacing === */
   --spacing-0: 0px;
