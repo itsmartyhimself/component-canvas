@@ -6,6 +6,7 @@ import { ButtonSpecimens } from "./specimens/button-specimens"
 import { DocModalSpecimens } from "./specimens/doc-modal-specimens"
 import { IconButtonSpecimens } from "./specimens/icon-button-specimens"
 import { ImportDialogSpecimens } from "./specimens/import-dialog-specimens"
+import { InstanceBreadcrumbSpecimens } from "./specimens/instance-breadcrumb-specimens"
 import { RowSpecimens } from "./specimens/row-specimens"
 import { SearchInputSpecimens } from "./specimens/search-input-specimens"
 import { SectionHeaderSpecimens } from "./specimens/section-header-specimens"
@@ -41,6 +42,11 @@ const SECTIONS: PlaygroundSection[] = [
     id: "team-switcher",
     title: "TeamSwitcher",
     render: () => <TeamSwitcherSpecimens />,
+  },
+  {
+    id: "instance-breadcrumb",
+    title: "InstanceBreadcrumb",
+    render: () => <InstanceBreadcrumbSpecimens />,
   },
   {
     id: "user-footer",

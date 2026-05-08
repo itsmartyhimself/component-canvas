@@ -8,8 +8,12 @@ Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 - Replace `ImportDialog` stub form with the real import pipeline (link registry, workspace package, or uploaded source).
 - Persist `expandedIds` + selection outside URL (currently URL-only via `?component=`).
 - OAuth + workspace model; real avatar via `User.avatarUrl`.
+- Branch enumeration + sync status surface for `BranchSummary` (id, name, pinned, status, lastSyncedAt) — required by the InstanceBreadcrumb dropdown. `status` derives from the build worker's `last_build_status` column on the instance row.
 
 ## Sidebar
+- InstanceBreadcrumb wiring: replace `MOCK_INSTANCE` in `sidebar-header-zone.tsx` with route-derived data once `/[workspace]/[repo]/[branch]` exists. Use `useParams` from `next/navigation`, fetch branch list via a new `useInstanceBranches(repoId)` hook backed by Supabase + GitHub App API. `onSwitchBranch(id)` should `router.push("/[workspace]/[repo]/" + branchName)`.
+- InstanceBreadcrumb branch search: today the dropdown filters the local pinned-branches list client-side. Wire `onSearchBranches` to a debounced server call so unpinned branches that match the query also surface.
+- InstanceBreadcrumb "Other branches…" link: lazy-loads unpinned branches from GitHub on click. Wire `onLoadOtherBranches` to the same backend endpoint as branch search; merge results below the divider.
 - 64px icon-only collapsed mode (deferred in v1 — width is fixed at 280).
 - Virtualize the component tree once it grows past ~200 rows (react-virtual or hand-rolled).
 - Drag-to-reorder folders / leaves (@dnd-kit) and drag-to-move across sections.

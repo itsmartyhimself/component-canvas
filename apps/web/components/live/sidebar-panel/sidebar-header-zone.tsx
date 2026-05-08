@@ -12,6 +12,10 @@ import { tooltipStyle } from "@/components/live/canvas-controls/tooltip-style"
 import { IconButton } from "@/components/live/icon-button"
 import { SearchInput } from "@/components/live/search-input"
 import { TeamSwitcher } from "@/components/live/team-switcher"
+import { InstanceBreadcrumb } from "@/components/live/instance-breadcrumb"
+// TODO(ROADMAP: "Sidebar / InstanceBreadcrumb wiring"): replace MOCK_INSTANCE
+// with route-derived data once /[workspace]/[repo]/[branch] exists.
+import { MOCK_INSTANCE } from "@/components/live/instance-breadcrumb/instance-breadcrumb.mocks"
 import {
   SIDEBAR_EASE_OUT_SOFT,
   SIDEBAR_LABEL_EXIT_MS,
@@ -68,6 +72,7 @@ export function SidebarHeaderZone() {
 
   return (
     <div style={headerStyle}>
+      <InstanceBreadcrumb data={MOCK_INSTANCE} collapsed={collapsed} />
       <TeamSwitcher
         teams={[registry.team]}
         activeTeamId={registry.team.id}

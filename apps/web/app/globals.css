@@ -13,6 +13,7 @@
    ================================================================ */
 @theme inline {
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius-sm: var(--radius-1);
   --radius-md: var(--radius-2);
   --radius-lg: var(--radius-3);
@@ -56,10 +57,10 @@
 :root {
   /* === Color Primitives (raw palette — no Tailwind binding) === */
   --color-white: #FFFFFF;
-  --color-heather-100: #F6F6F9;
-  --color-heather-200: #EFF0F5;
-  --color-heather-300: #E6E7EF;
-  --color-heather-400: #DFE0E7;
+  --color-heather-100: #F6F8F9;
+  --color-heather-200: #F0F3F4;
+  --color-heather-300: #E8EBED;
+  --color-heather-400: #E1E4E5;
 
   --color-ink-100: #9B9295;
   --color-ink-200: #6D6467;
@@ -267,21 +268,21 @@
 
 html.dark {
   /* Surfaces — per component-book.pen → Darkmode frame */
-  --color-bg-primary: #0C0C0D;
-  --color-bg-secondary: #161617;
-  --color-bg-tertiary: #1E1E24;
+  --color-bg-primary: #0C0D0D;
+  --color-bg-secondary: #141515;
+  --color-bg-tertiary: #1F2223;
 
   /* Borders — semi-transparent white so they adapt to whichever surface
      they land on. At 20% over #0C0C0D ≈ #3B3B3C; over #161617 (elevated)
      ≈ #42-43; over #1E1E24 ≈ #48 — all comfortably visible without
      shadows. Secondary at 30% (~#54545A) keeps the hierarchy where
      border-secondary > border-primary in emphasis. */
-  --color-border-primary: rgba(246, 246, 249, 0.20);
-  --color-border-secondary: rgba(246, 246, 249, 0.30);
+  --color-border-primary: rgba(246, 248, 249, 0.20);
+  --color-border-secondary: rgba(246, 248, 249, 0.30);
 
-  --color-text-primary: #F6F6F9;
-  --color-text-secondary: #8D8E96;
-  --color-text-tertiary: #64656D;
+  --color-text-primary: #F6F8F9;
+  --color-text-secondary: #8D9396;
+  --color-text-tertiary: #646A6D;
 
   /* Canvas dot — light low-alpha against dark canvas */
   --color-canvas-dot: rgba(255, 255, 255, 0.07);
@@ -297,7 +298,7 @@ html.dark {
      so it composites cleanly on whichever surface it lands on. */
   --color-bg-elevated: var(--color-bg-secondary);
   --color-bg-hover: var(--color-bg-tertiary);
-  --color-bg-hover-elevated: #26262B;
+  --color-bg-hover-elevated: #23272A;
 
   /* Shadows disabled — express elevation through surface lightening + the
      stronger semi-transparent borders above, not drop shadows. */

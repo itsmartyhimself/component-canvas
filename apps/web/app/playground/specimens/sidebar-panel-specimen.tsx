@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react"
 import { Suspense } from "react"
-import { SidebarPanel } from "@/components/live/sidebar-panel"
+import { SidebarPanel, SidebarPanelProvider } from "@/components/live/sidebar-panel"
 import { Specimen } from "./_shared"
 
 const frameStyle: CSSProperties = {
@@ -29,7 +29,9 @@ export function SidebarPanelSpecimen() {
       >
         <div style={frameStyle}>
           <Suspense fallback={null}>
-            <SidebarPanel />
+            <SidebarPanelProvider>
+              <SidebarPanel />
+            </SidebarPanelProvider>
           </Suspense>
         </div>
       </Specimen>
