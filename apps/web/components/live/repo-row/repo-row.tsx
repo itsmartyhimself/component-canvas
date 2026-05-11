@@ -29,6 +29,10 @@ import type { RepoConnection, RepoStatus } from "@/lib/dashboard/types"
 interface RepoRowProps {
   repo: RepoConnection
   expanded: boolean
+  // When another row in the list is the active surface (its parent repo is
+  // open, or the OtherBranchesExpander inside it is open), this row recedes
+  // to bg-secondary. The active surface itself stays bg-elevated.
+  dimmed?: boolean
   pinned?: boolean
   onToggleExpanded: (id: string) => void
 }
@@ -51,7 +55,7 @@ type RepoRowComponentProps = RepoRowProps &
   Omit<React.HTMLAttributes<HTMLDivElement>, keyof RepoRowProps>
 
 function RepoRowBase(
-  { repo, expanded, pinned = false, onToggleExpanded, ...rest }: RepoRowComponentProps,
+  { repo, expanded, dimmed = false, pinned = false, onToggleExpanded, ...rest }: RepoRowComponentProps,
   ref: Ref<HTMLDivElement>,
 ) {
   const router = useRouter()
@@ -72,7 +76,7 @@ function RepoRowBase(
   const isStale = repo.status === "stale"
   const isSyncing = repo.status === "syncing"
 
-  const background = expanded
+  const background = dimmed
     ? "var(--color-bg-secondary)"
     : "var(--color-bg-elevated)"
 
@@ -89,6 +93,7 @@ function RepoRowBase(
     border: 0,
     width: "100%",
     cursor: "pointer",
+    transition: "background-color var(--duration-micro) ease",
   }
 
   const handleToggle = () => onToggleExpanded(repo.id)

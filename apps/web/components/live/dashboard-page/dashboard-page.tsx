@@ -114,6 +114,13 @@ function DashboardContent() {
             repo.totalBranches - pinnedBranches.length,
           )
           const expanderOpen = expandedExpanderIds.has(repo.id)
+          // Active surface logic: when a repo is expanded, that repo row is the
+          // active (bg-elevated) surface UNLESS its OtherBranchesExpander is
+          // also open — in that case the expander becomes active and the parent
+          // repo row dims. Any non-active row dims while another is active.
+          const someRepoOpen = expandedRepoId !== null
+          const expanderActive = expanded && expanderOpen
+          const dimmed = someRepoOpen && (!expanded || expanderActive)
           return (
             <Collapsible.Root
               key={repo.id}
@@ -122,7 +129,12 @@ function DashboardContent() {
               style={collapsibleRootStyle}
             >
               <Collapsible.Trigger asChild>
-                <RepoRow repo={repo} expanded={expanded} onToggleExpanded={toggleExpanded} />
+                <RepoRow
+                  repo={repo}
+                  expanded={expanded}
+                  dimmed={dimmed}
+                  onToggleExpanded={toggleExpanded}
+                />
               </Collapsible.Trigger>
               <AnimatePresence initial={false}>
                 {expanded ? (
@@ -136,9 +148,7 @@ function DashboardContent() {
                       style={{ overflow: "hidden" }}
                     >
                       <div style={expandedContentStyle}>
-                        {pinnedBranches.map((branch) => (
-                          <BranchRow key={branch.id} branch={branch} />
-                        ))}
+                        <BranchHoverStack branches={pinnedBranches} />
                         {unpinnedCount > 0 ? (
                           <OtherBranchesExpander
                             totalUnpinned={unpinnedCount}
@@ -165,7 +175,7 @@ function DashboardContent() {
                                   transition={ROW_SPRING}
                                   style={{ overflow: "hidden" }}
                                 >
-                                  <SubBranches
+                                  <BranchHoverStack
                                     branches={synthesizeUnpinnedBranches(repo, unpinnedCount)}
                                   />
                                 </motion.div>
@@ -186,7 +196,7 @@ function DashboardContent() {
   )
 }
 
-interface SubBranchesProps {
+interface BranchHoverStackProps {
   branches: Branch[]
 }
 
@@ -195,11 +205,13 @@ interface PillBounds {
   height: number
 }
 
-// Single hover pill that travels between sub-branches inside the
-// OtherBranchesExpander reveal. Mirrors SidebarHighlightLayer's pattern:
-// register row refs, measure bounds on hover, animate a single absolutely-
-// positioned motion.div between positions. ROW_SPRING for the travel.
-function SubBranches({ branches }: SubBranchesProps) {
+// Stack of BranchRows that share a single hover pill traveling between
+// positions. Used both for the pinned branches under an expanded repo and
+// for the unpinned reveal under OtherBranchesExpander. Mirrors
+// SidebarHighlightLayer's pattern: register row refs, measure bounds on
+// hover, animate a single absolutely-positioned motion.div. ROW_SPRING
+// for travel.
+function BranchHoverStack({ branches }: BranchHoverStackProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const refs = useRef<Map<string, HTMLElement>>(new Map())
   const [hoveredId, setHoveredId] = useState<string | null>(null)
