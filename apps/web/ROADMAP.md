@@ -2,6 +2,46 @@
 
 Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 
+## Dashboard
+- Demo-only: `lib/dashboard/demo.ts` hardcoded workspaces/repos/branches/timestamps → replace with Supabase fetch keyed off the signed-in user once auth lands.
+- Demo-only: `/?state=empty` query-param toggle for the empty layout. Remove when real data drives the empty branch.
+- Demo-only: Toast trigger fires 4s after dashboard mount. Replace with sync-event subscription on Supabase Realtime channel.
+- Demo-only: Stale-Viewer-Banner timer (30s). Replace with `last_synced_commit_sha` change event on the instance channel (per architecture-brief §3 Stale viewer detection).
+- Demo-only: ConnectRepoForm radio selection is purely client-state; no GitHub App fetch yet. Wire to the install-callback + list-installed-repos endpoints in `apps/api`.
+- Demo-only: Empty-state secondary CTA points to `/playground/specimens` as a placeholder. Re-route to the real sample-AppShell flow when that exists.
+- LinkGitHubDialog shell not yet built — wire to the Google-user-hits-Connect flow once OAuth identities table is in place.
+- Workspace popover's "Move to team", "Invite member", "Manage members" are visual only — no mutations yet.
+- Filter pills (All / Personal / Team-{name}) filter client-side from hardcoded data — replace with workspace-scoped queries.
+- Search input ⌘K opens a placeholder shadcn Command palette — populate with real repo/branch search once registry is wired.
+- DashboardNav avatar binds to mock User from `lib/dashboard/demo.ts` — swap to Supabase Auth session user.
+- HeroCard inline-hardcodes `border-radius: 40px` and a `linear-gradient(180deg, …)` (two values that have no matching token; system colors used inside). Revisit if a new radius token or gradient token is added.
+- AuthButton "google" variant uses `Button variant="primary"` (closest in-system match). Visual delta vs Pencil pure-white: bg is `var(--color-bg-tertiary)` (#F0F3F4) rather than #FFFFFF. Accept until/unless a new dedicated variant is justified.
+- Connect repo Cancel button is inlined in `connect-repo-form.tsx` — Pencil shows fill #FFFFFF + 1px stroke #E1E4E5 + 14/500 #121111 text. The closest `Button` variant (`secondary`/`tertiary`/`ghost`) doesn't match: secondary is filled gray, tertiary has a dark border, ghost has no border. Revisit if a "stroked light-button" variant is introduced.
+- DarkModeTrigger renders a 36×36 `var(--gradient-dusk)` placeholder — no sun/moon glyph. Pencil intentionally shows the gradient placeholder. Replace with the real glyph asset once it lands; until then the toggle remains clickable but visually identical to NavAvatar.
+- StaleViewerBanner is positioned absolutely with hardcoded `top: 60 + 16, left: 280, right: 280` to mirror the (dashboard) layout's `paddingInline: 280` + nav 60h. If layout chrome dimensions change, both must move together. Cleaner option: lift those numbers to layout-level CSS variables.
+- Toast uses `sonner.toast.custom()` with `unstyled: true` so the dark pill renders fully via the `<ToastBody>` component. If sonner's swipe-to-dismiss / stack behaviour misbehaves, swap to a custom Headless toast queue.
+- DEMO_AVAILABLE_REPOS now carries an `alreadyConnected` flag (true for `acme/components-internal` only) so the ConnectRepoRow disabled state has data to render. Replace with the GitHub-installed-repo intersection query once that ships.
+- `synthesizeUnpinnedBranches` (in `lib/dashboard/demo.ts`) generates fake branch names + SHAs for the OtherBranchesExpander reveal. Replace with the real branch enumeration backed by GitHub App once `useInstanceBranches(repoId)` lands.
+- Login screen brand is an inline pill (small dusk-square + "Component Canvas" wordmark) rather than the EmptyState icon-tile. Two distinct brand-mark surfaces today; consolidate into a single `<BrandMark variant=…>` if a third surface lands.
+- Round 2 corrections: gray-surface containers (RecentRepos, ListContainer, StepSelectRepo's repo list, StepAssignWorkspace) no longer carry a 1px border — Pencil's stroke has no fill and renders invisible. Text Holder labels are now bare flex containers with padding only (no fill, no radius, no border) — they share visual identity with the gray surrounding surface. If a future divider is needed, reintroduce border-secondary deliberately.
+- Row borders are removed: RepoRow, BranchRow, OtherBranchesExpander no longer get a 1px stroke on hover or expanded state. Background change carries the affordance. OtherBranchesExpander retains the white `bg-elevated` fill while expanded so it reads as "lifted" inside the gray RepoList.
+- ConnectRepoRow accepts a per-instance `selectedBackground` override. The /connect repo picker passes `var(--gradient-twilight)` per user direction (Pencil shows plain `#F6F8F9` selected; the override is intentional, scoped only to that surface).
+- Button gained a single `borderColor` override prop. Cancel button on /connect uses `variant="ghost"` + `borderColor="var(--color-border-secondary)"` to match Pencil's #E1E4E5 stroke without filling out a new variant. Avoid using this prop elsewhere — it should be a one-off escape hatch.
+- ConnectRepoCrumb now wraps `Button variant="text-link" size="small"` instead of inlining a `<Link>`. Visual delta from Pencil: text inherits `text-primary` instead of #6d6467, and icon inherits `text-primary` instead of #9b9295. If the user pushes back, add a `color` override to Button (mirror the `borderColor` extension).
+- Connect repo submit button uses `<GithubMark>` (the same React component used by AuthButton) instead of Pencil's `lucide plug` icon — explicit user direction since it ties the action to GitHub authorization.
+- StaleViewerBanner gained a dismiss (X) button on the right of Refresh — Pencil only shows Refresh, but user requirement is escape-without-reload. Banner text + refresh-pill colors are hardcoded literals (`#121111`, `#FFFFFF`) rather than `var(--color-text-primary)` / `var(--color-bg-primary)` because `--color-tag-warning-wash` doesn't dark-flip; using tokens that do flip would render white text on cream in dark mode.
+- DashboardNav sits flush (no border-bottom). A 24px-tall gradient fade sits as a sibling in the layout (`absolute; top: 60`) so scrolled main content dissolves under the nav rather than slamming a hard edge. Z-index 1 — below StaleViewerBanner (z-index 10) and pointer-events: none.
+- Round 3 corrections:
+  - `WorkspaceCard` strips its border in all states; selected = `var(--gradient-twilight)` regardless of personal/team. Pencil only shows team-selected with the gradient; we apply the same active-state language to personal-selected too.
+  - `ConnectRepoRow` no longer accepts a custom `selectedBackground` override at the call site — Pencil's `#F6F8F9` selected fill is the canonical state. (The earlier round-2 twilight override was reverted at user request.)
+  - Text Holder labels (`recent-repos`, `step-assign-workspace`) now align `flex-start` instead of `center` so the section text begins at the left edge of the gray container.
+  - `ConnectRepoCrumb` wraps the Button in a `<div style={{alignSelf: flex-start}}>` to prevent the parent flex column from stretching it. shadcn's `buttonVariants` base classes include `justify-center`, which would otherwise center the back-link text across the page.
+  - `RecentRepos` cards are now whole-card `<Link>`s — the inner "Open Repo" trailing element is a styled `<span>` (not separately a link, avoids invalid nested `<a>`). `cursor: pointer` set explicitly.
+  - Single-row expansion: `expandedRepoId: string | null` replaces `expandedRepoIds: Set<string>`. Clicking a different RepoRow closes the previously-open one. Provider prop renamed to `initiallyExpandedRepoId`.
+  - Expansion motion bumped from `y: 12` → `y: 20` to match `sidebar-folder.tsx` exactly. Same `ROW_SPRING` transition.
+  - `BranchRow` gained `noHoverBackground` and `onHoverChange` props, plus `forwardRef`. The rows revealed under `OtherBranchesExpander` use these to opt out of per-row bg changes; a single traveling pill (animated `motion.div` with `ROW_SPRING`) carries the hover affordance instead — same mechanic as `SidebarHighlightLayer`. Pill bg = `--color-bg-elevated` so the hovered row pops white against the gray expander surface.
+- Demo cosmetic: on `/[workspace]/[repo]/[branch]`, the existing AppShell's InstanceBreadcrumb still renders from `MOCK_INSTANCE` ("Acme · components · main") regardless of URL slug. Cosmetic mismatch on demo entries (e.g. `/sample/components/main` shows "Acme · components · main"). Already tracked under §Sidebar.
+
 ## Backend / Registry
 - Replace `lib/registry/data.ts` (DEMO-ONLY) with a real registry backed by the API: workspace manifest fetch, repo-connect, or uploaded source.
 - Swap the in-memory mutation path in `SidebarActions` for server mutations.

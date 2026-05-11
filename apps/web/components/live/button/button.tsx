@@ -55,6 +55,7 @@ function ButtonBase(
     type = "button",
     ariaLabel,
     className,
+    borderColor,
     ...rest
   }: ButtonComponentProps,
   ref: Ref<HTMLButtonElement | HTMLAnchorElement>,
@@ -80,10 +81,11 @@ function ButtonBase(
     !isDisabled && isHovered && hoverColors
       ? hoverColors.color
       : baseColors.color
-  const resolvedBorder =
+  const variantBorder =
     !isDisabled && isHovered && hoverColors
       ? hoverColors.border
       : baseColors.border
+  const resolvedBorder = borderColor ?? variantBorder
 
   const rootStyle: CSSProperties = {
     height,

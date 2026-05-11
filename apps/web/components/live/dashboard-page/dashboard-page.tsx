@@ -1,0 +1,285 @@
+"use client"
+
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react"
+import { useSearchParams } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion"
+import { Collapsible } from "radix-ui"
+import { BranchRow } from "@/components/live/branch-row"
+import { DashboardListHeader } from "@/components/live/dashboard-list-header"
+import { EmptyState } from "@/components/live/empty-state"
+import { Greeting } from "@/components/live/greeting"
+import { ListContainer } from "@/components/live/list-container"
+import { OtherBranchesExpander } from "@/components/live/other-branches-expander"
+import { RecentRepos } from "@/components/live/recent-repos"
+import { RepoRow } from "@/components/live/repo-row"
+import { ROW_SPRING } from "@/components/live/row/row.config"
+import {
+  useDashboardState,
+  DashboardStateProvider,
+} from "@/lib/dashboard/state"
+import { synthesizeUnpinnedBranches } from "@/lib/dashboard/demo"
+import { useToast } from "@/components/live/toast"
+import type { Branch } from "@/lib/dashboard/types"
+
+export function DashboardPage() {
+  const searchParams = useSearchParams()
+  const stateParam = searchParams.get("state")
+  const isEmpty = stateParam === "empty"
+  const initiallyExpanded = stateParam === "expanded" ? "r-1" : null
+
+  if (isEmpty) {
+    return <EmptyState />
+  }
+
+  return (
+    <DashboardStateProvider initiallyExpandedRepoId={initiallyExpanded}>
+      <DashboardContent />
+    </DashboardStateProvider>
+  )
+}
+
+// Mirrors SidebarFolder. Outer Collapsible.Root has no flex gap — the
+// spacing-1 inset between RepoRow and the expanded content lives INSIDE the
+// animated motion.div as paddingTop on the inner wrapper. When motion.div
+// clamps to height:0 + overflow:hidden during exit, that padding clips with
+// it, so there's no phantom flex-gap ghost between RepoRow and the unmounting
+// content.
+const collapsibleRootStyle: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+}
+
+const expandedContentStyle: CSSProperties = {
+  paddingTop: "var(--spacing-1)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "var(--spacing-1)",
+}
+
+function DashboardContent() {
+  const {
+    filteredRepos,
+    expandedRepoId,
+    expandedExpanderIds,
+    toggleExpanded,
+    toggleExpander,
+  } = useDashboardState()
+  const { showToast } = useToast()
+
+  // TODO: ROADMAP §Dashboard — Toast 4s timer mocks the "new version available"
+  // sync-event. Replace with a Supabase Realtime subscription.
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      showToast({
+        tone: "success",
+        title: "New version available",
+        action: { label: "Refresh" },
+      })
+    }, 4_000)
+    return () => window.clearTimeout(t)
+  }, [showToast])
+
+  return (
+    <div
+      style={{
+        maxWidth: 880,
+        marginInline: "auto",
+        paddingBlockStart: "var(--spacing-14)",
+        paddingBlockEnd: "var(--spacing-14)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--spacing-7)",
+      }}
+    >
+      <Greeting />
+      <DashboardListHeader
+        title="All repos"
+        count={filteredRepos.length}
+        showFilters
+      />
+      <RecentRepos />
+      <ListContainer>
+        {filteredRepos.map((repo) => {
+          const expanded = expandedRepoId === repo.id
+          const pinnedBranches = repo.branches.filter((b) => b.pinned)
+          const unpinnedCount = Math.max(
+            0,
+            repo.totalBranches - pinnedBranches.length,
+          )
+          const expanderOpen = expandedExpanderIds.has(repo.id)
+          return (
+            <Collapsible.Root
+              key={repo.id}
+              open={expanded}
+              onOpenChange={() => undefined}
+              style={collapsibleRootStyle}
+            >
+              <Collapsible.Trigger asChild>
+                <RepoRow repo={repo} expanded={expanded} onToggleExpanded={toggleExpanded} />
+              </Collapsible.Trigger>
+              <AnimatePresence initial={false}>
+                {expanded ? (
+                  <Collapsible.Content forceMount asChild>
+                    <motion.div
+                      key={`${repo.id}-expanded`}
+                      initial={{ opacity: 0, height: 0, y: 20 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: 20 }}
+                      transition={ROW_SPRING}
+                      style={{ overflow: "hidden" }}
+                    >
+                      <div style={expandedContentStyle}>
+                        {pinnedBranches.map((branch) => (
+                          <BranchRow key={branch.id} branch={branch} />
+                        ))}
+                        {unpinnedCount > 0 ? (
+                          <OtherBranchesExpander
+                            totalUnpinned={unpinnedCount}
+                            expanded={expanderOpen}
+                            onToggle={() => toggleExpander(repo.id)}
+                          />
+                        ) : null}
+                        {/* Inner reveal: y:20 deliberately dropped at this nested
+                            level. The outer keeps y:20 (mirrors sidebar's depth-1
+                            reveal); compounding the translation at depth-2 would
+                            double-slide ~40px during simultaneous collapse. */}
+                        <Collapsible.Root
+                          open={expanderOpen}
+                          onOpenChange={() => undefined}
+                        >
+                          <AnimatePresence initial={false}>
+                            {expanderOpen ? (
+                              <Collapsible.Content forceMount asChild>
+                                <motion.div
+                                  key={`${repo.id}-unpinned`}
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={ROW_SPRING}
+                                  style={{ overflow: "hidden" }}
+                                >
+                                  <SubBranches
+                                    branches={synthesizeUnpinnedBranches(repo, unpinnedCount)}
+                                  />
+                                </motion.div>
+                              </Collapsible.Content>
+                            ) : null}
+                          </AnimatePresence>
+                        </Collapsible.Root>
+                      </div>
+                    </motion.div>
+                  </Collapsible.Content>
+                ) : null}
+              </AnimatePresence>
+            </Collapsible.Root>
+          )
+        })}
+      </ListContainer>
+    </div>
+  )
+}
+
+interface SubBranchesProps {
+  branches: Branch[]
+}
+
+interface PillBounds {
+  top: number
+  height: number
+}
+
+// Single hover pill that travels between sub-branches inside the
+// OtherBranchesExpander reveal. Mirrors SidebarHighlightLayer's pattern:
+// register row refs, measure bounds on hover, animate a single absolutely-
+// positioned motion.div between positions. ROW_SPRING for the travel.
+function SubBranches({ branches }: SubBranchesProps) {
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const refs = useRef<Map<string, HTMLElement>>(new Map())
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [bounds, setBounds] = useState<PillBounds | null>(null)
+
+  const registerRef = useCallback(
+    (id: string, el: HTMLElement | null) => {
+      const map = refs.current
+      if (el) map.set(id, el)
+      else map.delete(id)
+    },
+    [],
+  )
+
+  const handleHoverChange = useCallback(
+    (id: string, hovered: boolean) => {
+      setHoveredId((prev) => {
+        if (hovered) return id
+        return prev === id ? null : prev
+      })
+    },
+    [],
+  )
+
+  useLayoutEffect(() => {
+    if (!hoveredId || !wrapperRef.current) {
+      setBounds(null)
+      return
+    }
+    const el = refs.current.get(hoveredId)
+    if (!el) {
+      setBounds(null)
+      return
+    }
+    const wrapRect = wrapperRef.current.getBoundingClientRect()
+    const elRect = el.getBoundingClientRect()
+    setBounds({ top: elRect.top - wrapRect.top, height: elRect.height })
+  }, [hoveredId])
+
+  const pillStyle: CSSProperties = {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    background: "var(--color-bg-elevated)",
+    borderRadius: "var(--radius-4)",
+    pointerEvents: "none",
+    zIndex: 0,
+  }
+
+  return (
+    <div
+      ref={wrapperRef}
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--spacing-1)",
+      }}
+    >
+      <AnimatePresence initial={false}>
+        {bounds ? (
+          <motion.div
+            key="branch-traveling-pill"
+            style={pillStyle}
+            initial={{ opacity: 0, top: bounds.top, height: bounds.height }}
+            animate={{ opacity: 1, top: bounds.top, height: bounds.height }}
+            exit={{ opacity: 0 }}
+            transition={ROW_SPRING}
+          />
+        ) : null}
+      </AnimatePresence>
+      {branches.map((branch) => (
+        <BranchRow
+          key={branch.id}
+          branch={branch}
+          noHoverBackground
+          onHoverChange={(h) => handleHoverChange(branch.id, h)}
+          ref={(el) => registerRef(branch.id, el)}
+        />
+      ))}
+    </div>
+  )
+}

@@ -26,6 +26,9 @@ export interface ButtonProps {
   type?: "button" | "submit" | "reset"
   ariaLabel?: string
   className?: string
+  // One-off override for the resolved border color. Use sparingly — most callers
+  // should rely on the variant. Set to a token string ("var(--color-...)") or hex.
+  borderColor?: string
 }
 
 export const HEIGHT_MAP: Record<ButtonSize, number> = {

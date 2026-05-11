@@ -1,0 +1,247 @@
+"use client"
+
+import * as React from "react"
+import {
+  forwardRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type Ref,
+} from "react"
+import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
+import {
+  ChevronRight,
+  Pin,
+  PinFilled,
+  Renew,
+  View,
+} from "@carbon/icons-react"
+import { IconButton } from "@/components/live/icon-button"
+import { StatusDot } from "@/components/live/status-dot"
+import { WorkspaceChip } from "@/components/live/workspace-chip"
+import { WorkspacePopover } from "@/components/live/workspace-popover"
+import { ROW_SPRING } from "@/components/live/row/row.config"
+import { formatRelativeTimeShort } from "@/lib/time/relative"
+import { DEMO_NOW, workspaceForRepo } from "@/lib/dashboard/demo"
+import type { RepoConnection, RepoStatus } from "@/lib/dashboard/types"
+
+interface RepoRowProps {
+  repo: RepoConnection
+  expanded: boolean
+  pinned?: boolean
+  onToggleExpanded: (id: string) => void
+}
+
+const STATUS_DOT_TONE: Record<RepoStatus, { tone: "success" | "danger" | "neutral"; variant: "solid" | "hollow" }> = {
+  synced: { tone: "success", variant: "solid" },
+  syncing: { tone: "neutral", variant: "hollow" },
+  failed: { tone: "danger", variant: "solid" },
+  stale: { tone: "neutral", variant: "hollow" },
+}
+
+const STATUS_META: Record<RepoStatus, (relTime: string) => string> = {
+  synced: (t) => `synced ${t} ago`,
+  syncing: () => `syncing…`,
+  failed: () => `build failed`,
+  stale: (t) => `stale · ${t} ago`,
+}
+
+type RepoRowComponentProps = RepoRowProps &
+  Omit<React.HTMLAttributes<HTMLDivElement>, keyof RepoRowProps>
+
+function RepoRowBase(
+  { repo, expanded, pinned = false, onToggleExpanded, ...rest }: RepoRowComponentProps,
+  ref: Ref<HTMLDivElement>,
+) {
+  const router = useRouter()
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const workspace = workspaceForRepo(repo.id)
+  const primaryBranch =
+    repo.branches.find((b) => b.primary)?.name ?? repo.branches[0]?.name ?? "main"
+
+  const dotConfig = STATUS_DOT_TONE[repo.status]
+  const pinnedCount = repo.branches.filter((b) => b.pinned).length
+  const unpinnedCount = Math.max(0, repo.totalBranches - pinnedCount)
+  const metaText = expanded
+    ? `${pinnedCount} pinned · ${unpinnedCount} other`
+    : STATUS_META[repo.status](
+        formatRelativeTimeShort(new Date(repo.lastSyncedAtMs), new Date(DEMO_NOW)),
+      )
+  const isFailed = repo.status === "failed"
+  const isStale = repo.status === "stale"
+  const isSyncing = repo.status === "syncing"
+
+  const background = expanded
+    ? "var(--color-bg-secondary)"
+    : "var(--color-bg-elevated)"
+
+  const rowStyle: CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "var(--spacing-5)",
+    height: 56,
+    paddingBlock: "var(--spacing-5)",
+    paddingInline: "var(--spacing-6)",
+    borderRadius: "var(--radius-4)",
+    background,
+    border: 0,
+    width: "100%",
+    cursor: "pointer",
+  }
+
+  const handleToggle = () => onToggleExpanded(repo.id)
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      handleToggle()
+    }
+  }
+
+  return (
+    <div
+      ref={ref}
+      role="button"
+      tabIndex={0}
+      data-row="repo"
+      aria-label={`Expand ${repo.orgRepo}`}
+      style={rowStyle}
+      {...rest}
+      onClick={handleToggle}
+      onKeyDown={handleKeyDown}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--spacing-4)",
+          flex: 1,
+          minWidth: 0,
+        }}
+      >
+        <motion.span
+          animate={{ rotate: expanded ? 90 : 0 }}
+          transition={ROW_SPRING}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--color-text-tertiary)",
+            flexShrink: 0,
+          }}
+        >
+          <ChevronRight size={16} />
+        </motion.span>
+        <span
+          className="font-mono font-medium type-4"
+          style={{
+            color: isStale ? "var(--color-text-secondary)" : "var(--color-text-primary)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {repo.orgRepo}
+        </span>
+        {pinned ? (
+          <PinFilled size={12} style={{ color: "var(--color-text-tertiary)", flexShrink: 0 }} />
+        ) : null}
+      </span>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--spacing-4)",
+          flexShrink: 0,
+        }}
+      >
+        <div
+          data-row-action="true"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--spacing-2)",
+          }}
+        >
+          <IconButton
+            ariaLabel={`Open ${repo.orgRepo}`}
+            icon={<View size={16} />}
+            size={24}
+            bordered={false}
+            onClick={() =>
+              router.push(`/${workspace.name.toLowerCase()}/${repo.orgRepo.split("/")[1]}/${primaryBranch}`)
+            }
+          />
+          <IconButton
+            ariaLabel={`Re-sync ${repo.orgRepo}`}
+            icon={<Renew size={16} />}
+            size={24}
+            bordered={false}
+          />
+          <IconButton
+            ariaLabel={pinned ? `Unpin ${repo.orgRepo}` : `Pin ${repo.orgRepo}`}
+            icon={pinned ? <PinFilled size={16} /> : <Pin size={16} />}
+            size={24}
+            bordered={false}
+          />
+        </div>
+
+        <span
+          className={`font-mono type-3 ${isFailed && !expanded ? "font-medium" : ""}`}
+          style={{
+            color:
+              expanded
+                ? "var(--color-text-secondary)"
+                : isFailed
+                  ? "var(--color-tag-danger-ink)"
+                  : isStale
+                    ? "var(--color-text-tertiary)"
+                    : "var(--color-text-secondary)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {metaText}
+        </span>
+        <StatusDot tone={dotConfig.tone} variant={dotConfig.variant} size={8} ariaLabel={`Status: ${repo.status}`} />
+        {isSyncing ? (
+          <motion.span
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+            style={{
+              display: "inline-flex",
+              color: "var(--color-text-secondary)",
+            }}
+            aria-hidden
+          >
+            <Renew size={14} />
+          </motion.span>
+        ) : null}
+        <span
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+          style={{ display: "inline-flex" }}
+        >
+          <WorkspacePopover
+            open={popoverOpen}
+            onOpenChange={setPopoverOpen}
+            workspace={workspace}
+            trigger={
+              <WorkspaceChip
+                workspace={workspace}
+                active={popoverOpen}
+                onClick={() => setPopoverOpen((o) => !o)}
+              />
+            }
+          />
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export const RepoRow = forwardRef(RepoRowBase)
+RepoRow.displayName = "RepoRow"

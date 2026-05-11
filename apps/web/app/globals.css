@@ -157,6 +157,7 @@
   --radius-2-5: 10px;
   --radius-3: 12px;
   --radius-4: 16px;
+  --radius-4-5: 18px;
   --radius-5: 20px;
   --radius-6: 24px;
   --radius-full: 9999px;
@@ -530,17 +531,59 @@ html.dark {
     );
   }
 
-  /* Sidebar row action: hover/focus-reveal inside a menu item or sub-item.
-     The trigger stays mounted so keyboard nav + screen readers still reach it. */
+  /* Row action: hover/focus-reveal inside a sidebar item OR dashboard row.
+     The trigger stays mounted so keyboard nav + screen readers still reach it.
+     pointer-events gates pointer clicks while invisible — keyboard nav still
+     works (pointer-events: none doesn't affect focus/keydown).
+     Combined opacity + filter:blur reveal masks pixel snap and keeps the
+     enter from feeling abrupt. Enter is the felt motion, so it gets the
+     soft ease-out; exit uses the snappier ease-swift. */
   [data-row-action] {
     opacity: 0;
-    transition: opacity 150ms var(--ease-standard) 200ms;
+    filter: blur(2px);
+    pointer-events: none;
+    transition:
+      opacity var(--duration-micro) var(--ease-swift),
+      filter var(--duration-micro) var(--ease-swift);
   }
   [data-slot="sidebar-menu-item"]:hover [data-row-action],
   [data-slot="sidebar-menu-sub-item"]:hover [data-row-action],
+  [data-row="repo"]:hover [data-row-action],
+  [data-row="branch"]:not([data-status="syncing"]):hover [data-row-action],
+  [data-row="branch-naked"]:not([data-status="syncing"]):hover [data-row-action],
   [data-row-action][data-state="open"] {
     opacity: 1;
-    transition: opacity var(--duration-micro) var(--ease-swift);
+    filter: blur(0);
+    pointer-events: auto;
+    transition:
+      opacity var(--duration-fast) var(--ease-out-soft),
+      filter var(--duration-fast) var(--ease-out-soft);
+  }
+
+  /* Dashboard rows — CSS-only hover affordance. Hover bg is painted via the
+     pseudo-class (instant, GPU-friendly, zero re-renders). No useState(hover)
+     in JS. Branch rows skip the bg-hover when status="syncing" so the spinner
+     stays readable, and "branch-naked" variants stay transparent so the
+     traveling pill in SubBranches carries the hover affordance instead. */
+  [data-row="repo"] {
+    cursor: pointer;
+  }
+  [data-row="repo"]:hover {
+    background-color: var(--color-bg-secondary);
+  }
+  [data-row="branch"]:not([data-status="syncing"]):hover {
+    background-color: var(--color-bg-elevated);
+  }
+  [data-other-branches-expander]:hover {
+    background-color: var(--color-bg-elevated);
+  }
+  [data-other-branches-expander]:hover [data-obx="icon"],
+  [data-other-branches-expander]:hover [data-obx="label"],
+  [data-other-branches-expander]:hover [data-obx="chevron"] {
+    color: var(--color-text-primary);
+  }
+  [data-other-branches-expander]:hover [data-obx="pill"] {
+    background-color: var(--color-bg-secondary);
   }
 
   /* Hide native scrollbar on horizontal scroll regions where gradient fades
