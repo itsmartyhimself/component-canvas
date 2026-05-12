@@ -35,6 +35,16 @@ interface RepoRowProps {
   dimmed?: boolean
   pinned?: boolean
   onToggleExpanded: (id: string) => void
+  // Visibility / interactivity overrides — defaults preserve dashboard behavior.
+  // Set interactive=false in the search modal where the row is a passive card
+  // and a parent (Command.Item) paints resting / hover / selected fill.
+  showChevron?: boolean
+  showActions?: boolean
+  showPin?: boolean
+  showSyncingSpinner?: boolean
+  showMeta?: boolean
+  showStatusDot?: boolean
+  interactive?: boolean
 }
 
 const STATUS_DOT_TONE: Record<RepoStatus, { tone: "success" | "danger" | "neutral"; variant: "solid" | "hollow" }> = {
@@ -55,7 +65,21 @@ type RepoRowComponentProps = RepoRowProps &
   Omit<React.HTMLAttributes<HTMLDivElement>, keyof RepoRowProps>
 
 function RepoRowBase(
-  { repo, expanded, dimmed = false, pinned = false, onToggleExpanded, ...rest }: RepoRowComponentProps,
+  {
+    repo,
+    expanded,
+    dimmed = false,
+    pinned = false,
+    onToggleExpanded,
+    showChevron = true,
+    showActions = true,
+    showPin = true,
+    showSyncingSpinner = true,
+    showMeta = true,
+    showStatusDot = true,
+    interactive = true,
+    ...rest
+  }: RepoRowComponentProps,
   ref: Ref<HTMLDivElement>,
 ) {
   const router = useRouter()
@@ -76,10 +100,6 @@ function RepoRowBase(
   const isStale = repo.status === "stale"
   const isSyncing = repo.status === "syncing"
 
-  const background = dimmed
-    ? "var(--color-bg-secondary)"
-    : "var(--color-bg-elevated)"
-
   const rowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -89,11 +109,15 @@ function RepoRowBase(
     paddingBlock: "var(--spacing-5)",
     paddingInline: "var(--spacing-6)",
     borderRadius: "var(--radius-4)",
-    background,
     border: 0,
     width: "100%",
     cursor: "pointer",
     transition: "background-color var(--duration-micro) ease",
+  }
+  if (interactive) {
+    rowStyle.background = dimmed
+      ? "var(--color-bg-secondary)"
+      : "var(--color-bg-elevated)"
   }
 
   const handleToggle = () => onToggleExpanded(repo.id)
@@ -104,17 +128,27 @@ function RepoRowBase(
     }
   }
 
+  const interactiveAttrs = interactive
+    ? {
+        role: "button" as const,
+        tabIndex: 0,
+        "data-row": "repo",
+        "aria-label": `Expand ${repo.orgRepo}`,
+        "aria-expanded": expanded,
+      }
+    : {}
+
+  const interactiveHandlers = interactive
+    ? { onClick: handleToggle, onKeyDown: handleKeyDown }
+    : {}
+
   return (
     <div
       ref={ref}
-      role="button"
-      tabIndex={0}
-      data-row="repo"
-      aria-label={`Expand ${repo.orgRepo}`}
+      {...interactiveAttrs}
       style={rowStyle}
       {...rest}
-      onClick={handleToggle}
-      onKeyDown={handleKeyDown}
+      {...interactiveHandlers}
     >
       <span
         style={{
@@ -125,19 +159,21 @@ function RepoRowBase(
           minWidth: 0,
         }}
       >
-        <motion.span
-          animate={{ rotate: expanded ? 90 : 0 }}
-          transition={ROW_SPRING}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--color-text-tertiary)",
-            flexShrink: 0,
-          }}
-        >
-          <ChevronRight size={16} />
-        </motion.span>
+        {showChevron ? (
+          <motion.span
+            animate={{ rotate: expanded ? 90 : 0 }}
+            transition={ROW_SPRING}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--color-text-tertiary)",
+              flexShrink: 0,
+            }}
+          >
+            <ChevronRight size={16} />
+          </motion.span>
+        ) : null}
         <span
           className="font-mono font-medium type-4"
           style={{
@@ -149,7 +185,7 @@ function RepoRowBase(
         >
           {repo.orgRepo}
         </span>
-        {pinned ? (
+        {showPin && pinned ? (
           <PinFilled size={12} style={{ color: "var(--color-text-tertiary)", flexShrink: 0 }} />
         ) : null}
       </span>
@@ -162,57 +198,63 @@ function RepoRowBase(
           flexShrink: 0,
         }}
       >
-        <div
-          data-row-action="true"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--spacing-2)",
-          }}
-        >
-          <IconButton
-            ariaLabel={`Open ${repo.orgRepo}`}
-            icon={<View size={16} />}
-            size={24}
-            bordered={false}
-            onClick={() =>
-              router.push(`/${workspace.name.toLowerCase()}/${repo.orgRepo.split("/")[1]}/${primaryBranch}`)
-            }
-          />
-          <IconButton
-            ariaLabel={`Re-sync ${repo.orgRepo}`}
-            icon={<Renew size={16} />}
-            size={24}
-            bordered={false}
-          />
-          <IconButton
-            ariaLabel={pinned ? `Unpin ${repo.orgRepo}` : `Pin ${repo.orgRepo}`}
-            icon={pinned ? <PinFilled size={16} /> : <Pin size={16} />}
-            size={24}
-            bordered={false}
-          />
-        </div>
+        {showActions ? (
+          <div
+            data-row-action="true"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--spacing-2)",
+            }}
+          >
+            <IconButton
+              ariaLabel={`Open ${repo.orgRepo}`}
+              icon={<View size={16} />}
+              size={24}
+              bordered={false}
+              onClick={() =>
+                router.push(`/${workspace.name.toLowerCase()}/${repo.orgRepo.split("/")[1]}/${primaryBranch}`)
+              }
+            />
+            <IconButton
+              ariaLabel={`Re-sync ${repo.orgRepo}`}
+              icon={<Renew size={16} />}
+              size={24}
+              bordered={false}
+            />
+            <IconButton
+              ariaLabel={pinned ? `Unpin ${repo.orgRepo}` : `Pin ${repo.orgRepo}`}
+              icon={pinned ? <PinFilled size={16} /> : <Pin size={16} />}
+              size={24}
+              bordered={false}
+            />
+          </div>
+        ) : null}
 
-        <span
-          className={`font-mono type-3 ${isFailed && !expanded ? "font-medium" : ""}`}
-          style={{
-            color:
-              expanded
-                ? "var(--color-text-secondary)"
-                : isFailed
-                  ? "var(--color-tag-danger-ink)"
-                  : isStale
-                    ? "var(--color-text-tertiary)"
-                    : "var(--color-text-secondary)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {metaText}
-        </span>
-        <StatusDot tone={dotConfig.tone} variant={dotConfig.variant} size={8} ariaLabel={`Status: ${repo.status}`} />
-        {isSyncing ? (
+        {showMeta ? (
+          <span
+            className={`font-mono type-3 ${isFailed && !expanded ? "font-medium" : ""}`}
+            style={{
+              color:
+                expanded
+                  ? "var(--color-text-secondary)"
+                  : isFailed
+                    ? "var(--color-tag-danger-ink)"
+                    : isStale
+                      ? "var(--color-text-tertiary)"
+                      : "var(--color-text-secondary)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {metaText}
+          </span>
+        ) : null}
+        {showStatusDot ? (
+          <StatusDot tone={dotConfig.tone} variant={dotConfig.variant} size={8} ariaLabel={`Status: ${repo.status}`} />
+        ) : null}
+        {showSyncingSpinner && isSyncing ? (
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
@@ -225,24 +267,28 @@ function RepoRowBase(
             <Renew size={14} />
           </motion.span>
         ) : null}
-        <span
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          style={{ display: "inline-flex" }}
-        >
-          <WorkspacePopover
-            open={popoverOpen}
-            onOpenChange={setPopoverOpen}
-            workspace={workspace}
-            trigger={
-              <WorkspaceChip
-                workspace={workspace}
-                active={popoverOpen}
-                onClick={() => setPopoverOpen((o) => !o)}
-              />
-            }
-          />
-        </span>
+        {interactive ? (
+          <span
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            style={{ display: "inline-flex" }}
+          >
+            <WorkspacePopover
+              open={popoverOpen}
+              onOpenChange={setPopoverOpen}
+              workspace={workspace}
+              trigger={
+                <WorkspaceChip
+                  workspace={workspace}
+                  active={popoverOpen}
+                  onClick={() => setPopoverOpen((o) => !o)}
+                />
+              }
+            />
+          </span>
+        ) : (
+          <WorkspaceChip workspace={workspace} />
+        )}
       </div>
     </div>
   )

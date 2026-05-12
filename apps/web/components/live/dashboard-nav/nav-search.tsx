@@ -2,14 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from "react"
 import { Search } from "@carbon/icons-react"
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/imports/shadcn/command"
+import { SearchModal } from "@/components/live/search-modal"
 import { CmndMark } from "./cmnd-mark"
 import { KMark } from "./k-mark"
 
@@ -75,31 +68,7 @@ export function NavSearch() {
           <KMark height={KBD_GLYPH_HEIGHT} />
         </span>
       </button>
-      {/* TODO: ROADMAP §Dashboard — populate command palette with real repo/branch/component search. */}
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search repos, branches, components…" />
-        <CommandList>
-          <CommandEmpty>No results. The palette ships in v2.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem
-              onSelect={() => {
-                setOpen(false)
-                window.location.href = "/connect"
-              }}
-            >
-              Connect a new repo
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setOpen(false)
-                window.location.href = "/playground"
-              }}
-            >
-              Open component specimens
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+      <SearchModal open={open} onOpenChange={setOpen} />
     </>
   )
 }

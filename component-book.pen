@@ -17412,231 +17412,6 @@
       ]
     },
     {
-      "type": "rectangle",
-      "id": "I3SltL",
-      "x": 3388,
-      "y": 215,
-      "name": "Reference1",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "Screenshot%202026-05-04%20at%2015.06.06.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 626
-    },
-    {
-      "type": "rectangle",
-      "id": "ffkOO",
-      "x": 3388,
-      "y": 841,
-      "name": "Reference2",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 894
-    },
-    {
-      "type": "rectangle",
-      "id": "dUeiv",
-      "x": 3388,
-      "y": 1735,
-      "name": "Reference3",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-1.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 895
-    },
-    {
-      "type": "rectangle",
-      "id": "RvogL",
-      "x": 3388,
-      "y": 2630,
-      "name": "Reference4",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-2.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 894
-    },
-    {
-      "type": "rectangle",
-      "id": "XZwdX",
-      "x": 3388,
-      "y": 3524,
-      "name": "Reference5",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-3.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 895
-    },
-    {
-      "type": "rectangle",
-      "id": "OjyE2",
-      "x": 5868,
-      "y": 215,
-      "name": "Reference6",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-4.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 805
-    },
-    {
-      "type": "rectangle",
-      "id": "R3P1Xp",
-      "x": 5868,
-      "y": 1020,
-      "name": "Reference7",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-5.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 895
-    },
-    {
-      "type": "rectangle",
-      "id": "XQN2f",
-      "x": 4628,
-      "y": 215,
-      "name": "Reference8",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-6.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 895
-    },
-    {
-      "type": "rectangle",
-      "id": "p9bDZ",
-      "x": 4628,
-      "y": 1110,
-      "name": "Reference9",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-7.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 894
-    },
-    {
-      "type": "rectangle",
-      "id": "hXwjd",
-      "x": 4628,
-      "y": 2004,
-      "name": "Reference10",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-8.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 894
-    },
-    {
-      "type": "rectangle",
-      "id": "j3lKf",
-      "x": 4628,
-      "y": 2898,
-      "name": "Reference11",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-9.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 853
-    },
-    {
-      "type": "rectangle",
-      "id": "Wibl8",
-      "x": 4628,
-      "y": 3751,
-      "name": "Reference12",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-10.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 853
-    },
-    {
-      "type": "rectangle",
-      "id": "n4G59",
-      "x": 5868,
-      "y": 1915,
-      "name": "Reference13",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-11.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 853
-    },
-    {
-      "type": "rectangle",
-      "id": "jEFon",
-      "x": 5868,
-      "y": 2768,
-      "name": "Reference14",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-12.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 854
-    },
-    {
-      "type": "rectangle",
-      "id": "AedpD",
-      "x": 5868,
-      "y": 3622,
-      "name": "Reference15",
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "image-13.png",
-        "mode": "fill"
-      },
-      "width": 1200,
-      "height": 799
-    },
-    {
       "type": "note",
       "id": "V420l",
       "x": -471,
@@ -51931,6 +51706,920 @@
               ],
               "justifyContent": "center",
               "alignItems": "center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PkZHG",
+      "x": 5336,
+      "y": 8582,
+      "name": "SearchModalDefault",
+      "clip": true,
+      "width": "fill_container(880)",
+      "fill": "#ffffff",
+      "cornerRadius": 16,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vZFyu",
+          "name": "SearchInput",
+          "context": "Search input, the text input | thing should be present  and active on mount so the user can just start typing. the placeholder text gets changed when typing into the search term",
+          "width": "fill_container",
+          "fill": "#ffffffff",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#f0f3f4"
+          },
+          "gap": 8,
+          "padding": [
+            20,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "yeGCH",
+              "name": "Most accessed repos",
+              "context": "placeholder text",
+              "fill": "#9b9295ff",
+              "content": "Search repos and branches",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xTaT3",
+          "name": "SearchResult",
+          "context": "where search results render. needs logic for max height and overflow vertical scrolling inside. \n\nWhen the defaultRender isnt there, resutls from search terms render. \n\nUse a shadcn skeleton base as well for loading state. skeletons should use the lightest heather color and animate in opacity in and out in a smart way. skeleton shapes should mimic search result shapes\n\nMaybe needs a minimum height as well?",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "mARjT",
+              "name": "DefaultRender",
+              "context": "renders instead of search result before a search has been conducted. shows recently opened repos. needs logic for max height and overflow vertical scroll",
+              "width": "fill_container",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KIJVZ",
+                  "name": "Text Holder",
+                  "context": "text holder for recently opened repos label",
+                  "width": "fill_container",
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    12,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "e6qCZ",
+                      "name": "Most accessed repos",
+                      "fill": "#9b9295ff",
+                      "content": "Recently opened repos",
+                      "lineHeight": 1,
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xnFDr",
+                  "name": "RepoList",
+                  "context": "<!--\n## RepoList of recently opened repos by the user\n\nNeeds logic here for max height and overflow vertical scroll",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "#f0f3f4",
+                  "cornerRadius": 18,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kPnuS",
+                      "name": "RepoRow-default-final-1",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "#ffffff",
+                      "cornerRadius": 16,
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        20
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n5kpDO",
+                          "name": "r1l",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "VuGLF",
+                              "name": "r1ch",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "chevron-right",
+                              "iconFontFamily": "lucide",
+                              "fill": "#9b9295"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Yb2J4",
+                              "name": "r1t",
+                              "fill": "#121111",
+                              "content": "octocat/hello-world",
+                              "lineHeight": 1.1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KX01C",
+                          "name": "r1r",
+                          "gap": 16,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T4WobL",
+                              "name": "r1m",
+                              "fill": "#6d6467",
+                              "content": "synced 2m ago",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "t5KpYG",
+                              "name": "r1d",
+                              "fill": "\\$tag-success-ink",
+                              "width": 8,
+                              "height": 8
+                            },
+                            {
+                              "type": "frame",
+                              "id": "IHweX",
+                              "name": "WorkspaceChip-personal-final",
+                              "context": "<!-- ## WorkspaceChip-personal-final\n**Type:** component\n**Variant:** personal\n**Component:** WorkspaceChip\n### Design notes\n- 22 tall capsule, radius 11, fill #F6F8F9, padding [0,8].\n- Quiet 6px dot (#9b9295) + 'Personal' label (Geist 12 #6d6467).\n- Default state for new repos (build plan line 132). Visible inline on every RepoRow.\n### For AI agents\n- Sibling WorkspaceChip-team-final has a mono initial avatar instead of the dot.\n- Active state (popover open) adds a 1px #121111 ring.\n-->",
+                              "height": 22,
+                              "fill": "#F6F8F9",
+                              "cornerRadius": 12,
+                              "gap": 6,
+                              "padding": [
+                                0,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "Kccuv",
+                                  "name": "r1ca",
+                                  "fill": "#9b9295",
+                                  "width": 6,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "pQYfG",
+                                  "name": "r1cl",
+                                  "fill": "#6d6467",
+                                  "content": "Personal",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Geist",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "R3pbt",
+                      "name": "RepoRow-default-final-2",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "#ffffff",
+                      "cornerRadius": 16,
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        20
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "v8s5k5",
+                          "name": "r2l",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "RUA2e",
+                              "name": "r2ch",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "chevron-right",
+                              "iconFontFamily": "lucide",
+                              "fill": "#9b9295"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mokTA",
+                              "name": "r2t",
+                              "fill": "#121111",
+                              "content": "acme/design-system",
+                              "lineHeight": 1.1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pTaVg",
+                          "name": "r2r",
+                          "gap": 16,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yOmAG",
+                              "name": "r2m",
+                              "fill": "#6d6467",
+                              "content": "synced 1h ago",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "RIlB6",
+                              "name": "r2d",
+                              "fill": "\\$tag-success-ink",
+                              "width": 8,
+                              "height": 8
+                            },
+                            {
+                              "type": "frame",
+                              "id": "sDIhe",
+                              "name": "WorkspaceChip-team-final",
+                              "context": "<!-- ## WorkspaceChip-team-final\n**Type:** component\n**Variant:** team (default)\n**Component:** WorkspaceChip\n### Design notes\n- 22 tall capsule, radius 11, fill #F6F8F9, padding [0,8,0,4].\n- 14×14 mono initial avatar (dark fill, white letter) + workspace name (Geist 12 #121111).\n### For AI agents\n- Clicking opens WorkspacePopover-default-final (member list + actions).\n- Sibling WorkspaceChip-team-active state has 1px #121111 ring (used in expanded layout when popover is open).\n-->",
+                              "height": 22,
+                              "fill": "#F6F8F9",
+                              "cornerRadius": 12,
+                              "gap": 6,
+                              "padding": [
+                                0,
+                                8,
+                                0,
+                                4
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "HKQto",
+                                  "name": "r2ca",
+                                  "width": 14,
+                                  "height": 14,
+                                  "fill": "#121111ff",
+                                  "cornerRadius": 9999,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "kpDLB",
+                                      "name": "r2cat",
+                                      "fill": "#ffffff",
+                                      "content": "A",
+                                      "lineHeight": 1,
+                                      "fontFamily": "Geist Mono",
+                                      "fontSize": 10,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "SsGT9",
+                                  "name": "r2cl",
+                                  "fill": "#121111",
+                                  "content": "Acme",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Geist",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "J5ghDn",
+                      "name": "RepoRow-stale-final-5",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "#ffffff",
+                      "cornerRadius": 16,
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        20
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "sU8eP",
+                          "name": "r5l",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "J3O8M",
+                              "name": "r5ch",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "chevron-right",
+                              "iconFontFamily": "lucide",
+                              "fill": "#9b9295"
+                            },
+                            {
+                              "type": "text",
+                              "id": "WHTlR",
+                              "name": "r5t",
+                              "fill": "#121111",
+                              "content": "tldraw/tldraw",
+                              "lineHeight": 1.1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "xa7ZZ",
+                          "name": "r5r",
+                          "gap": 16,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ovhr0",
+                              "name": "r5m",
+                              "fill": "#9b9295",
+                              "content": "synced 14d ago",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "PSLft",
+                              "name": "r5d",
+                              "fill": {
+                                "type": "color",
+                                "color": "#ffffff",
+                                "enabled": false
+                              },
+                              "width": 8,
+                              "height": 8,
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 1.5,
+                                "fill": "#9b9295"
+                              }
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lGGjC",
+                              "name": "WorkspaceChip-personal",
+                              "height": 22,
+                              "fill": "#F6F8F9",
+                              "cornerRadius": 12,
+                              "gap": 6,
+                              "padding": [
+                                0,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "eI0e1",
+                                  "name": "r5ca",
+                                  "fill": "#9b9295",
+                                  "width": 6,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Htcvb",
+                                  "name": "r5cl",
+                                  "fill": "#6d6467",
+                                  "content": "Personal",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Geist",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "y8OhP",
+      "x": 6256,
+      "y": 8582,
+      "name": "SearchModalSearch",
+      "clip": true,
+      "width": "fill_container(880)",
+      "fill": "#ffffff",
+      "cornerRadius": 16,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "NWLbL",
+          "name": "SearchInput",
+          "context": "Search input, the text input | thing should be present  and active on mount so the user can just start typing. the placeholder text gets changed when typing into the search term",
+          "width": "fill_container",
+          "fill": "#ffffffff",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#f0f3f4"
+          },
+          "gap": 8,
+          "padding": [
+            20,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "OvOVw",
+              "name": "Most accessed repos",
+              "context": "placeholder text",
+              "fill": "#9b9295ff",
+              "content": "searchterm",
+              "lineHeight": 1,
+              "fontFamily": "Geist",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "usfiz",
+          "name": "SearchResult",
+          "context": "where search results render. needs logic for max height and overflow vertical scrolling inside. \n\nWhen the defaultRender isnt there, resutls from search terms render. \n\nUse a shadcn skeleton base as well for loading state. skeletons should use the lightest heather color and animate in opacity in and out in a smart way. skeleton shapes should mimic search result shapes\n\n\n\nMaybe needs a minimum height as well?",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "AxwAS",
+              "name": "SearchRender",
+              "context": "Search render, renders based on search. ",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "A1BAVc",
+                  "name": "RepoRow-default-final-1",
+                  "context": "No fill per default. uses hover color though, this color for hover. entire modal dismounts on select.\n\nthe arrow on the left side probably should not be present in the search term renders, since these instances shouldnt be expandable. shouldnt pick branches here etc. just search for repo or branch, and click result.",
+                  "width": "fill_container",
+                  "height": 56,
+                  "fill": "#f6f8f9",
+                  "cornerRadius": 16,
+                  "gap": 16,
+                  "padding": [
+                    16,
+                    20
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "I70p01",
+                      "name": "r1l",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DUAgT",
+                          "name": "r1t",
+                          "fill": "#121111",
+                          "content": "octocat/hello-world",
+                          "lineHeight": 1.1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hsENZ",
+                      "name": "r1r",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "b2X8W",
+                          "name": "r1m",
+                          "fill": "#6d6467",
+                          "content": "synced 2m ago",
+                          "lineHeight": 1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "ZnqdN",
+                          "name": "r1d",
+                          "fill": "\\$tag-success-ink",
+                          "width": 8,
+                          "height": 8
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z2ptwX",
+                          "name": "WorkspaceChip-personal-final",
+                          "context": "<!-- ## WorkspaceChip-personal-final\n**Type:** component\n**Variant:** personal\n**Component:** WorkspaceChip\n### Design notes\n- 22 tall capsule, radius 11, fill #F6F8F9, padding [0,8].\n- Quiet 6px dot (#9b9295) + 'Personal' label (Geist 12 #6d6467).\n- Default state for new repos (build plan line 132). Visible inline on every RepoRow.\n### For AI agents\n- Sibling WorkspaceChip-team-final has a mono initial avatar instead of the dot.\n- Active state (popover open) adds a 1px #121111 ring.\n-->",
+                          "height": 22,
+                          "fill": "#F6F8F9",
+                          "cornerRadius": 12,
+                          "gap": 6,
+                          "padding": [
+                            0,
+                            8
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "UOU52",
+                              "name": "r1ca",
+                              "fill": "#9b9295",
+                              "width": 6,
+                              "height": 6
+                            },
+                            {
+                              "type": "text",
+                              "id": "Rgyu4",
+                              "name": "r1cl",
+                              "fill": "#6d6467",
+                              "content": "Personal",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ycbHt",
+                  "name": "RepoRow-default-final-2",
+                  "context": "No fill per default. uses hover color though. entire modal dismounts on select.\n\nthe arrow on the left side probably should not be present in the search term renders, since these instances shouldnt be expandable. shouldnt pick branches here etc. just search for repo or branch, and click result.",
+                  "width": "fill_container",
+                  "height": 56,
+                  "cornerRadius": 16,
+                  "gap": 16,
+                  "padding": [
+                    16,
+                    20
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qcaab",
+                      "name": "r2l",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "MP4BD",
+                          "name": "r2ch",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "chevron-right",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9b9295"
+                        },
+                        {
+                          "type": "text",
+                          "id": "B19Uw5",
+                          "name": "r2t",
+                          "fill": "#121111",
+                          "content": "acme/design-system",
+                          "lineHeight": 1.1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tl517",
+                      "name": "r2r",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NMDAp",
+                          "name": "r2m",
+                          "fill": "#6d6467",
+                          "content": "synced 1h ago",
+                          "lineHeight": 1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "S4KsH",
+                          "name": "r2d",
+                          "fill": "\\$tag-success-ink",
+                          "width": 8,
+                          "height": 8
+                        },
+                        {
+                          "type": "frame",
+                          "id": "H6coFw",
+                          "name": "WorkspaceChip-team-final",
+                          "context": "<!-- ## WorkspaceChip-team-final\n**Type:** component\n**Variant:** team (default)\n**Component:** WorkspaceChip\n### Design notes\n- 22 tall capsule, radius 11, fill #F6F8F9, padding [0,8,0,4].\n- 14×14 mono initial avatar (dark fill, white letter) + workspace name (Geist 12 #121111).\n### For AI agents\n- Clicking opens WorkspacePopover-default-final (member list + actions).\n- Sibling WorkspaceChip-team-active state has 1px #121111 ring (used in expanded layout when popover is open).\n-->",
+                          "height": 22,
+                          "fill": "#F6F8F9",
+                          "cornerRadius": 12,
+                          "gap": 6,
+                          "padding": [
+                            0,
+                            8,
+                            0,
+                            4
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "dWyUm",
+                              "name": "r2ca",
+                              "width": 14,
+                              "height": 14,
+                              "fill": "#121111ff",
+                              "cornerRadius": 9999,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "l9hzy",
+                                  "name": "r2cat",
+                                  "fill": "#ffffff",
+                                  "content": "A",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Geist Mono",
+                                  "fontSize": 10,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "P6axCg",
+                              "name": "r2cl",
+                              "fill": "#121111",
+                              "content": "Acme",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "V7jIx",
+                  "name": "RepoRow-stale-final-5",
+                  "context": "No fill per default. uses hover color though. entire modal dismounts on select.\n\nthe arrow on the left side probably should not be present in the search term renders, since these instances shouldnt be expandable. shouldnt pick branches here etc. just search for repo or branch, and click result.",
+                  "width": "fill_container",
+                  "height": 56,
+                  "cornerRadius": 16,
+                  "gap": 16,
+                  "padding": [
+                    16,
+                    20
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "s3KJc",
+                      "name": "r5l",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "GHNL6",
+                          "name": "r5ch",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "chevron-right",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9b9295"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Fz43v",
+                          "name": "r5t",
+                          "fill": "#121111",
+                          "content": "tldraw/tldraw",
+                          "lineHeight": 1.1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Tm3g7",
+                      "name": "r5r",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FmTo3",
+                          "name": "r5m",
+                          "fill": "#9b9295",
+                          "content": "synced 14d ago",
+                          "lineHeight": 1,
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "YRyFz",
+                          "name": "r5d",
+                          "fill": {
+                            "type": "color",
+                            "color": "#ffffff",
+                            "enabled": false
+                          },
+                          "width": 8,
+                          "height": 8,
+                          "stroke": {
+                            "align": "center",
+                            "thickness": 1.5,
+                            "fill": "#9b9295"
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TPNRS",
+                          "name": "WorkspaceChip-personal",
+                          "height": 22,
+                          "fill": "#F6F8F9",
+                          "cornerRadius": 12,
+                          "gap": 6,
+                          "padding": [
+                            0,
+                            8
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "FQLOt",
+                              "name": "r5ca",
+                              "fill": "#9b9295",
+                              "width": 6,
+                              "height": 6
+                            },
+                            {
+                              "type": "text",
+                              "id": "H1nFXK",
+                              "name": "r5cl",
+                              "fill": "#6d6467",
+                              "content": "Personal",
+                              "lineHeight": 1,
+                              "fontFamily": "Geist",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

@@ -12,7 +12,7 @@ Follow-ups tracked here. Inline `// TODO:` in source cites the section by title.
 - LinkGitHubDialog shell not yet built — wire to the Google-user-hits-Connect flow once OAuth identities table is in place.
 - Workspace popover's "Move to team", "Invite member", "Manage members" are visual only — no mutations yet.
 - Filter pills (All / Personal / Team-{name}) filter client-side from hardcoded data — replace with workspace-scoped queries.
-- Search input ⌘K opens a placeholder shadcn Command palette — populate with real repo/branch search once registry is wired.
+- Search modal lives in `live/search-modal/`. Replace `useRecentRepos` + `useRepoSearch` demo hooks with Supabase queries; add branch-row support once GitHub App branches land.
 - DashboardNav avatar binds to mock User from `lib/dashboard/demo.ts` — swap to Supabase Auth session user.
 - HeroCard inline-hardcodes `border-radius: 40px` and a `linear-gradient(180deg, …)` (two values that have no matching token; system colors used inside). Revisit if a new radius token or gradient token is added.
 - AuthButton "google" variant uses `Button variant="primary"` (closest in-system match). Visual delta vs Pencil pure-white: bg is `var(--color-bg-tertiary)` (#F0F3F4) rather than #FFFFFF. Accept until/unless a new dedicated variant is justified.
