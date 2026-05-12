@@ -45,12 +45,9 @@ export function DashboardPage() {
   )
 }
 
-// Mirrors SidebarFolder. Outer Collapsible.Root has no flex gap — the
-// spacing-1 inset between RepoRow and the expanded content lives INSIDE the
-// animated motion.div as paddingTop on the inner wrapper. When motion.div
-// clamps to height:0 + overflow:hidden during exit, that padding clips with
-// it, so there's no phantom flex-gap ghost between RepoRow and the unmounting
-// content.
+// No flex gap on the root — the spacing-1 inset lives as paddingTop inside the
+// animated motion.div so it clips with height:0 on exit. Adding gap here causes
+// a phantom row during collapse. Mirrors SidebarFolder.
 const collapsibleRootStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
@@ -205,12 +202,8 @@ interface PillBounds {
   height: number
 }
 
-// Stack of BranchRows that share a single hover pill traveling between
-// positions. Used both for the pinned branches under an expanded repo and
-// for the unpinned reveal under OtherBranchesExpander. Mirrors
-// SidebarHighlightLayer's pattern: register row refs, measure bounds on
-// hover, animate a single absolutely-positioned motion.div. ROW_SPRING
-// for travel.
+// Shared hover pill that travels between rows — mirrors SidebarHighlightLayer.
+// Used by both pinned branches and the OtherBranchesExpander reveal.
 function BranchHoverStack({ branches }: BranchHoverStackProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const refs = useRef<Map<string, HTMLElement>>(new Map())

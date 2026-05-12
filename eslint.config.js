@@ -23,6 +23,11 @@ export default ts.config(
   },
   js.configs.recommended,
   ...ts.configs.recommended,
+  {
+    rules: {
+      "no-empty": ["error", { allowEmptyCatch: true }],
+    },
+  },
   prettier,
   {
     languageOptions: {

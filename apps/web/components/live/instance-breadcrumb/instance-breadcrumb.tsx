@@ -26,8 +26,7 @@ import {
 } from "./instance-breadcrumb.config"
 import type { InstanceBreadcrumbData } from "./types"
 
-// Collapsing wrapper max-height when expanded. Generous cap that always
-// fits the row + own divider; opacity fades in lockstep.
+// Generous max-height cap — fits row + divider without a measured value.
 const EXPANDED_MAX_HEIGHT = 80
 
 const collapsibleBase: CSSProperties = {

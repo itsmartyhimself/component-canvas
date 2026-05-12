@@ -42,9 +42,7 @@ const collapsedRowStyle: CSSProperties = {
   justifyContent: "center",
   gap: 0,
   width: "100%",
-  // Matches expanded row's 4px vertical padding so the avatar stays anchored
-  // to the same Y position when toggling. 0 horizontal keeps 28px avatar
-  // inside the 28px content area.
+  // Vertical padding matches expanded row so the avatar stays Y-anchored on toggle.
   padding: "var(--spacing-2) 0",
   borderRadius: "var(--radius-2)",
   background: "transparent",

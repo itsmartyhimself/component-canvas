@@ -30,10 +30,8 @@ const headerStyle: CSSProperties = {
   flexDirection: "column",
 }
 
-// Search row is one element in both states. Padding transitions over the
-// same duration as the aside so the "+" button slides smoothly from the
-// right edge to its collapsed centre instead of jumping. Inner SearchInput
-// wrap collapses via maxWidth/opacity/margin like the team-switcher labels.
+// Single element in both states — padding transitions with the aside so the
+// "+" button slides to its collapsed centre instead of jumping.
 function searchRowStyle(collapsed: boolean): CSSProperties {
   return {
     display: "flex",

@@ -1,6 +1,7 @@
 "use client"
 
 import type { CSSProperties, ReactNode } from "react"
+import { Checkmark } from "@carbon/icons-react"
 
 interface ConnectRepoRowProps {
   label: string
@@ -8,9 +9,10 @@ interface ConnectRepoRowProps {
   disabled?: boolean
   onSelect?: () => void
   rightContent?: ReactNode
-  // Per-instance override for the selected-state background. Defaults to bg-secondary
-  // (matches Pencil's `#F6F8F9` selected fill). StepSelectRepo overrides to gradient-twilight.
-  selectedBackground?: string
+  // Optional element rendered absolutely behind row content. Typically a
+  // layoutId motion.div from a parent LayoutGroup so the active fill travels
+  // between selected rows.
+  activeFill?: ReactNode
 }
 
 export function ConnectRepoRow({
@@ -19,9 +21,10 @@ export function ConnectRepoRow({
   disabled = false,
   onSelect,
   rightContent,
-  selectedBackground = "var(--color-bg-secondary)",
+  activeFill,
 }: ConnectRepoRowProps) {
   const style: CSSProperties = {
+    position: "relative",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -29,12 +32,11 @@ export function ConnectRepoRow({
     height: 52,
     padding: "var(--spacing-5)",
     borderRadius: "var(--radius-4)",
-    background: selected ? selectedBackground : "var(--color-bg-elevated)",
+    background: "var(--color-bg-elevated)",
     border: 0,
     cursor: disabled ? "default" : "pointer",
     textAlign: "left",
     width: "100%",
-    opacity: 1,
   }
 
   return (
@@ -46,9 +48,12 @@ export function ConnectRepoRow({
       onClick={disabled ? undefined : onSelect}
       style={style}
     >
+      {activeFill}
       <span
         className="font-mono type-4"
         style={{
+          position: "relative",
+          zIndex: 2,
           color: disabled
             ? "var(--color-text-tertiary)"
             : "var(--color-text-primary)",
@@ -62,6 +67,8 @@ export function ConnectRepoRow({
       </span>
       <span
         style={{
+          position: "relative",
+          zIndex: 2,
           display: "inline-flex",
           alignItems: "center",
           gap: "var(--spacing-3)",
@@ -69,13 +76,32 @@ export function ConnectRepoRow({
         }}
       >
         {rightContent}
-        <RadioIndicator selected={selected} />
+        {!disabled ? <SelectedIndicator selected={selected} /> : null}
       </span>
     </button>
   )
 }
 
-function RadioIndicator({ selected }: { selected: boolean }) {
+function SelectedIndicator({ selected }: { selected: boolean }) {
+  if (selected) {
+    return (
+      <span
+        aria-hidden
+        style={{
+          width: 16,
+          height: 16,
+          borderRadius: "50%",
+          background: "var(--color-tag-success-ink)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Checkmark size={12} style={{ color: "#ffffff" }} />
+      </span>
+    )
+  }
   return (
     <span
       aria-hidden
@@ -83,10 +109,8 @@ function RadioIndicator({ selected }: { selected: boolean }) {
         width: 16,
         height: 16,
         borderRadius: "50%",
-        background: selected ? "var(--color-text-primary)" : "transparent",
-        border: selected
-          ? "1.5px solid var(--color-text-primary)"
-          : "1.5px solid var(--color-text-tertiary)",
+        background: "transparent",
+        border: "1.5px solid var(--color-text-tertiary)",
         display: "inline-flex",
         flexShrink: 0,
       }}

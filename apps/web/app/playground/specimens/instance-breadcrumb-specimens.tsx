@@ -34,9 +34,7 @@ function FramedBreadcrumb({
           const next = data.branches.find((b) => b.id === id)
           if (next) setActive({ id: next.id, name: next.name })
         }}
-        onLoadOtherBranches={() => {
-          // demo no-op
-        }}
+        onLoadOtherBranches={() => {}}
       />
     </div>
   )

@@ -1,6 +1,7 @@
 "use client"
 
-import { Button } from "@/components/live/button"
+import { useState, type CSSProperties } from "react"
+
 import { GithubMark } from "./github-mark"
 import { GoogleMark } from "./google-mark"
 
@@ -10,39 +11,56 @@ interface AuthButtonProps {
   provider: AuthProvider
   onClick?: () => void
   href?: string
-  fill?: boolean
 }
 
-export function AuthButton({
-  provider,
-  onClick,
-  href,
-  fill = true,
-}: AuthButtonProps) {
-  if (provider === "github") {
+export function AuthButton({ provider, onClick, href }: AuthButtonProps) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  const icon =
+    provider === "github" ? <GithubMark size={16} /> : <GoogleMark size={18} />
+  const label =
+    provider === "github" ? "Continue with GitHub" : "Continue with Google"
+
+  const rootStyle: CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 44,
+    gap: "var(--spacing-3)",
+    paddingInline: "var(--spacing-5)",
+    borderRadius: "var(--radius-4)",
+    background: isHovered
+      ? "var(--color-bg-hover-elevated)"
+      : "var(--color-bg-primary)",
+    color: "var(--color-text-secondary)",
+    textDecoration: "none",
+    cursor: "pointer",
+  }
+
+  const hoverHandlers = {
+    onMouseEnter: () => setIsHovered(true),
+    onMouseLeave: () => setIsHovered(false),
+  }
+
+  const content = (
+    <>
+      {icon}
+      <span className="type-4 font-medium">{label}</span>
+    </>
+  )
+
+  if (href) {
     return (
-      <Button
-        variant="pop"
-        size="medium"
-        form="label"
-        label="Continue with GitHub"
-        icon={<GithubMark size={16} />}
-        onClick={onClick}
-        href={href}
-        fill={fill}
-      />
+      <a href={href} onClick={onClick} style={rootStyle} {...hoverHandlers}>
+        {content}
+      </a>
     )
   }
+
   return (
-    <Button
-      variant="primary"
-      size="medium"
-      form="label"
-      label="Continue with Google"
-      icon={<GoogleMark size={18} />}
-      onClick={onClick}
-      href={href}
-      fill={fill}
-    />
+    <button type="button" onClick={onClick} style={rootStyle} {...hoverHandlers}>
+      {content}
+    </button>
   )
 }

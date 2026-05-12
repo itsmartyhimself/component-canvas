@@ -144,10 +144,8 @@ function LeadingIconSlot({
   const identity = leadingIdentity(leading)
   const node = renderLeadingNode(leading, iconColor, foreground)
 
-  // 2px down aligns the glyph with text cap-height; 0 in collapsed rows
-  // where the icon centres in a 28×28 square with no text to align to.
-  // Transition piggybacks the row's collapse duration so the shift eases
-  // in lockstep with the height/padding change.
+  // 2px down aligns the glyph with text cap-height; 0 when collapsed (icon
+  // centres in a 28×28 square with no text to align to).
   const slotStyle: CSSProperties = {
     position: "relative",
     width: ROW_ICON_SIZE,
@@ -288,9 +286,7 @@ function RowBase(
     ...rest
   } = props
 
-  // effectiveSize is what the row BECOMES when collapsed (28x28 square). CSS
-  // transitions on height/padding smooth the change from 32 → 28 for folder
-  // rows in lockstep with the aside width change.
+  // What the row collapses to (28×28). Folder rows transition 32 → 28.
   const effectiveSize = collapsed
     ? COLLAPSED_SIZE
     : (sizeProp ?? DEFAULT_SIZE_FOR_VARIANT[variant])
@@ -304,9 +300,8 @@ function RowBase(
     loading,
   })
 
-  // Collapsed: icon needs 6px horizontal padding to centre in the 28px row
-  // (28 − 16 icon = 12 / 2 = 6 each side). Keep vertical padding consistent
-  // with the row's natural paddingY so the icon is vertically centred.
+  // Collapsed: 6px horizontal padding centres the 16px icon in the 28px row.
+  // Vertical padding follows the row's natural paddingY.
   const paddingStyle = collapsed
     ? `${dims.paddingY} var(--spacing-2-5)`
     : `${dims.paddingY} ${dims.paddingX}`

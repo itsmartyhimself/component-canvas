@@ -20,7 +20,6 @@ export function LoginScreen() {
           gap: "var(--spacing-2)",
           padding: "var(--spacing-2)",
           background: "var(--color-bg-tertiary)",
-          border: "1px solid var(--color-border-secondary)",
           borderRadius: "var(--radius-5)",
         }}
       >

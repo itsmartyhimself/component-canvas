@@ -155,7 +155,6 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
         if (Array.isArray(parsed)) setHiddenDocIds(new Set(parsed))
       }
     } catch {
-      // ignore malformed payload
     } finally {
       setHiddenDocsReady(true)
     }
@@ -170,12 +169,10 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
         JSON.stringify([...hiddenDocIds]),
       )
     } catch {
-      // localStorage unavailable; ignore.
     }
   }, [hiddenDocIds, hiddenDocsReady])
 
-  // Same pattern as hiddenDocIds: SSR and first client render must match, so
-  // read persisted collapsed state after mount.
+  // Same SSR/hydration pattern as hiddenDocIds above.
   useEffect(() => {
     if (typeof window === "undefined") return
     try {
@@ -185,7 +182,6 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
         if (typeof parsed === "boolean") setCollapsedState(parsed)
       }
     } catch {
-      // ignore malformed payload
     } finally {
       setCollapsedReady(true)
     }
@@ -200,7 +196,6 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
         JSON.stringify(collapsed),
       )
     } catch {
-      // localStorage unavailable; ignore.
     }
   }, [collapsed, collapsedReady])
 
@@ -426,10 +421,7 @@ export function SidebarPanelProvider({ children }: { children: ReactNode }) {
     setPendingAddFocus(true)
   }, [])
 
-  // Side effects of collapsing: close folders, cancel any pending rename,
-  // drop focus from elements that are about to unmount, clear any queued
-  // add-button focus request. Runs in an effect so the state updater stays
-  // pure (safe under StrictMode double-invoke).
+  // Collapse side effects — in an effect to keep the state updater StrictMode-safe.
   useEffect(() => {
     if (!collapsed) return
     setExpandedIds(new Set())

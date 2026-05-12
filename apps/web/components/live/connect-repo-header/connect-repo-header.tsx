@@ -1,6 +1,7 @@
 export function ConnectRepoHeader() {
   return (
     <div
+      data-theme-static="light"
       style={{
         display: "flex",
         flexDirection: "column",

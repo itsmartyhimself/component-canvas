@@ -311,6 +311,25 @@ html.dark {
   --color-shadow-base: transparent;
 }
 
+/* Theme-static scope: lock a subtree to light-mode token values inside dark mode.
+   Use on surfaces that paint a light gradient as their own background and need
+   nested text/borders to keep readable contrast regardless of theme.
+   Opt-in via data-theme-static="light"; never used outside that attribute.
+   Re-pins to existing primitives only — no new tokens, no global side effects. */
+html.dark [data-theme-static="light"] {
+  --color-text-primary: var(--color-ink-300);
+  --color-text-secondary: var(--color-ink-200);
+  --color-text-tertiary: var(--color-ink-100);
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-heather-100);
+  --color-bg-tertiary: var(--color-heather-200);
+  --color-bg-elevated: var(--color-white);
+  --color-bg-hover: var(--color-heather-100);
+  --color-bg-hover-elevated: var(--color-heather-100);
+  --color-border-primary: var(--color-heather-300);
+  --color-border-secondary: var(--color-heather-400);
+}
+
 /* ================================================================
    BASE LAYER
    Resets, defaults, typography classes, SVG standards.

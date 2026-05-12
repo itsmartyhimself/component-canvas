@@ -72,8 +72,6 @@ interface FilterPillAvatarProps {
   active: boolean
 }
 
-// Mini avatar used inside team filter pills. When the pill is active (dark fill),
-// the avatar inverts to a white surface with dark text so it stays legible.
 export function FilterPillAvatar({ initial, active }: FilterPillAvatarProps) {
   return (
     <span

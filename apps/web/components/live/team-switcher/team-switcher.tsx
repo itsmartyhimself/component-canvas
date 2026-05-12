@@ -17,11 +17,8 @@ export interface TeamSwitcherProps {
   collapsed?: boolean
 }
 
-// One row style for both states. Padding transitions (4px each side → 0
-// horizontal) over the same duration as the aside width so the tile slides
-// from x=12 → x=8 in lockstep with the collapse — no JSX swap, no jump.
-// Tile sits at flex-start always; in collapsed mode the row content area
-// equals the tile width, so flex-start coincides with visual centre.
+// Single row style for both states — padding transitions in lockstep with aside
+// width so the tile slides without a JSX swap or jump.
 function teamRowStyle(collapsed: boolean): CSSProperties {
   return {
     display: "flex",

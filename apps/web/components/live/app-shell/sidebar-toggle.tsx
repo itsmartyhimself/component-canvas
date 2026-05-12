@@ -6,9 +6,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Button } from "@/components/live/button"
 import { useSidebarPanel } from "@/components/live/sidebar-panel"
 
-// Matches the Row LeadingIconSlot crossfade — opacity + tiny blur over 150ms
-// so the icon swap feels instant-but-polished. Kowalski: "Something still
-// feels off → Add subtle blur (under 20px) to mask it."
+// Matches Row LeadingIconSlot crossfade: opacity + tiny blur over 150ms.
 const iconLayerVariants = {
   initial: { opacity: 0, filter: "blur(0.5px)" },
   animate: { opacity: 1, filter: "blur(0px)" },

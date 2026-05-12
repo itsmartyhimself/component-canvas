@@ -32,11 +32,8 @@ const emptyHintStyle: CSSProperties = {
   color: "var(--color-text-tertiary)",
 }
 
-// Section header uses the grid-template-rows: 0fr/1fr trick so height
-// collapses without hardcoding a fixed pixel value. Browser-interpolated at
-// the style-recalc level (no JS per frame). Height + opacity transition in
-// lockstep with the aside width for unified "everything moves together"
-// motion.
+// Uses the grid-template-rows 0fr/1fr trick so height collapses without a
+// measured pixel value. Browser-interpolated, no JS per frame.
 function headerCollapseStyle(collapsed: boolean): CSSProperties {
   const labelMs = collapsed ? SIDEBAR_LABEL_EXIT_MS : SIDEBAR_LABEL_ENTER_MS
   return {

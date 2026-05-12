@@ -98,9 +98,7 @@ function SidebarPanelInner() {
     return () => observer.disconnect()
   }, [recalc, wrapperRef])
 
-  // Focus-after-expand: after the width transition completes on the aside,
-  // if a pending add-focus request exists, focus the in-sidebar + button so
-  // the user sees where the action lives.
+  // After the aside-width transition, focus the in-sidebar "+" if a request is pending.
   const handleTransitionEnd = useCallback(
     (event: TransitionEvent<HTMLElement>) => {
       if (event.target !== event.currentTarget) return

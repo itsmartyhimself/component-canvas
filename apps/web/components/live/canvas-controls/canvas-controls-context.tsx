@@ -43,8 +43,7 @@ export function CanvasControlsProvider({
     manifest ? { ...(manifest.defaultProps as PropMap) } : {},
   )
 
-  // Reset when selection (and therefore manifest) changes. Keying by id keeps
-  // each component's prop state isolated and predictable.
+  // Reset prop state when the selected component (manifest) changes.
   useEffect(() => {
     setProps(manifest ? { ...(manifest.defaultProps as PropMap) } : {})
   }, [manifest])

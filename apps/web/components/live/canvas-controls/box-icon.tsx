@@ -1,7 +1,6 @@
 "use client"
 
-// Monitor+letter silhouette. The per-size SVG paths in the design are custom;
-// this readable approximation stays maintainable at 16×16.
+// Readable approximation; design uses custom per-size paths.
 
 import type { CSSProperties } from "react"
 
@@ -40,9 +39,7 @@ export function BoxIcon({
       style={style}
       aria-hidden
     >
-      {/* monitor top bar */}
       <rect x="2" y="2" width="12" height="1" fill={color} />
-      {/* monitor frame */}
       <rect
         x="2.5"
         y="4.5"
@@ -53,7 +50,6 @@ export function BoxIcon({
         strokeWidth="1"
         fill="none"
       />
-      {/* size letter */}
       <text
         x="8"
         y="11.5"
