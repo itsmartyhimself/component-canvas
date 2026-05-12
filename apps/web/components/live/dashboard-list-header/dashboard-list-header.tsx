@@ -49,6 +49,7 @@ export function DashboardListHeader({
             active={active}
           />
         ),
+        leadingBoxSize: 24,
       })),
   ]
 

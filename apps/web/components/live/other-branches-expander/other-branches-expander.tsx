@@ -4,6 +4,7 @@ import type { CSSProperties } from "react"
 import { motion } from "framer-motion"
 import { Branch, ChevronDown, CircleDash } from "@carbon/icons-react"
 import { ROW_SPRING } from "@/components/live/row/row.config"
+import { Tag } from "@/components/live/tag"
 
 interface OtherBranchesExpanderProps {
   totalUnpinned: number
@@ -80,20 +81,9 @@ export function OtherBranchesExpander({
               : "Other branches"}
         </span>
         {!loading && !expanded ? (
-          <span
-            className="font-mono type-3"
-            data-obx="pill"
-            style={{
-              color: "var(--color-text-tertiary)",
-              paddingInline: "var(--spacing-3)",
-              paddingBlock: "var(--spacing-0)",
-              borderRadius: "var(--radius-full)",
-              border: "1px solid var(--color-border-secondary)",
-              background: "var(--color-bg-elevated)",
-            }}
-          >
+          <Tag tone="neutral" size="xs" className="font-mono" data-obx="pill">
             {totalUnpinned} not pinned
-          </span>
+          </Tag>
         ) : null}
       </span>
       {!loading ? (

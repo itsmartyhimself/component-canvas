@@ -1,11 +1,13 @@
 "use client"
 
 import type { CSSProperties, ReactNode } from "react"
+import { Tag } from "@/components/live/tag"
 
 export interface FilterPill {
   key: string
   label: string
   leading?: ReactNode | ((active: boolean) => ReactNode)
+  leadingBoxSize?: number
 }
 
 interface FilterPillsProps {
@@ -28,19 +30,12 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
         const active = pill.key === value
         const leadingNode =
           typeof pill.leading === "function" ? pill.leading(active) : pill.leading
-        const hasLeading = !!leadingNode
-        const style: CSSProperties = {
+        const buttonStyle: CSSProperties = {
           display: "inline-flex",
-          alignItems: "center",
-          gap: "var(--spacing-2-5)",
-          height: 28,
-          paddingLeft: hasLeading ? "var(--spacing-2-5)" : "var(--spacing-4)",
-          paddingRight: "var(--spacing-4)",
-          borderRadius: "var(--radius-full)",
-          color: active ? "var(--color-bg-primary)" : "var(--color-text-secondary)",
-          background: active ? "var(--color-text-primary)" : "transparent",
+          borderRadius: "var(--radius-3)",
+          background: "transparent",
           cursor: "pointer",
-          transition: "background-color 120ms ease, color 120ms ease",
+          transition: "background-color 120ms ease",
         }
         return (
           <button
@@ -48,8 +43,7 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
             type="button"
             role="tab"
             aria-selected={active}
-            className="type-3 font-medium"
-            style={style}
+            style={buttonStyle}
             onClick={() => onChange(pill.key)}
             onMouseEnter={(e) => {
               if (!active) e.currentTarget.style.background = "var(--color-bg-secondary)"
@@ -58,8 +52,15 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
               if (!active) e.currentTarget.style.background = "transparent"
             }}
           >
-            {leadingNode}
-            {pill.label}
+            <Tag
+              size="md"
+              tone={active ? "pop" : "ghost"}
+              leading={leadingNode}
+              leadingBoxSize={pill.leadingBoxSize}
+              className="font-medium"
+            >
+              {pill.label}
+            </Tag>
           </button>
         )
       })}
@@ -75,14 +76,13 @@ interface FilterPillAvatarProps {
 export function FilterPillAvatar({ initial, active }: FilterPillAvatarProps) {
   return (
     <span
-      className="font-mono font-medium type-2"
+      className="font-mono font-medium type-2 nested-radius-inner"
       style={{
-        width: 18,
-        height: 18,
+        width: 24,
+        height: 24,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "var(--radius-full)",
         background: active ? "var(--color-bg-primary)" : "var(--color-text-primary)",
         color: active ? "var(--color-text-primary)" : "var(--color-bg-primary)",
         flexShrink: 0,

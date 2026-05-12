@@ -1,8 +1,9 @@
 "use client"
 
-import { forwardRef, useState, type CSSProperties, type Ref } from "react"
+import { forwardRef, type CSSProperties, type Ref } from "react"
 import { ChevronDown } from "@carbon/icons-react"
 import type { Workspace } from "@/lib/dashboard/types"
+import { Tag } from "@/components/live/tag"
 
 interface WorkspaceChipProps {
   workspace: Workspace
@@ -17,40 +18,24 @@ function WorkspaceChipBase(
 ) {
   const isTeam = workspace.kind === "team"
   const initial = workspace.initial ?? workspace.name.slice(0, 1).toUpperCase()
-  const [hover, setHover] = useState(false)
 
-  const personalText = hover || active
-    ? "var(--color-text-primary)"
-    : "var(--color-text-secondary)"
-  const teamText = "var(--color-text-primary)"
-
-  const style: CSSProperties = {
+  const wrapperStyle: CSSProperties = {
     display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-3)",
-    height: 28,
-    paddingTop: "var(--spacing-2)",
-    paddingBottom: "var(--spacing-2)",
-    paddingLeft: isTeam ? "var(--spacing-2)" : "var(--spacing-3)",
-    paddingRight: isTeam ? "var(--spacing-3-5)" : "var(--spacing-3)",
-    borderRadius: "var(--radius-2)",
-    background: active || hover ? "var(--color-bg-secondary)" : "transparent",
-    border: `1px solid ${active ? "var(--color-text-primary)" : "transparent"}`,
-    color: isTeam ? teamText : personalText,
+    borderRadius: "var(--radius-3)",
+    boxShadow: active ? "inset 0 0 0 1px var(--color-text-primary)" : "none",
     cursor: onClick ? "pointer" : "default",
-    transition: "background-color 120ms ease, border-color 120ms ease, color 120ms ease",
+    transition: "box-shadow 120ms ease",
   }
 
   const leading = isTeam ? (
     <span
-      className="font-mono font-medium type-2"
+      className="font-mono font-medium type-2 nested-radius-inner"
       style={{
-        width: 18,
-        height: 18,
+        width: 24,
+        height: 24,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "var(--radius-1-5)",
         background: "var(--color-text-primary)",
         color: "var(--color-bg-elevated)",
         flexShrink: 0,
@@ -77,19 +62,25 @@ function WorkspaceChipBase(
       ref={ref}
       type="button"
       aria-label={ariaLabel ?? `${workspace.name} workspace`}
-      style={style}
+      style={wrapperStyle}
       onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
     >
-      {leading}
-      <span className="type-3">{workspace.name}</span>
-      {active ? (
-        <ChevronDown
-          size={12}
-          style={{ color: "var(--color-text-secondary)", flexShrink: 0 }}
-        />
-      ) : null}
+      <Tag
+        size="md"
+        tone="neutral"
+        leading={leading}
+        leadingBoxSize={isTeam ? 24 : undefined}
+        trailing={
+          active ? (
+            <ChevronDown
+              size={12}
+              style={{ color: "var(--color-text-secondary)", flexShrink: 0 }}
+            />
+          ) : null
+        }
+      >
+        {workspace.name}
+      </Tag>
     </button>
   )
 }
