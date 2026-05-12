@@ -16,7 +16,7 @@ const containerStyle: CSSProperties = {
   paddingInline: "var(--spacing-4)",
   borderRadius: "var(--radius-3)",
   border: "1px solid var(--color-border-primary)",
-  background: "var(--color-bg-elevated)",
+  background: "var(--color-bg-primary)",
   color: "var(--color-text-tertiary)",
   cursor: "pointer",
   transition: "border-color 120ms ease",

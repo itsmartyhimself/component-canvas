@@ -43,7 +43,6 @@ export function CanvasControlsProvider({
     manifest ? { ...(manifest.defaultProps as PropMap) } : {},
   )
 
-  // Reset prop state when the selected component (manifest) changes.
   useEffect(() => {
     setProps(manifest ? { ...(manifest.defaultProps as PropMap) } : {})
   }, [manifest])

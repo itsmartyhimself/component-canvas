@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             zIndex: 1,
             pointerEvents: "none",
             background:
-              "linear-gradient(to bottom, var(--color-bg-elevated), transparent)",
+              "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
           }}
         />
         <StaleViewerBanner />

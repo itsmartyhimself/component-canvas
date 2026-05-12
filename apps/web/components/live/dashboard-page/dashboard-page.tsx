@@ -248,7 +248,7 @@ function BranchHoverStack({ branches }: BranchHoverStackProps) {
     position: "absolute",
     left: 0,
     right: 0,
-    background: "var(--color-bg-elevated)",
+    background: "var(--color-bg-primary)",
     borderRadius: "var(--radius-4)",
     pointerEvents: "none",
     zIndex: 0,

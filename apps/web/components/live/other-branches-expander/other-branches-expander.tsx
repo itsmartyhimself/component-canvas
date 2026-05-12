@@ -31,7 +31,7 @@ export function OtherBranchesExpander({
     gap: "var(--spacing-3)",
     borderRadius: "var(--radius-4)",
     background: expanded
-      ? "var(--color-bg-elevated)"
+      ? "var(--color-bg-primary)"
       : "var(--color-bg-secondary)",
     border: 0,
     cursor: "pointer",

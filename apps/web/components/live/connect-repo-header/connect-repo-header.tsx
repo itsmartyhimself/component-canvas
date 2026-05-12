@@ -9,8 +9,8 @@ export function ConnectRepoHeader() {
         gap: "var(--spacing-4)",
         padding: "var(--spacing-10) var(--spacing-16)",
         borderRadius: "var(--radius-4)",
-        background: "var(--gradient-daylight)",
-        border: "1px solid var(--color-bg-secondary)",
+        background:
+          "linear-gradient(180deg, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%)",
       }}
     >
       <h1

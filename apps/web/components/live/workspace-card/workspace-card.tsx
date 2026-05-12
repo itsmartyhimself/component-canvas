@@ -49,7 +49,7 @@ export function WorkspaceCard({ workspace, selected, onSelect }: WorkspaceCardPr
       <AnimatePresence initial={false}>
         {selected ? (
           <motion.div
-            key="twilight"
+            key="selected-fill"
             aria-hidden
             initial={
               reduceMotion
@@ -69,7 +69,8 @@ export function WorkspaceCard({ workspace, selected, onSelect }: WorkspaceCardPr
             style={{
               position: "absolute",
               inset: 0,
-              background: "var(--gradient-twilight)",
+              background:
+                "linear-gradient(180deg, var(--color-bg-primary) 50%, var(--color-bg-secondary) 100%)",
               borderRadius: "inherit",
               zIndex: 0,
               pointerEvents: "none",

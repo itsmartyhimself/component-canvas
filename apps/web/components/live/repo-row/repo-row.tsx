@@ -117,7 +117,7 @@ function RepoRowBase(
   if (interactive) {
     rowStyle.background = dimmed
       ? "var(--color-bg-secondary)"
-      : "var(--color-bg-elevated)"
+      : "var(--color-bg-primary)"
   }
 
   const handleToggle = () => onToggleExpanded(repo.id)

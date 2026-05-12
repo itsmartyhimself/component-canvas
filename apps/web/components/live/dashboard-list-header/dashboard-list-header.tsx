@@ -113,7 +113,7 @@ export function DashboardListHeader({
                 height: 28,
                 paddingInline: "var(--spacing-3-5)",
                 borderRadius: "var(--radius-full)",
-                background: "var(--color-bg-elevated)",
+                background: "var(--color-bg-primary)",
                 border: "1px solid var(--color-border-secondary)",
                 color: "var(--color-text-secondary)",
                 cursor: "pointer",

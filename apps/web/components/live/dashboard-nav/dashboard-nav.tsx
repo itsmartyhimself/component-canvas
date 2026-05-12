@@ -15,7 +15,7 @@ export function DashboardNav() {
         height: 60,
         paddingBlock: "var(--spacing-4)",
         paddingInline: "var(--spacing-10)",
-        background: "var(--color-bg-elevated)",
+        background: "var(--color-bg-primary)",
         flexShrink: 0,
       }}
     >

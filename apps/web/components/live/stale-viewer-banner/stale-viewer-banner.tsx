@@ -23,7 +23,6 @@ export function StaleViewerBanner() {
   const [visible, setVisible] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
-  // Pencil only shows the banner on the populated dashboard, not /connect.
   const onDashboard = pathname === "/"
 
   useEffect(() => {

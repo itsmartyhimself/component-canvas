@@ -591,10 +591,10 @@ html.dark [data-theme-static="light"] {
     background-color: var(--color-bg-secondary);
   }
   [data-row="branch"]:not([data-status="syncing"]):hover {
-    background-color: var(--color-bg-elevated);
+    background-color: var(--color-bg-primary);
   }
   [data-other-branches-expander]:hover {
-    background-color: var(--color-bg-elevated);
+    background-color: var(--color-bg-primary);
   }
   [data-other-branches-expander]:hover [data-obx="icon"],
   [data-other-branches-expander]:hover [data-obx="label"],
