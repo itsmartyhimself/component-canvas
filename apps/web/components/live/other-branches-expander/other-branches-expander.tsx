@@ -54,14 +54,13 @@ export function OtherBranchesExpander({
         }}
       >
         {loading ? (
-          <motion.span
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+          <span
+            className="icon-spin"
             style={{ display: "inline-flex", color: "var(--color-text-secondary)" }}
             aria-hidden
           >
             <CircleDash size={14} />
-          </motion.span>
+          </span>
         ) : (
           <Branch
             size={14}

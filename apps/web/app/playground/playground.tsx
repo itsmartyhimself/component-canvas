@@ -1,11 +1,9 @@
 "use client"
 
 import type { CSSProperties, ReactNode } from "react"
-import { AddMenuSpecimens } from "./specimens/add-menu-specimens"
 import { ButtonSpecimens } from "./specimens/button-specimens"
 import { DocModalSpecimens } from "./specimens/doc-modal-specimens"
 import { IconButtonSpecimens } from "./specimens/icon-button-specimens"
-import { ImportDialogSpecimens } from "./specimens/import-dialog-specimens"
 import { InstanceBreadcrumbSpecimens } from "./specimens/instance-breadcrumb-specimens"
 import { RowSpecimens } from "./specimens/row-specimens"
 import { SearchInputSpecimens } from "./specimens/search-input-specimens"
@@ -52,12 +50,6 @@ const SECTIONS: PlaygroundSection[] = [
     id: "user-footer",
     title: "UserFooter",
     render: () => <UserFooterSpecimens />,
-  },
-  { id: "add-menu", title: "AddMenu", render: () => <AddMenuSpecimens /> },
-  {
-    id: "import-dialog",
-    title: "ImportDialog",
-    render: () => <ImportDialogSpecimens />,
   },
   {
     id: "doc-modal",

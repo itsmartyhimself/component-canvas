@@ -232,7 +232,7 @@ function RepoRowBase(
 
         {showMeta ? (
           <span
-            className={`font-mono type-3 ${isFailed && !expanded ? "font-medium" : ""}`}
+            className="font-mono type-3"
             style={{
               color:
                 expanded
@@ -252,9 +252,8 @@ function RepoRowBase(
           <StatusDot tone={dotConfig.tone} variant={dotConfig.variant} size={8} ariaLabel={`Status: ${repo.status}`} />
         ) : null}
         {showSyncingSpinner && isSyncing ? (
-          <motion.span
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+          <span
+            className="icon-spin"
             style={{
               display: "inline-flex",
               color: "var(--color-text-secondary)",
@@ -262,7 +261,7 @@ function RepoRowBase(
             aria-hidden
           >
             <Renew size={14} />
-          </motion.span>
+          </span>
         ) : null}
         <WorkspaceChip workspace={workspace} />
       </div>

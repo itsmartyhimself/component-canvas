@@ -1,10 +1,7 @@
 "use client"
 
 import type { CSSProperties } from "react"
-import { Add } from "@carbon/icons-react"
 import { SidebarGroup, SidebarMenu } from "@/components/imports/shadcn/sidebar"
-import { AddMenu } from "@/components/live/add-menu"
-import { IconButton } from "@/components/live/icon-button"
 import { SectionHeader } from "@/components/live/section-header"
 import type {
   FolderRecord,
@@ -80,25 +77,11 @@ export function SidebarSection({
     ? leaves.filter((leaf) => searchMatch.leaves.has(leaf.id))
     : leaves
 
-  const addAction = section.actionable ? (
-    <AddMenu
-      scope={section.id}
-      trigger={
-        <IconButton
-          icon={<Add size={14} />}
-          size={20}
-          bordered={false}
-          ariaLabel={`Add to ${section.label}`}
-        />
-      }
-    />
-  ) : undefined
-
   return (
     <SidebarGroup>
       <div style={headerCollapseStyle(collapsed)}>
         <div style={{ overflow: "hidden", minHeight: 0 }}>
-          <SectionHeader label={section.label} action={addAction} />
+          <SectionHeader label={section.label} />
         </div>
       </div>
       <SidebarMenu>
@@ -110,7 +93,7 @@ export function SidebarSection({
                   ? null
                   : searchMatch
                     ? "No matches in this section."
-                    : "No folders yet. Click + to add one."}
+                    : "No folders yet."}
               </li>
             ) : (
               displayFolders.map((folder) => {

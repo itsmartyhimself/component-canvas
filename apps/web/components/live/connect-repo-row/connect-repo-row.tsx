@@ -57,7 +57,6 @@ export function ConnectRepoRow({
           color: disabled
             ? "var(--color-text-tertiary)"
             : "var(--color-text-primary)",
-          fontWeight: selected ? 500 : 400,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",

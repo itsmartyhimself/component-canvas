@@ -203,19 +203,6 @@ export function RowSpecimens() {
           </SubGroup>
         </Specimen>
       </SpecimenGroup>
-
-      <SpecimenGroup title="Inline editing">
-        <Specimen label={`editing=true (type and press Enter / Esc)`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <Row
-            label="New folder"
-            leading={{ kind: "folder" }}
-            editing
-            editDefaultValue="New folder"
-            onCommitEdit={(value) => console.log("commit", value)}
-            onCancelEdit={() => console.log("cancel edit")}
-          />
-        </Specimen>
-      </SpecimenGroup>
     </div>
   )
 }

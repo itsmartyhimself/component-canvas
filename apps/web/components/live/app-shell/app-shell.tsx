@@ -2,7 +2,6 @@ import { Canvas } from "./canvas"
 import { CanvasViewProvider } from "./canvas-view-context"
 import { StaleViewerTrigger } from "./stale-viewer-trigger"
 import { DocModal } from "@/components/live/doc-modal"
-import { ImportDialog } from "@/components/live/import-dialog"
 import {
   SidebarPanel,
   SidebarPanelProvider,
@@ -26,7 +25,6 @@ export function AppShell() {
             <SidebarPanel />
             <Canvas />
           </main>
-          <ImportDialog />
           <DocModal />
           <StaleViewerTrigger />
         </SidebarPanelProvider>

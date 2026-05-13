@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type TransitionEvent,
 } from "react"
 import { TooltipProvider } from "@/components/imports/shadcn/tooltip"
 import { SidebarFooterZone } from "./sidebar-footer-zone"
@@ -69,14 +68,7 @@ export function SidebarPanel() {
 }
 
 function SidebarPanelInner() {
-  const {
-    collapsed,
-    setHoverId,
-    wrapperRef,
-    pendingAddFocus,
-    clearPendingAddFocus,
-    addButtonRef,
-  } = useSidebarPanel()
+  const { collapsed, setHoverId, wrapperRef } = useSidebarPanel()
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const [atTop, setAtTop] = useState(true)
   const [atBottom, setAtBottom] = useState(true)
@@ -98,19 +90,6 @@ function SidebarPanelInner() {
     return () => observer.disconnect()
   }, [recalc, wrapperRef])
 
-  // After the aside-width transition, focus the in-sidebar "+" if a request is pending.
-  const handleTransitionEnd = useCallback(
-    (event: TransitionEvent<HTMLElement>) => {
-      if (event.target !== event.currentTarget) return
-      if (event.propertyName !== "width") return
-      if (!collapsed && pendingAddFocus) {
-        addButtonRef.current?.focus()
-        clearPendingAddFocus()
-      }
-    },
-    [collapsed, pendingAddFocus, addButtonRef, clearPendingAddFocus],
-  )
-
   return (
     <aside
       aria-label="Component browser"
@@ -121,7 +100,6 @@ function SidebarPanelInner() {
         width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
         transition: asideTransition,
       }}
-      onTransitionEnd={handleTransitionEnd}
       onMouseLeave={() => setHoverId(null)}
     >
       <div className="shrink-0" data-slot="sidebar-panel-header">

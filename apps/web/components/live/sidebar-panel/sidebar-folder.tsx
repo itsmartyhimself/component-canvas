@@ -39,7 +39,6 @@ export function SidebarFolder({
 }: SidebarFolderProps) {
   const {
     effectiveExpandedIds,
-    renamingId,
     actions,
     registerRow,
     setHoverId,
@@ -55,7 +54,6 @@ export function SidebarFolder({
   }, [folder.id, registerRow, collapsed])
 
   const expanded = !collapsed && effectiveExpandedIds.has(folder.id)
-  const editing = renamingId === folder.id
 
   const leading = folder.iconName
     ? ({ kind: "icon", icon: folder.iconName } as const)
@@ -83,10 +81,6 @@ export function SidebarFolder({
             leading={leading}
             trailing={{ kind: "chevron", expanded }}
             expanded={expanded}
-            editing={editing}
-            editDefaultValue={folder.name}
-            onCommitEdit={(value) => actions.commitRename(folder.id, value)}
-            onCancelEdit={() => actions.cancelRename()}
             onClick={handleClick}
             onHoverChange={(h) => {
               if (h) setHoverId(folder.id)

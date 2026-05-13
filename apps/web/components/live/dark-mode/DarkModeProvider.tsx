@@ -19,6 +19,28 @@ const DarkModeContext = createContext<DarkModeContextValue | null>(null)
 // State source of truth lives on <html class="dark">. The inline script in
 // layout.tsx sets that class before first paint from localStorage / system
 // pref, so the cascade is correct on initial render.
+
+// Strip transitions globally for the duration of a theme swap. Without this,
+// every element with a color/bg transition animates during the swap and the
+// flip looks smeared. requestAnimationFrame isn't reliable here —
+// getComputedStyle forces all stylesheets to apply before we restore.
+function instantThemeSwap(swap: () => void) {
+  if (typeof document === "undefined") {
+    swap()
+    return
+  }
+  const style = document.createElement("style")
+  style.appendChild(
+    document.createTextNode(
+      "*,*::before,*::after{transition:none !important;}",
+    ),
+  )
+  document.head.appendChild(style)
+  swap()
+  void window.getComputedStyle(style).opacity
+  document.head.removeChild(style)
+}
+
 export function DarkModeProvider({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState(false)
 
@@ -31,8 +53,10 @@ export function DarkModeProvider({ children }: { children: ReactNode }) {
     function onSystemChange(e: MediaQueryListEvent) {
       if (localStorage.getItem("theme")) return
       const dark = e.matches
-      setIsDark(dark)
-      document.documentElement.classList.toggle("dark", dark)
+      instantThemeSwap(() => {
+        setIsDark(dark)
+        document.documentElement.classList.toggle("dark", dark)
+      })
     }
     mq.addEventListener("change", onSystemChange)
     return () => mq.removeEventListener("change", onSystemChange)
@@ -41,8 +65,10 @@ export function DarkModeProvider({ children }: { children: ReactNode }) {
   const toggle = useCallback(() => {
     setIsDark((prev) => {
       const next = !prev
-      document.documentElement.classList.toggle("dark", next)
-      localStorage.setItem("theme", next ? "dark" : "light")
+      instantThemeSwap(() => {
+        document.documentElement.classList.toggle("dark", next)
+        localStorage.setItem("theme", next ? "dark" : "light")
+      })
       return next
     })
   }, [])

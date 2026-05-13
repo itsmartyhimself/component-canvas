@@ -72,12 +72,12 @@ const otherBranchesStyle: CSSProperties = {
   padding: "0 var(--spacing-3)",
   borderTop: "1px solid var(--color-border-primary)",
   color: "var(--color-text-secondary)",
-  background: "transparent",
   border: 0,
   outline: "none",
   width: "100%",
   textAlign: "left",
   cursor: "pointer",
+  transition: "background-color var(--duration-micro) ease",
 }
 
 export interface BranchDropdownProps {
@@ -94,6 +94,7 @@ export function BranchDropdown({
   onLoadOtherBranches,
 }: BranchDropdownProps) {
   const [query, setQuery] = useState("")
+  const [otherBranchesHovered, setOtherBranchesHovered] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
 
@@ -124,10 +125,13 @@ export function BranchDropdown({
           ref={inputRef}
           className="type-3"
           style={searchInputStyle}
+          type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Find branch…"
           aria-label="Find branch"
+          autoComplete="off"
+          spellCheck={false}
         />
       </div>
       <div ref={listRef} style={listScrollStyle}>
@@ -150,14 +154,14 @@ export function BranchDropdown({
         <button
           type="button"
           className="type-3"
-          style={otherBranchesStyle}
-          onMouseEnter={(event) => {
-            event.currentTarget.style.background =
-              "var(--color-bg-hover-elevated)"
+          style={{
+            ...otherBranchesStyle,
+            background: otherBranchesHovered
+              ? "var(--color-bg-hover-elevated)"
+              : "transparent",
           }}
-          onMouseLeave={(event) => {
-            event.currentTarget.style.background = "transparent"
-          }}
+          onMouseEnter={() => setOtherBranchesHovered(true)}
+          onMouseLeave={() => setOtherBranchesHovered(false)}
           onClick={onLoadOtherBranches}
         >
           <Branch size={14} />

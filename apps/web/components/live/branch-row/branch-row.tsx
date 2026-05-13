@@ -7,7 +7,6 @@ import {
 } from "react"
 import Link from "next/link"
 import { Pin, PinFilled, Renew } from "@carbon/icons-react"
-import { motion } from "framer-motion"
 import { IconButton } from "@/components/live/icon-button"
 import { StatusDot } from "@/components/live/status-dot"
 import { formatRelativeTimeShort } from "@/lib/time/relative"
@@ -77,7 +76,6 @@ function BranchRowBase(
     zIndex: 1,
   }
 
-  const nameWeight = branch.pinned || isSyncing || isFailed ? "font-medium" : ""
   const nameColor = isStale ? "var(--color-text-secondary)" : "var(--color-text-primary)"
   const metaColor = isStale ? "var(--color-text-tertiary)" : "var(--color-text-secondary)"
   const relTime = formatRelativeTimeShort(
@@ -119,7 +117,7 @@ function BranchRowBase(
         )}
         <StatusDot tone={dot.tone} variant={dot.variant} size={8} />
         <span
-          className={`font-mono type-4 ${nameWeight}`}
+          className="font-mono type-4"
           style={{
             color: nameColor,
             overflow: "hidden",
@@ -147,14 +145,13 @@ function BranchRowBase(
               gap: "var(--spacing-3)",
             }}
           >
-            <motion.span
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+            <span
+              className="icon-spin"
               style={{ display: "inline-flex", color: "var(--color-text-secondary)" }}
               aria-hidden
             >
               <Renew size={14} />
-            </motion.span>
+            </span>
             <span
               className="font-mono type-3"
               style={{ color: "var(--color-text-secondary)" }}

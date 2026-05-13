@@ -65,8 +65,9 @@ function IconButtonBase(
     justifyContent: "center",
     cursor: disabled ? "not-allowed" : "pointer",
     opacity: disabled ? 0.6 : 1,
+    boxShadow: "var(--focus-ring, 0 0 0 0 transparent)",
     transition:
-      "background-color 120ms ease, color 120ms ease, border-color 120ms ease",
+      "background-color 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease",
     flexShrink: 0,
   }
 
@@ -76,10 +77,8 @@ function IconButtonBase(
       type={type}
       aria-label={ariaLabel}
       disabled={disabled}
-      className={cn(
-        "focus-visible:outline-2 focus-visible:outline-offset-2",
-        className,
-      )}
+      data-focus-ring=""
+      className={cn(className)}
       style={rootStyle}
       onClick={(event) => {
         if (disabled) {

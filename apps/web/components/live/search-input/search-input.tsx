@@ -141,11 +141,14 @@ export const SearchInput = forwardRef(function SearchInput(
         ref={inputRef}
         className="type-3"
         style={inputStyle}
+        type="search"
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
         placeholder={placeholder}
         disabled={disabled}
         autoFocus={autoFocus}
+        autoComplete="off"
+        spellCheck={false}
         aria-label={ariaLabel ?? placeholder}
       />
       {showKbd && focusHotkey && !disabled ? (

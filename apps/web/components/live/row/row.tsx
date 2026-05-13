@@ -4,7 +4,6 @@ import {
   forwardRef,
   useCallback,
   type CSSProperties,
-  type KeyboardEvent,
   type ReactElement,
   type ReactNode,
   type Ref,
@@ -247,10 +246,6 @@ function RowBase(
     trailing = { kind: "none" },
     active = false,
     expanded = false,
-    editing = false,
-    editDefaultValue,
-    onCommitEdit,
-    onCancelEdit,
     loading = false,
     disabled = false,
     onClick,
@@ -268,7 +263,6 @@ function RowBase(
     ? COLLAPSED_SIZE
     : (sizeProp ?? DEFAULT_SIZE_FOR_VARIANT[variant])
   const dims = ROW_DIMENSIONS[effectiveSize]
-  const isEditing = editing && !collapsed
 
   const state = resolveState({
     active,
@@ -316,26 +310,6 @@ function RowBase(
     onHoverChange?.(false)
   }, [onHoverChange])
 
-  const handleCommit = useCallback(
-    (value: string) => {
-      if (onCommitEdit) onCommitEdit(value)
-    },
-    [onCommitEdit],
-  )
-
-  const handleEditKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        event.preventDefault()
-        handleCommit(event.currentTarget.value)
-      } else if (event.key === "Escape") {
-        event.preventDefault()
-        if (onCancelEdit) onCancelEdit()
-      }
-    },
-    [handleCommit, onCancelEdit],
-  )
-
   const labelStyle: CSSProperties = {
     color: state.foreground,
     position: "relative",
@@ -350,27 +324,7 @@ function RowBase(
     transition: labelTransition(collapsed),
   }
 
-  const labelSlot = isEditing ? (
-    <input
-      autoFocus
-      defaultValue={editDefaultValue ?? label}
-      placeholder="Folder name"
-      onKeyDown={handleEditKeyDown}
-      onBlur={(event) => handleCommit(event.currentTarget.value)}
-      onClick={(event) => event.stopPropagation()}
-      className={cn(dims.typeClass, "min-w-0 flex-1")}
-      style={{
-        color: state.foreground,
-        background: "transparent",
-        outline: "none",
-        border: "0",
-        padding: 0,
-        position: "relative",
-        zIndex: 1,
-        marginLeft: "var(--spacing-3)",
-      }}
-    />
-  ) : (
+  const labelSlot = (
     <span
       aria-hidden={collapsed || undefined}
       className={cn(dims.typeClass, "truncate")}

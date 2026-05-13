@@ -11,15 +11,10 @@ import type {
 } from "./types"
 
 const SECTIONS: SectionRecord[] = [
-  { id: "library", label: "LIBRARY", actionable: true, kind: "folders" },
-  { id: "frontend", label: "FRONTEND", actionable: true, kind: "folders" },
-  { id: "projects", label: "PROJECTS", actionable: true, kind: "folders" },
-  {
-    id: "design-system",
-    label: "DESIGN SYSTEM",
-    actionable: false,
-    kind: "items",
-  },
+  { id: "library", label: "LIBRARY", kind: "folders" },
+  { id: "frontend", label: "FRONTEND", kind: "folders" },
+  { id: "projects", label: "PROJECTS", kind: "folders" },
+  { id: "design-system", label: "DESIGN SYSTEM", kind: "items" },
 ]
 
 const FOLDERS: FolderRecord[] = [

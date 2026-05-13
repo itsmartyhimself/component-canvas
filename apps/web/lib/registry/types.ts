@@ -7,7 +7,6 @@ export type LeafKind = "component" | "nav" | "doc"
 export interface SectionRecord {
   id: SectionId
   label: string
-  actionable: boolean
   kind: "folders" | "items"
 }
 

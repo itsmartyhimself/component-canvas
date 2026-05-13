@@ -26,10 +26,6 @@ export interface RowProps {
   trailing?: RowTrailing
   active?: boolean
   expanded?: boolean
-  editing?: boolean
-  editDefaultValue?: string
-  onCommitEdit?: (value: string) => void
-  onCancelEdit?: () => void
   loading?: boolean
   disabled?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>

@@ -1,15 +1,13 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useRef, type CSSProperties } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import {
   SidebarMenuItem,
   SidebarMenuSubItem,
 } from "@/components/imports/shadcn/sidebar"
 import { Row } from "@/components/live/row"
 import type { LeafRecord } from "@/lib/registry/types"
-import { DocActionMenu } from "./doc-action-menu"
-import { RowActionMenu } from "./row-action-menu"
 import { useSidebarPanel } from "./use-sidebar-panel"
 
 interface SidebarLeafProps {
@@ -21,14 +19,7 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const {
-    actions,
-    renamingId,
-    hiddenDocIds,
-    registerRow,
-    setHoverId,
-    collapsed,
-  } = useSidebarPanel()
+  const { actions, registerRow, setHoverId, collapsed } = useSidebarPanel()
   const rowRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null)
 
   // `collapsed` is in deps because Row swaps a Tooltip wrap around its inner
@@ -41,9 +32,6 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
 
   const selectedId = searchParams.get("component")
   const active = leaf.kind === "component" && selectedId === leaf.id
-  const editing = renamingId === leaf.id
-
-  const isHidden = leaf.kind === "doc" && hiddenDocIds.has(leaf.id)
 
   const handleClick = useCallback(() => {
     if (leaf.disabled || leaf.loading) return
@@ -63,38 +51,6 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
     return { kind: "icon", icon: "cube" } as const
   })()
 
-  const actionScope = depth === 1 ? "menu-sub-item" : "menu-item"
-
-  const actionNode = editing || collapsed
-    ? null
-    : leaf.kind === "doc"
-      ? (
-          <DocActionMenu
-            ariaLabel={`Actions for ${leaf.name}`}
-            hidden={hiddenDocIds.has(leaf.id)}
-            scope={actionScope}
-            onToggleHidden={() => {
-              if (hiddenDocIds.has(leaf.id)) actions.unhideDoc(leaf.id)
-              else actions.hideDoc(leaf.id)
-            }}
-          />
-        )
-      : (
-          <RowActionMenu
-            ariaLabel={`Actions for ${leaf.name}`}
-            itemKind="leaf"
-            itemName={leaf.name}
-            scope={actionScope}
-            onRename={() => actions.startRename(leaf.id)}
-            onConfirmDelete={() => actions.deleteEntry(leaf.id)}
-          />
-        )
-
-  const itemStyle: CSSProperties = {
-    position: "relative",
-    display: isHidden ? "none" : undefined,
-  }
-
   const rowNode = (
     <Row
       ref={rowRef}
@@ -105,10 +61,6 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
       active={active}
       disabled={leaf.disabled}
       loading={leaf.loading}
-      editing={editing}
-      editDefaultValue={leaf.name}
-      onCommitEdit={(value) => actions.commitRename(leaf.id, value)}
-      onCancelEdit={() => actions.cancelRename()}
       onClick={handleClick}
       onHoverChange={(h) => {
         if (h) setHoverId(leaf.id)
@@ -119,18 +71,8 @@ export function SidebarLeaf({ leaf, depth = 1 }: SidebarLeafProps) {
   )
 
   if (depth === 1) {
-    return (
-      <SidebarMenuSubItem style={itemStyle}>
-        {rowNode}
-        {actionNode}
-      </SidebarMenuSubItem>
-    )
+    return <SidebarMenuSubItem>{rowNode}</SidebarMenuSubItem>
   }
 
-  return (
-    <SidebarMenuItem style={itemStyle}>
-      {rowNode}
-      {actionNode}
-    </SidebarMenuItem>
-  )
+  return <SidebarMenuItem>{rowNode}</SidebarMenuItem>
 }

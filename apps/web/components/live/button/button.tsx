@@ -97,9 +97,9 @@ function ButtonBase(
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: resolvedBorder,
-    boxShadow: baseColors.shadow ? BUTTON_SHADOW : "none",
+    boxShadow: `var(--focus-ring, 0 0 0 0 transparent)${baseColors.shadow ? `, ${BUTTON_SHADOW}` : ""}`,
     transition:
-      "background-color 120ms ease, color 120ms ease, border-color 120ms ease",
+      "background-color 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease",
     textDecoration: isTextLink && isHovered ? "underline" : "none",
     textUnderlineOffset: isTextLink ? "4px" : undefined,
     opacity: isDisabled ? 0.4 : 1,
@@ -140,7 +140,6 @@ function ButtonBase(
       className={cn(
         "translate-y-0 active:translate-y-0",
         "focus-visible:ring-0 focus-visible:border-transparent",
-        "focus-visible:outline-2 focus-visible:outline-offset-2",
         "disabled:opacity-[initial]",
         className,
       )}
@@ -148,6 +147,7 @@ function ButtonBase(
       disabled={isDisabled}
       type={href ? undefined : type}
       aria-label={ariaLabel}
+      data-focus-ring=""
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -169,11 +169,10 @@ function ButtonBase(
     <motion.div
       style={{
         display: "inline-flex",
-        willChange: "transform",
         ...(fill && { width: "100%" }),
       }}
       whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.97 }}
       transition={springTransition}
     >
       {buttonElement}

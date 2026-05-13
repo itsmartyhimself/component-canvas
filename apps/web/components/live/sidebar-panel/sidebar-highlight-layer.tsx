@@ -96,7 +96,7 @@ export function SidebarHighlightLayer() {
             }}
             exit={{
               opacity: 0,
-              transition: { duration: 0.15, delay: 0.2 },
+              transition: { duration: 0.18 },
             }}
             transition={ROW_SPRING}
             style={{

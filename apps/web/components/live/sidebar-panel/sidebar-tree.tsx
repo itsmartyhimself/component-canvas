@@ -26,10 +26,8 @@ export function SidebarTree() {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <SidebarMenu style={topPagesWrapperStyle}>
         {registry.topPages.map((page) => {
-          // Top pages reuse the doc-leaf form so they share the DocActionMenu
-          // (hide/unhide) + hiddenDocIds persistence with design-system docs.
-          // sectionId is unused by SidebarLeaf's doc path — "library" is a
-          // harmless placeholder.
+          // Top pages reuse the doc-leaf form. sectionId is unused by
+          // SidebarLeaf's doc path — "library" is a harmless placeholder.
           const asLeaf: LeafRecord = {
             id: page.id,
             name: page.label,

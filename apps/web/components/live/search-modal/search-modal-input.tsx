@@ -33,6 +33,8 @@ export function SearchModalInput({ value, onValueChange }: SearchModalInputProps
         className="type-6 placeholder:text-[var(--color-text-tertiary)]"
         style={inputStyle}
         autoFocus
+        autoComplete="off"
+        spellCheck={false}
       />
     </div>
   )
