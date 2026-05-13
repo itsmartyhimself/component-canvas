@@ -36,7 +36,7 @@
   --color-primary-foreground: var(--color-bg-primary);
   --color-destructive: var(--color-tag-danger-ink);
   --color-destructive-foreground: var(--color-bg-primary);
-  --color-accent: var(--color-border-secondary);
+  --color-accent: var(--color-bg-hover-elevated);
   --color-accent-foreground: var(--color-text-primary);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

@@ -25,10 +25,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             "linear-gradient(to bottom, var(--color-bg-primary), transparent)",
         }}
       />
-      <main
-        className="flex-1 overflow-y-auto"
-        style={{ paddingInline: 280 }}
-      >
+      <main className="flex-1 overflow-y-auto px-[280px] [@media(max-width:1399px)]:px-[240px] [@media(max-width:1199px)]:px-[200px]">
         {children}
       </main>
     </div>

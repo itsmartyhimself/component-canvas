@@ -1,7 +1,6 @@
 "use client"
 
 import { type CSSProperties } from "react"
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { Checkmark } from "@carbon/icons-react"
 import type { Workspace } from "@/lib/dashboard/types"
 
@@ -13,14 +12,12 @@ interface WorkspaceCardProps {
 
 export function WorkspaceCard({ workspace, selected, onSelect }: WorkspaceCardProps) {
   const isTeam = workspace.kind === "team"
-  const reduceMotion = useReducedMotion()
 
   const memberLabel = isTeam
     ? `${workspace.members.length} ${workspace.members.length === 1 ? "member" : "members"}`
     : "Just you"
 
   const containerStyle: CSSProperties = {
-    position: "relative",
     flex: 1,
     minWidth: 0,
     display: "flex",
@@ -44,44 +41,9 @@ export function WorkspaceCard({ workspace, selected, onSelect }: WorkspaceCardPr
       aria-checked={selected}
       style={containerStyle}
       onClick={onSelect}
-      data-theme-static={selected ? "light" : undefined}
     >
-      <AnimatePresence initial={false}>
-        {selected ? (
-          <motion.div
-            key="selected-fill"
-            aria-hidden
-            initial={
-              reduceMotion
-                ? { clipPath: "inset(0% 0% 0% 0%)" }
-                : { clipPath: "inset(100% 0% 0% 0%)" }
-            }
-            animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
-            exit={{
-              opacity: 0,
-              transition: { duration: reduceMotion ? 0 : 0.08 },
-            }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { duration: 0.32, ease: [0.22, 1, 0.36, 1] }
-            }
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(180deg, var(--color-bg-primary) 50%, var(--color-bg-secondary) 100%)",
-              borderRadius: "inherit",
-              zIndex: 0,
-              pointerEvents: "none",
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
       <div
         style={{
-          position: "relative",
-          zIndex: 1,
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
@@ -114,8 +76,6 @@ export function WorkspaceCard({ workspace, selected, onSelect }: WorkspaceCardPr
       <span
         className="type-8"
         style={{
-          position: "relative",
-          zIndex: 1,
           color: "var(--color-text-primary)",
           lineHeight: 1,
           width: "100%",

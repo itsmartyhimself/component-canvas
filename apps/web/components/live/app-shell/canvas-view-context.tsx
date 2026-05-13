@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -60,13 +61,18 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
     const el = viewportRef.current
     if (!el) return null
     const rect = el.getBoundingClientRect()
+    // Layout-effect reads can fire before the browser has measured the section
+    // (Suspense un-suspend, initial mount). A 0x0 rect produces a garbage fit
+    // (zoom clamps to min, x/y land at 0,0). Treat unmeasured as "not ready"
+    // so callers fall back gracefully and the resize observer re-fits later.
+    if (rect.width === 0 || rect.height === 0) return null
     return { width: rect.width, height: rect.height }
   }, [])
 
   const computeFit = useCallback(
-    (bbox: ContentBbox): CanvasView => {
+    (bbox: ContentBbox): CanvasView | null => {
       const size = getViewportSize()
-      if (!size) return { x: 0, y: 0, zoom: 1 }
+      if (!size) return null
       const zoomX = (size.width * (1 - 2 * FIT_MARGIN)) / Math.max(bbox.width, 1)
       const zoomY = (size.height * (1 - 2 * FIT_MARGIN)) / Math.max(bbox.height, 1)
       const zoom = clampZoom(Math.min(zoomX, zoomY))
@@ -97,12 +103,17 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
   const setContentBbox = useCallback(
     (bbox: ContentBbox) => {
       contentBboxRef.current = bbox
-      // First fit must snap — browser animates from (0,0) otherwise, even if never painted.
+      const fit = computeFit(bbox)
+      // Viewport not measurable yet (Suspense un-suspend, initial mount before
+      // layout): store the bbox and let the viewport ResizeObserver below run
+      // the first fit when the section reports a non-zero size. Do NOT mark
+      // initialFitDoneRef so the corrective fit stays a silent snap.
+      if (!fit) return
       if (initialFitDoneRef.current) {
         setIsAnimating(true)
       }
       initialFitDoneRef.current = true
-      setView(computeFit(bbox))
+      setView(fit)
     },
     [computeFit],
   )
@@ -182,13 +193,37 @@ export function CanvasViewProvider({ children }: { children: ReactNode }) {
   const fitToContent = useCallback(() => {
     const bbox = contentBboxRef.current
     if (!bbox) return
+    const fit = computeFit(bbox)
+    if (!fit) return
     setIsAnimating(true)
-    setView(computeFit(bbox))
+    setView(fit)
   }, [computeFit])
 
   const endAnimation = useCallback(() => {
     setIsAnimating(false)
   }, [])
+
+  // Drives the silent first fit when the viewport becomes measurable. During
+  // initial mount / Suspense un-suspend, StageContent's layout effect can fire
+  // setContentBbox before the section has been laid out — getViewportSize
+  // returns null and setContentBbox stores the bbox without setting the view.
+  // This observer catches the first non-zero size and runs the fit, bypassing
+  // setContentBbox so initialFitDoneRef stays false and there's no tween.
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el || typeof ResizeObserver === "undefined") return
+    const ro = new ResizeObserver(() => {
+      if (initialFitDoneRef.current) return
+      const bbox = contentBboxRef.current
+      if (!bbox) return
+      const fit = computeFit(bbox)
+      if (!fit) return
+      initialFitDoneRef.current = true
+      setView(fit)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [computeFit])
 
   const value = useMemo<CanvasViewContextValue>(
     () => ({
