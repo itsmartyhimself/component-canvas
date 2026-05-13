@@ -3,7 +3,6 @@
 import * as React from "react"
 import {
   forwardRef,
-  useState,
   type CSSProperties,
   type KeyboardEvent,
   type Ref,
@@ -20,7 +19,6 @@ import {
 import { IconButton } from "@/components/live/icon-button"
 import { StatusDot } from "@/components/live/status-dot"
 import { WorkspaceChip } from "@/components/live/workspace-chip"
-import { WorkspacePopover } from "@/components/live/workspace-popover"
 import { ROW_SPRING } from "@/components/live/row/row.config"
 import { formatRelativeTimeShort } from "@/lib/time/relative"
 import { DEMO_NOW, workspaceForRepo } from "@/lib/dashboard/demo"
@@ -83,7 +81,6 @@ function RepoRowBase(
   ref: Ref<HTMLDivElement>,
 ) {
   const router = useRouter()
-  const [popoverOpen, setPopoverOpen] = useState(false)
   const workspace = workspaceForRepo(repo.id)
   const primaryBranch =
     repo.branches.find((b) => b.primary)?.name ?? repo.branches[0]?.name ?? "main"
@@ -267,28 +264,7 @@ function RepoRowBase(
             <Renew size={14} />
           </motion.span>
         ) : null}
-        {interactive ? (
-          <span
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-            style={{ display: "inline-flex" }}
-          >
-            <WorkspacePopover
-              open={popoverOpen}
-              onOpenChange={setPopoverOpen}
-              workspace={workspace}
-              trigger={
-                <WorkspaceChip
-                  workspace={workspace}
-                  active={popoverOpen}
-                  onClick={() => setPopoverOpen((o) => !o)}
-                />
-              }
-            />
-          </span>
-        ) : (
-          <WorkspaceChip workspace={workspace} />
-        )}
+        <WorkspaceChip workspace={workspace} />
       </div>
     </div>
   )

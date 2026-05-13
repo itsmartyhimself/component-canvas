@@ -73,9 +73,6 @@ export function RowSpecimens() {
         <Specimen label={`leading=dot`} width={SIDEBAR_WIDTH_SPECIMEN}>
           <Row label="History" leading={{ kind: "dot" }} variant="menu-sub-button" />
         </Specimen>
-        <Specimen label={`leading=initial letter="A"`} width={SIDEBAR_WIDTH_SPECIMEN}>
-          <Row label="Acme" leading={{ kind: "initial", letter: "A" }} />
-        </Specimen>
         <Specimen label={`leading=none`} width={SIDEBAR_WIDTH_SPECIMEN}>
           <Row label="No leading" leading={{ kind: "none" }} />
         </Specimen>

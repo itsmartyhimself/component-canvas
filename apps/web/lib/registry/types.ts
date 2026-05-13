@@ -47,7 +47,6 @@ export interface Team {
   id: string
   name: string
   plan: string
-  initial: string
 }
 
 export interface User {

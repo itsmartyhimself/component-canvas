@@ -48,7 +48,6 @@ export const ACME_WORKSPACE: Workspace = {
   id: "ws-acme",
   name: "Acme",
   kind: "team",
-  initial: "A",
   members: acmeMembers,
 }
 

@@ -12,7 +12,6 @@ export interface Workspace {
   id: string
   name: string
   kind: WorkspaceKind
-  initial?: string
   members: Member[]
 }
 

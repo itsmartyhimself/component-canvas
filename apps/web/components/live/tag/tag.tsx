@@ -24,7 +24,6 @@ export interface TagProps
   tone?: TagTone
   leading?: ReactNode
   trailing?: ReactNode
-  leadingBoxSize?: number
   children: ReactNode
 }
 
@@ -34,7 +33,6 @@ function TagBase(
     tone = "neutral",
     leading,
     trailing,
-    leadingBoxSize,
     children,
     className,
     style,
@@ -47,24 +45,17 @@ function TagBase(
   const radius = RADIUS_MAP[size]
   const inlinePad = PADDING_INLINE_MAP[size]
 
-  const inset =
-    leadingBoxSize != null ? Math.max(0, (height - leadingBoxSize) / 2) : null
-
-  const rootStyle = {
+  const rootStyle: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
     gap: GAP,
     height,
-    padding: inset != null ? `0 ${inlinePad} 0 ${inset}px` : `0 ${inlinePad}`,
+    padding: `0 ${inlinePad}`,
     borderRadius: radius,
     backgroundColor: bg,
     color: fg,
-    ...(inset != null && {
-      "--radius-outer": radius,
-      "--space-pad": `${inset}px`,
-    }),
     ...style,
-  } as CSSProperties
+  }
 
   return (
     <span ref={ref} className={cn(TYPE_CLASS, className)} style={rootStyle} {...rest}>

@@ -9,11 +9,9 @@ import { ConnectRepoHeader } from "@/components/live/connect-repo-header"
 import { StepSelectRepo } from "./step-select-repo"
 import { StepAssignWorkspace } from "./step-assign-workspace"
 import { DEMO_AVAILABLE_REPOS, ACME_WORKSPACE } from "@/lib/dashboard/demo"
-import { useToast } from "@/components/live/toast"
 
 export function ConnectRepoForm() {
   const router = useRouter()
-  const { showToast } = useToast()
   const firstSelectable =
     DEMO_AVAILABLE_REPOS.find((r) => !r.alreadyConnected)?.id ?? null
   const [repoId, setRepoId] = useState<string | null>(firstSelectable)
@@ -24,10 +22,6 @@ export function ConnectRepoForm() {
   const handleSubmit = () => {
     if (!canSubmit) return
     // TODO: ROADMAP §Dashboard — wire to /apps/api install-callback + create-repo-connection.
-    showToast({
-      tone: "success",
-      title: "Initial sync started",
-    })
     router.push("/")
   }
 

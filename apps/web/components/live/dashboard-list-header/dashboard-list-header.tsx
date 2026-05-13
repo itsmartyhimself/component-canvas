@@ -10,7 +10,6 @@ import {
 } from "@/components/imports/shadcn/dropdown-menu"
 import {
   FilterPills,
-  FilterPillAvatar,
   type FilterPill,
 } from "@/components/live/filter-pills"
 import { useDashboardState } from "@/lib/dashboard/state"
@@ -43,13 +42,6 @@ export function DashboardListHeader({
       .map((w) => ({
         key: w.id,
         label: `Team ${w.name}`,
-        leading: (active: boolean) => (
-          <FilterPillAvatar
-            initial={w.initial ?? w.name.slice(0, 1).toUpperCase()}
-            active={active}
-          />
-        ),
-        leadingBoxSize: 24,
       })),
   ]
 

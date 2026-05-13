@@ -219,7 +219,6 @@ const TEAM: Team = {
   id: "acme",
   name: "Acme",
   plan: "Pro plan",
-  initial: "A",
 }
 
 const USER: User = {
@@ -238,5 +237,5 @@ export const DEMO_REGISTRY: Registry = {
 
 export const DEMO_TEAMS_MULTI: Team[] = [
   TEAM,
-  { id: "northwind", name: "Northwind", plan: "Starter plan", initial: "N" },
+  { id: "northwind", name: "Northwind", plan: "Starter plan" },
 ]

@@ -2,7 +2,6 @@
 
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -25,7 +24,6 @@ import {
   DashboardStateProvider,
 } from "@/lib/dashboard/state"
 import { synthesizeUnpinnedBranches } from "@/lib/dashboard/demo"
-import { useToast } from "@/components/live/toast"
 import type { Branch } from "@/lib/dashboard/types"
 
 export function DashboardPage() {
@@ -68,20 +66,6 @@ function DashboardContent() {
     toggleExpanded,
     toggleExpander,
   } = useDashboardState()
-  const { showToast } = useToast()
-
-  // TODO: ROADMAP §Dashboard — Toast 4s timer mocks the "new version available"
-  // sync-event. Replace with a Supabase Realtime subscription.
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      showToast({
-        tone: "success",
-        title: "New version available",
-        action: { label: "Refresh" },
-      })
-    }, 4_000)
-    return () => window.clearTimeout(t)
-  }, [showToast])
 
   return (
     <div

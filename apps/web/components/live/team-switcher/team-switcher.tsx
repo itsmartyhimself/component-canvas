@@ -7,7 +7,6 @@ import {
   SIDEBAR_EASE_OUT_SOFT,
   SIDEBAR_LABEL_ENTER_MS,
   SIDEBAR_LABEL_EXIT_MS,
-  SIDEBAR_WIDTH_DURATION_MS,
 } from "@/components/live/sidebar-panel/sidebar-panel.config"
 import type { Team } from "@/lib/registry/types"
 
@@ -17,58 +16,37 @@ export interface TeamSwitcherProps {
   collapsed?: boolean
 }
 
-// Single row style for both states — padding transitions in lockstep with aside
-// width so the tile slides without a JSX swap or jump.
-function teamRowStyle(collapsed: boolean): CSSProperties {
-  return {
-    display: "flex",
-    alignItems: "center",
-    gap: 0,
-    width: "100%",
-    padding: collapsed ? "var(--spacing-2) 0" : "var(--spacing-2)",
-    borderRadius: "var(--radius-2)",
-    background: "transparent",
-    cursor: collapsed ? "default" : "pointer",
-    border: 0,
-    outline: "none",
-    transition: `padding ${SIDEBAR_WIDTH_DURATION_MS}ms ${SIDEBAR_EASE_OUT_SOFT}`,
-  }
-}
+const EXPANDED_MAX_HEIGHT = 64
 
-const tileStyle: CSSProperties = {
-  width: 28,
-  height: 28,
-  borderRadius: "var(--radius-1-5)",
-  background: "var(--color-text-primary)",
-  color: "var(--color-bg-primary)",
+const rowStyle: CSSProperties = {
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
-  flexShrink: 0,
+  gap: "var(--spacing-3)",
+  width: "100%",
+  padding: "var(--spacing-2)",
+  borderRadius: "var(--radius-2)",
+  background: "transparent",
+  border: 0,
+  outline: "none",
 }
 
-const linesBaseStyle: CSSProperties = {
+const linesStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   minWidth: 0,
   alignItems: "flex-start",
   overflow: "hidden",
   whiteSpace: "nowrap",
+  flex: 1,
 }
 
-const chevronBaseStyle: CSSProperties = {
+const chevronStyle: CSSProperties = {
   height: 20,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   color: "var(--color-text-tertiary)",
   flexShrink: 0,
-  overflow: "hidden",
-}
-
-function labelTransition(collapsed: boolean): string {
-  const ms = collapsed ? SIDEBAR_LABEL_EXIT_MS : SIDEBAR_LABEL_ENTER_MS
-  return `max-width ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, opacity ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}, margin ${ms}ms ${SIDEBAR_EASE_OUT_SOFT}`
 }
 
 const popoverContentStyle: CSSProperties = {
@@ -94,74 +72,52 @@ export function TeamSwitcher({
 
   const hasMultipleTeams = teams.length > 1
 
-  const tile = (
-    <span style={tileStyle} className="type-4">
-      {activeTeam.initial}
+  const transitionMs = collapsed
+    ? SIDEBAR_LABEL_EXIT_MS
+    : SIDEBAR_LABEL_ENTER_MS
+  const wrapperStyle: CSSProperties = {
+    overflow: "hidden",
+    maxHeight: collapsed ? 0 : EXPANDED_MAX_HEIGHT,
+    opacity: collapsed ? 0 : 1,
+    transition: [
+      `max-height ${transitionMs}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+      `opacity ${transitionMs}ms ${SIDEBAR_EASE_OUT_SOFT}`,
+    ].join(", "),
+  }
+
+  const labels = (
+    <span style={linesStyle}>
+      <span
+        className="type-3 truncate"
+        style={{ color: "var(--color-text-primary)" }}
+      >
+        {activeTeam.name}
+      </span>
+      <span
+        className="type-3 truncate"
+        style={{ color: "var(--color-text-tertiary)" }}
+      >
+        {activeTeam.plan}
+      </span>
     </span>
   )
 
-  const labels = (
-    <>
-      <span
-        aria-hidden={collapsed || undefined}
-        style={{
-          ...linesBaseStyle,
-          flex: collapsed ? "0 0 0px" : 1,
-          maxWidth: collapsed ? 0 : 999,
-          opacity: collapsed ? 0 : 1,
-          marginLeft: collapsed ? 0 : "var(--spacing-3)",
-          transition: labelTransition(collapsed),
-        }}
-      >
-        <span
-          className="type-3 truncate"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          {activeTeam.name}
-        </span>
-        <span
-          className="type-3 truncate"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          {activeTeam.plan}
-        </span>
-      </span>
-      {hasMultipleTeams ? (
-        <span
-          aria-hidden={collapsed || undefined}
-          style={{
-            ...chevronBaseStyle,
-            maxWidth: collapsed ? 0 : 20,
-            width: collapsed ? 0 : 20,
-            opacity: collapsed ? 0 : 1,
-            marginLeft: collapsed ? 0 : "var(--spacing-3)",
-            transition: labelTransition(collapsed),
-          }}
-        >
-          <ChevronSort size={16} />
-        </span>
-      ) : null}
-    </>
-  )
+  const chevron = hasMultipleTeams ? (
+    <span style={chevronStyle}>
+      <ChevronSort size={16} />
+    </span>
+  ) : null
 
-  if (collapsed || !hasMultipleTeams) {
-    return (
-      <div
-        aria-label={`Team ${activeTeam.name}`}
-        style={teamRowStyle(collapsed)}
-      >
-        {tile}
-        {labels}
-      </div>
-    )
-  }
-
-  return (
+  const inner = hasMultipleTeams ? (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button type="button" aria-label="Switch team" style={teamRowStyle(false)}>
-          {tile}
+        <button
+          type="button"
+          aria-label="Switch team"
+          style={{ ...rowStyle, cursor: "pointer" }}
+        >
           {labels}
+          {chevron}
         </button>
       </Popover.Trigger>
       <Popover.Portal>
@@ -171,10 +127,7 @@ export function TeamSwitcher({
           sideOffset={4}
           style={popoverContentStyle}
         >
-          <p
-            className="type-3"
-            style={{ color: "var(--color-text-tertiary)" }}
-          >
+          <p className="type-3" style={{ color: "var(--color-text-tertiary)" }}>
             Switch team coming soon.
           </p>
           {teams.map((team) => (
@@ -194,5 +147,15 @@ export function TeamSwitcher({
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
+  ) : (
+    <div aria-label={`Team ${activeTeam.name}`} style={rowStyle}>
+      {labels}
+    </div>
+  )
+
+  return (
+    <div aria-hidden={collapsed || undefined} style={wrapperStyle}>
+      {inner}
+    </div>
   )
 }

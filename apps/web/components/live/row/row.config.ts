@@ -9,7 +9,6 @@ export type RowLeading =
   | { kind: "icon"; icon: CarbonIconName }
   | { kind: "folder"; expanded?: boolean }
   | { kind: "dot" }
-  | { kind: "initial"; letter: string }
   | { kind: "none" }
 
 export type RowTrailing =

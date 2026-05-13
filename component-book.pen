@@ -50485,6 +50485,92 @@
                 },
                 {
                   "type": "frame",
+                  "id": "u65w4",
+                  "name": "Toast-error-group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Lj07t",
+                      "fill": "$color-text-tertiary",
+                      "content": "Stale-banner",
+                      "lineHeight": 1,
+                      "fontFamily": "Geist",
+                      "fontSize": 11,
+                      "fontWeight": "500",
+                      "letterSpacing": 0.06
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QhScL",
+                      "name": "Toast-banner",
+                      "width": 320,
+                      "fill": "$color-text-primary",
+                      "cornerRadius": 16,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#1211113d",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 24
+                      },
+                      "gap": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "omsGP",
+                          "fill": "$tag-warning-ink",
+                          "width": 8,
+                          "height": 8
+                        },
+                        {
+                          "type": "text",
+                          "id": "bQW1m",
+                          "fill": "$color-bg-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "This branch has an update",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Geist",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "b9lCL",
+                          "fill": "$color-bg-primary",
+                          "content": "Refresh",
+                          "lineHeight": 1,
+                          "fontFamily": "Geist",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "fTR4u",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "x",
+                          "iconFontFamily": "lucide",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "m7uS9",
                   "name": "Stale-Viewer-Banner-group",
                   "width": "fill_container",
@@ -50582,6 +50668,84 @@
                               "fontWeight": "500"
                             }
                           ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oIozL",
+              "name": "Stale-Viewer-Banner-New",
+              "context": "On hover, ",
+              "width": "fill_container",
+              "fill": "$color-bg-tertiary",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              },
+              "padding": [
+                8,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xGS9D",
+                  "name": "HitArea",
+                  "context": "This is the hoverable/clickable area of the banner. Hovering changes the mouse/cursor so the user understands this is clickable. Also, a motion and color change happens when hovering. This is described in the child layer 'Text CTA'",
+                  "height": 24,
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LKSaA",
+                      "fill": "$color-text-primary",
+                      "content": "This branch has an update",
+                      "lineHeight": 1.2,
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "ZAt4h",
+                      "fill": "$color-text-tertiary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UfSl7",
+                      "name": "Text CTA",
+                      "context": "When the parent (HitArea) is hovered, the color of the content in this changes to the primary copy color, and the arrow (which needs to be changed to a carbon one) is moved 2px to the right through a motion div (so dont increase the gap in this holder, because that will re arrange the entire flexbox - just make the arrow thing move 2px to the right with a motion div instead)",
+                      "gap": 2,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "J0Undv",
+                          "fill": "$color-text-tertiary",
+                          "content": "Refresh",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Geist",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "hWRUT",
+                          "name": "r2ch",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "chevron-right",
+                          "iconFontFamily": "lucide",
+                          "fill": "$color-text-tertiary"
                         }
                       ]
                     }
@@ -52618,6 +52782,86 @@
                       ]
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "AEeYX",
+      "x": 8057,
+      "y": 3504,
+      "name": "Stale-Viewer-Banner-New",
+      "context": "On hover, ",
+      "width": "fill_container(880)",
+      "fill": "$color-bg-tertiary",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "padding": [
+        8,
+        16
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "c55o4c",
+          "name": "HitArea",
+          "context": "This is the hoverable/clickable area of the banner. Hovering changes the mouse/cursor so the user understands this is clickable. Also, a motion and color change happens when hovering. This is described in the child layer 'Text CTA'",
+          "height": 24,
+          "gap": 8,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "mTbQ0",
+              "fill": "$color-text-primary",
+              "content": "This branch has an update",
+              "lineHeight": 1.2,
+              "fontFamily": "Geist",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "ellipse",
+              "id": "YhFnq",
+              "fill": "$color-text-tertiary",
+              "width": 8,
+              "height": 8
+            },
+            {
+              "type": "frame",
+              "id": "xovXB",
+              "name": "Text CTA",
+              "context": "When the parent (HitArea) is hovered, the color of the content in this changes to the primary copy color, and the arrow (which needs to be changed to a carbon one) is moved 2px to the right through a motion div (so dont increase the gap in this holder, because that will re arrange the entire flexbox - just make the arrow thing move 2px to the right with a motion div instead)",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xbP7l",
+                  "fill": "$color-text-tertiary",
+                  "content": "Refresh",
+                  "lineHeight": 1.2,
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "K9xf25",
+                  "name": "r2ch",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "chevron-right",
+                  "iconFontFamily": "lucide",
+                  "fill": "$color-text-tertiary"
                 }
               ]
             }

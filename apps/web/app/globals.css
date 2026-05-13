@@ -543,13 +543,6 @@ html.dark [data-theme-static="light"] {
     fill: currentColor;
   }
 
-  .nested-radius-inner {
-    border-radius: max(
-      0px,
-      calc(var(--radius-outer, var(--radius-2)) - var(--space-pad, var(--spacing-2)))
-    );
-  }
-
   /* Row action: hover/focus-reveal inside a sidebar item OR dashboard row.
      The trigger stays mounted so keyboard nav + screen readers still reach it.
      pointer-events gates pointer clicks while invisible — keyboard nav still

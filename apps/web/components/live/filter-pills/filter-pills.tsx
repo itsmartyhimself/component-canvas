@@ -1,6 +1,6 @@
 "use client"
 
-import type { CSSProperties, ReactNode } from "react"
+import { useState, type CSSProperties } from "react"
 import { LayoutGroup, motion } from "framer-motion"
 import { Tag } from "@/components/live/tag"
 import { ROW_SPRING } from "@/components/live/row/row.config"
@@ -8,8 +8,6 @@ import { ROW_SPRING } from "@/components/live/row/row.config"
 export interface FilterPill {
   key: string
   label: string
-  leading?: ReactNode | ((active: boolean) => ReactNode)
-  leadingBoxSize?: number
 }
 
 interface FilterPillsProps {
@@ -19,6 +17,8 @@ interface FilterPillsProps {
 }
 
 export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null)
+
   return (
     <LayoutGroup>
       <div
@@ -31,15 +31,14 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
       >
         {pills.map((pill) => {
           const active = pill.key === value
-          const leadingNode =
-            typeof pill.leading === "function" ? pill.leading(active) : pill.leading
+          const hovered = !active && hoveredKey === pill.key
           const buttonStyle: CSSProperties = {
             position: "relative",
             display: "inline-flex",
             padding: 0,
             border: 0,
             borderRadius: "var(--radius-3)",
-            background: "transparent",
+            background: hovered ? "var(--color-bg-secondary)" : "transparent",
             cursor: "pointer",
             transition: "background-color 120ms ease",
           }
@@ -51,12 +50,10 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
               aria-selected={active}
               style={buttonStyle}
               onClick={() => onChange(pill.key)}
-              onMouseEnter={(e) => {
-                if (!active) e.currentTarget.style.background = "var(--color-bg-secondary)"
-              }}
-              onMouseLeave={(e) => {
-                if (!active) e.currentTarget.style.background = "transparent"
-              }}
+              onMouseEnter={() => setHoveredKey(pill.key)}
+              onMouseLeave={() =>
+                setHoveredKey((k) => (k === pill.key ? null : k))
+              }
             >
               {active && (
                 <motion.span
@@ -73,8 +70,6 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
               <Tag
                 size="md"
                 tone="ghost"
-                leading={leadingNode}
-                leadingBoxSize={pill.leadingBoxSize}
                 className="font-medium"
                 style={{
                   position: "relative",
@@ -90,31 +85,5 @@ export function FilterPills({ pills, value, onChange }: FilterPillsProps) {
         })}
       </div>
     </LayoutGroup>
-  )
-}
-
-interface FilterPillAvatarProps {
-  initial: string
-  active: boolean
-}
-
-export function FilterPillAvatar({ initial, active }: FilterPillAvatarProps) {
-  return (
-    <span
-      className="font-mono font-medium type-2 nested-radius-inner"
-      style={{
-        width: 24,
-        height: 24,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: active ? "var(--color-bg-primary)" : "var(--color-text-primary)",
-        color: active ? "var(--color-text-primary)" : "var(--color-bg-primary)",
-        flexShrink: 0,
-      }}
-      aria-hidden
-    >
-      {initial}
-    </span>
   )
 }

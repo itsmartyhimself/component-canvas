@@ -62,9 +62,7 @@ function leadingIdentity(leading: RowLeading): string {
       return `folder:${leading.expanded ? "open" : "closed"}`
     case "dot":
       return "dot"
-    case "initial":
-      return `initial:${leading.letter}`
-    default:
+    case "none":
       return "none"
   }
 }
@@ -72,7 +70,6 @@ function leadingIdentity(leading: RowLeading): string {
 function renderLeadingNode(
   leading: RowLeading,
   iconColor: string,
-  foreground: string,
 ): ReactNode {
   if (leading.kind === "none") return null
   switch (leading.kind) {
@@ -97,24 +94,6 @@ function renderLeadingNode(
           }}
         />
       )
-    case "initial":
-      return (
-        <span
-          className="type-2"
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: foreground,
-            borderRadius: "var(--radius-full)",
-            background: "var(--color-bg-tertiary)",
-          }}
-        >
-          {leading.letter}
-        </span>
-      )
     default:
       return null
   }
@@ -131,18 +110,16 @@ const iconLayerTransition = { duration: 0.15, ease: [0.32, 0.72, 0, 1] as const 
 function LeadingIconSlot({
   leading,
   iconColor,
-  foreground,
   collapsed,
 }: {
   leading: RowLeading
   iconColor: string
-  foreground: string
   collapsed: boolean
 }) {
   if (leading.kind === "none") return null
 
   const identity = leadingIdentity(leading)
-  const node = renderLeadingNode(leading, iconColor, foreground)
+  const node = renderLeadingNode(leading, iconColor)
 
   // 2px down aligns the glyph with text cap-height; 0 when collapsed (icon
   // centres in a 28×28 square with no text to align to).
@@ -408,7 +385,6 @@ function RowBase(
       <LeadingIconSlot
         leading={leading}
         iconColor={state.iconColor}
-        foreground={state.foreground}
         collapsed={collapsed}
       />
     </span>

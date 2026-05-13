@@ -11,7 +11,7 @@ import { Close } from "@carbon/icons-react"
 import { Toaster, toast } from "sonner"
 import { StatusDot } from "@/components/live/status-dot"
 
-export type ToastTone = "default" | "success" | "error"
+export type ToastTone = "default" | "success" | "warning" | "error"
 
 interface ShowToastOptions {
   title: string
@@ -41,7 +41,7 @@ const toastSurface = {
   borderRadius: "var(--radius-4)",
   background: "var(--color-text-primary)",
   color: "var(--color-bg-primary)",
-  boxShadow: "0 8px 24px rgba(18, 17, 17, 0.24)",
+  boxShadow: "var(--shadow-layered)",
 } as const
 
 function ToastBody({
@@ -59,6 +59,9 @@ function ToastBody({
   const showClose = tone !== "default"
   const showAction = !!action
 
+  const dotTone =
+    tone === "success" ? "success" : tone === "warning" ? "warning" : "danger"
+
   return (
     <div style={toastSurface} role="status">
       <div
@@ -71,11 +74,7 @@ function ToastBody({
         }}
       >
         {showDot ? (
-          <StatusDot
-            tone={tone === "success" ? "success" : "danger"}
-            variant="solid"
-            size={8}
-          />
+          <StatusDot tone={dotTone} variant="solid" size={8} />
         ) : null}
         <span
           className="type-4"
