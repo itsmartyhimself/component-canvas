@@ -1,4 +1,4 @@
-import { Add, ArrowRight } from "@carbon/icons-react"
+import { Add } from "@carbon/icons-react"
 import { Button } from "@/components/live/button"
 import { HeroCard, HeroCardIconTile } from "@/components/live/hero-card"
 
@@ -36,17 +36,7 @@ export function EmptyState() {
             href="/connect"
             fill
           />
-          {/* TODO: ROADMAP §Dashboard — secondary CTA points at /playground as
-              a placeholder. Re-route to the real sample-AppShell flow when that lands. */}
-          <Button
-            variant="ghost"
-            size="medium"
-            form="label"
-            label="View a sample component browser"
-            icon={<ArrowRight size={16} />}
-            href="/playground"
-            fill
-          />
+          {/* TODO: re-enable "Try with sample" secondary CTA once usemount.dev/sample-components repo exists — migration-plan Step 1.5 / dashboard-build-plan Open Decision #2 */}
         </div>
       </HeroCard>
     </div>

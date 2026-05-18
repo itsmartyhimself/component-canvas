@@ -21,7 +21,7 @@ Next.js 16, React 19, Tailwind v4, Radix via shadcn, Framer Motion, pnpm workspa
 - `apps/web/CONVENTIONS.md` — component folders, tokens, SVG, lazy loading
 - `apps/web/AGENTS.md` — Next.js 16 breaking-change notes
 - `design-philosophy/Knowledge Base/` — animation and research reference
-- `Initial task research + app shell layout.md` — current task brief (ephemeral; delete after shipping)
+- `docs/archive/Initial task research + app shell layout.md` — archived task brief (retained for reference through Step 5)
 
 ## Branch model
 - `staging` — active development. All feature branches cut from here, all PRs target here.

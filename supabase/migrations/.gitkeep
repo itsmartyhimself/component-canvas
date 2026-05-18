@@ -1,0 +1,4 @@
+# Supabase SQL migrations live here. The canonical schema (0001_init.sql:
+# 8 tables per architecture-brief §2 + build_duration_ms + component_views
+# telemetry + RLS + signup triggers) lands in PR2 (migration-plan Step 2).
+# Kept tracked via this placeholder so the directory exists from Step 0.

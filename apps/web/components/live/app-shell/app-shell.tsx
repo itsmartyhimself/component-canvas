@@ -8,7 +8,25 @@ import {
 } from "@/components/live/sidebar-panel"
 import { ToastProvider } from "@/components/live/toast"
 
-export function AppShell() {
+export interface AppShellInstance {
+  workspace: string
+  repo: string
+  branch: string
+}
+
+export interface AppShellProps {
+  /**
+   * Route-derived instance identity from `/[workspace]/[repo]/[branch]`.
+   * Optional: other callers (e.g. /playground) mount AppShell with no instance
+   * and must keep working. Threaded for migration-plan Step 3 — no fetch yet,
+   * rendering is identical whether or not this is provided.
+   */
+  instance?: AppShellInstance
+}
+
+export function AppShell({ instance }: AppShellProps = {}) {
+  if (process.env.NODE_ENV !== "production")
+    console.debug("[AppShell] instance", instance)
   return (
     <ToastProvider>
       <CanvasViewProvider>

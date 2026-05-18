@@ -246,3 +246,175 @@ A new user can:
 8. Try to connect a JS-only repo → connect flow blocks with the support-matrix error.
 
 Day-1 spike (Step 4.0) confirms the build pipeline holds on the 700-person codebase before Step 4.2 commits to the full architecture.
+
+<!--
+═══════════════════════════════════════════════════════════════════════════
+  MIGRATION LOG — appended by the executing agent. Everything ABOVE this line
+  is the original plan, unchanged. Entries below are XML (deliberately distinct
+  from the plan's prose) recording, for future agents, WHAT was set up and HOW.
+  No secret values appear here by policy: credentials live only in gitignored
+  .env.local files + Railway service variables, and were handed to the human
+  out-of-band.
+═══════════════════════════════════════════════════════════════════════════
+-->
+<migration-log>
+  <pr id="1" branch="feat/migration-step-0" base="staging" covers="Step 0, Step 1.5"
+      status="complete" verified="true" date="2026-05-18">
+
+    <secrets-policy>
+      No tokens, keys, passwords, client/webhook secrets, or private keys are
+      recorded in this repo. Runtime secrets: apps/web/.env.local and
+      apps/api/.env.local (gitignored) + Railway per-service variables. The
+      Supabase PAT and Railway team token used for provisioning were supplied
+      for this session only and never persisted. Only non-secret structural
+      identifiers (project refs, service ids, public domains, GitHub App
+      id/slug) appear below — these are public-by-design.
+    </secrets-policy>
+
+    <step n="0" name="Provision external infra">
+
+      <supabase>
+        <what>Existing project "usemount.dev" adopted (human had created it).
+          ref=agyiylncvchzifuzvnew, org "itsmartyhimself"
+          (id eafehnagwezbnfxclrvs), region eu-west-1, Postgres 17,
+          url https://agyiylncvchzifuzvnew.supabase.co</what>
+        <how>Located + configured via the Supabase Management API
+          (api.supabase.com/v1, Bearer PAT): GET /organizations + /projects to
+          find it; GET /projects/{ref}/api-keys?reveal=true for keys; PATCH
+          /projects/{ref}/config/auth for uri_allow_list and to enable GitHub.</how>
+        <keys>Project exposes BOTH legacy JWT keys (anon, service_role) and the
+          new system (publishable/secret). Legacy anon + service_role chosen
+          for the env contract (matches @supabase/ssr docs + RLS/JWT reasoning
+          for PR2); new keys remain available as alternates.</keys>
+        <auth>GitHub OAuth provider ENABLED, wired to the usemount.dev GitHub
+          App's client_id/client_secret. Deliberate identity seam: one GitHub
+          App is both the repo-access app and the Supabase GitHub sign-in
+          provider, so the GH numeric user id stored as
+          oauth_identities.provider_user_id (PR2) equals the App installation
+          account.id matched in Step 3.</auth>
+        <deferred>Google OAuth provider is CONFIGURED-PENDING-CREDENTIALS, not
+          missed scope: it needs a Google Cloud OAuth client (separate console
+          setup, outside this CLI). Deferred to PR2 per plan.</deferred>
+        <notes>DB password is not API-retrievable and not needed: PR2 migrations
+          apply via Management API POST /projects/{ref}/database/query; apps use
+          @supabase/supabase-js (URL+keys), not raw Postgres. The Supabase↔git
+          integration the human attempted is intentionally NOT used.
+          supabase/config.toml (minimal, project_id) and
+          supabase/migrations/.gitkeep committed; 0001_init.sql lands in PR2.</notes>
+      </supabase>
+
+      <github-app>
+        <what>name="usemount.dev", slug="usemount-dev", app_id=3758221,
+          owner="itsmartyhimself" (GH user id 259984339),
+          html_url=https://github.com/apps/usemount-dev. Permissions
+          contents/metadata/pull_requests:read. default_events=["push","repository"].</what>
+        <how>GitHub App Manifest flow via a one-shot local helper
+          (/tmp/usemount-ghapp-helper.mjs, Node built-ins only, never committed,
+          deleted after handoff): served localhost:7654, auto-POSTed the
+          manifest to github.com/settings/apps/new, exchanged the redirect code
+          at POST /app-manifests/{code}/conversions.</how>
+        <gotcha>First attempt rejected: "Default events unsupported:
+          installation_repositories". installation / installation_repositories
+          are GitHub-App lifecycle events delivered to every app AUTOMATICALLY
+          and are invalid in manifest default_events — removed. The Step 3/4
+          handler still receives them by virtue of being a GitHub App.</gotcha>
+        <urls>hook_attributes.url, callback_urls, setup_url were baked into the
+          manifest with the REAL provisioned URLs (webhook →
+          api-production-5f25.up.railway.app/github/webhook; callback_urls
+          include the Supabase /auth/v1/callback provider seam + localhost +
+          Railway web; setup_url → Railway web /connect) — no post-creation
+          PATCH needed.</urls>
+        <secrets>client_secret, webhook_secret, RSA private key live ONLY in
+          apps/api/.env.local (PEM base64 as GITHUB_APP_PRIVATE_KEY_BASE64) +
+          Railway api service vars.</secrets>
+      </github-app>
+
+      <railway>
+        <what>Project "usemount.dev" (9701c2f7-37fb-4870-b42d-d2998d3188d9),
+          env "production" (27c2b720-a36f-4af7-8c0a-bb283f3878de). Services from
+          itsmartyhimself/usemount.dev @ main: web
+          (87da2e75-4087-4d60-8f2a-b646994bb73a) →
+          web-production-18dfa1.up.railway.app; api
+          (aa6be9e8-9d70-48f8-805f-70230594f768) →
+          api-production-5f25.up.railway.app</what>
+        <how>Public GraphQL API (backboard.railway.com/graphql/v2, Bearer team
+          token): projectCreate(isMonorepo:true) → serviceCreate(source:{repo})
+          ×2 → serviceInstanceUpdate ×2 → serviceDomainCreate ×2 →
+          variableCollectionUpsert ×2. Token is team-scoped (cannot query `me`
+          or GitHub-account state) so repo access was confirmed only by a
+          successful serviceCreate — it succeeded, no extra user grant needed.</how>
+        <config>Both: rootDirectory="/" (pnpm workspace needs repo root),
+          region=europe-west4 (closest to Supabase eu-west-1). web build="pnpm
+          install --frozen-lockfile &amp;&amp; pnpm --filter @usemount/shared
+          build &amp;&amp; pnpm --filter @usemount/web build", start="pnpm
+          --filter @usemount/web start"; api same shape with @usemount/api +
+          healthcheckPath="/health".</config>
+        <gotcha>An initial command set used filters "web"/"api" which do NOT
+          match the scoped package names @usemount/web / @usemount/api;
+          corrected via a second serviceInstanceUpdate. Always filter by the
+          scoped name.</gotcha>
+        <deploy-debt>Green deploy intentionally NOT chased in PR1 (gate = local
+          boot + infra exists). variableCollectionUpsert used skipDeploys:true
+          (code not on main yet); first deploy iterates when PR1 reaches main.
+          CI/deploy hardening deferred to the first .github/workflows/* (none
+          today) per plan Step 0.5.</deploy-debt>
+      </railway>
+
+      <env-contract>
+        <what>apps/api/src/index.ts loads .env.local (cwd) else platform env
+          (Railway), then fail-fasts on any missing of: SUPABASE_URL,
+          SUPABASE_SERVICE_ROLE_KEY, GITHUB_APP_ID, GITHUB_APP_CLIENT_ID,
+          GITHUB_APP_CLIENT_SECRET, GITHUB_APP_WEBHOOK_SECRET,
+          GITHUB_APP_PRIVATE_KEY_BASE64. PORT respects Railway's injected value
+          (local default 4000).</what>
+        <committed>apps/web/.env.example + apps/api/.env.example (key names
+          only). .gitignore gained *.pem.</committed>
+      </env-contract>
+    </step>
+
+    <step n="1.5" name="Pre-migration cleanup">
+      <item>/playground returns notFound() when NODE_ENV==="production"
+        (verified no page/route files under app/playground/specimens — they are
+        imported, not routed).</item>
+      <item>app/[workspace]/[repo]/[branch]/page.tsx is now an async server
+        component awaiting the Next 16 Promise params, dev-only logging them,
+        passing them to AppShell via a new OPTIONAL prop (AppShellInstance /
+        AppShellProps exported from app-shell + index.ts). No fetch; behavior
+        unchanged when the prop is absent. Live fetch deferred to Step 3; TODO
+        keeps its ROADMAP §Sidebar citation.</item>
+      <item>"Initial task research + app shell layout.md" moved to
+        docs/archive/; CLAUDE.md reference repointed and reworded.</item>
+      <item>Empty-state secondary CTA (linked to /playground → now a prod 404)
+        removed, replaced with one TODO comment citing migration-plan Step 1.5 /
+        dashboard-build-plan Open Decision #2. Primary CTA + tokens untouched.</item>
+    </step>
+
+    <verification gate="PR1" result="PASS">
+      <check>pnpm install --frozen-lockfile: lockfile unchanged (Step 0 added
+        zero npm deps).</check>
+      <check>apps/api booted :4000, env validation passed, GET /health →
+        {"ok":true}.</check>
+      <check>pnpm --filter @usemount/web build: success, TypeScript clean, 7/7
+        pages; instance route correctly became dynamic.</check>
+      <check>next start (production): /playground → 404; /login, /, /connect,
+        /:workspace/:repo/:branch → 200.</check>
+      <check>Both .env.local git-ignored; git status clean of secrets.</check>
+      <operational-note>A pre-existing unrelated dev server held :3000 during
+        the boot test, so web was validated via the production-build path; the
+        cleanup pkill may have also stopped a human-owned concurrently-based
+        `pnpm dev` (trivially restarted).</operational-note>
+    </verification>
+
+    <handoff>Generated credentials (Supabase URL/keys, GitHub App
+      id/client/secret/webhook/PEM, Railway URLs) delivered to the human in
+      chat and written only to gitignored .env.local + Railway service vars.
+      /tmp helper + creds files deleted after handoff.</handoff>
+
+    <next>PR2 (Step 2): supabase/migrations/0001_init.sql (8 tables per
+      architecture-brief §2 + build_duration_ms + component_views + RLS +
+      signup triggers), move ComponentManifest → @usemount/shared, install
+      @supabase/supabase-js, OAuth wiring, re-wire demo hooks, delete demo
+      data. Apply migration via Management API database/query. Enable Google
+      provider once a Google Cloud OAuth client exists.</next>
+  </pr>
+</migration-log>
