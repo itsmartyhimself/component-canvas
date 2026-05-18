@@ -1,0 +1,28 @@
+# usemount.dev — Supabase project config.
+#
+# Hosted project: ref agyiylncvchzifuzvnew (org itsmartyhimself, region eu-west-1,
+# Postgres 17). The project ref is public-by-design — it ships to browsers inside
+# NEXT_PUBLIC_SUPABASE_URL — so it is safe to commit here. No secret values live
+# in this file; runtime keys are in the gitignored .env.local files.
+#
+# supabase/migrations/ is the source of truth for schema. Migrations are applied
+# to the hosted DB via the Management API (PAT-authenticated) during the migration
+# build — see migration-plan.md. This file is intentionally minimal; run
+# `supabase init` to expand it for full local-stack development.
+
+project_id = "agyiylncvchzifuzvnew"
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+
+# GitHub provider is enabled in PR1 once the usemount.dev GitHub App exists
+# (its client_id / client_secret double as the Supabase GitHub OAuth credentials —
+# this is the seam that lets Step 3 match an App installation back to a user).
+[auth.external.github]
+enabled = false
+
+# Google provider is enabled in PR2 (Step 2) — requires a Google Cloud OAuth
+# client, which is a separate one-time setup outside this CLI's reach.
+[auth.external.google]
+enabled = false
