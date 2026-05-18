@@ -1,15 +1,15 @@
 {
-  "name": "component-canvas",
+  "name": "usemount.dev",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "concurrently \"pnpm run dev:web\" \"pnpm run dev:api\"",
     "start": "pnpm run dev",
-    "dev:web": "pnpm run --filter @component-canvas/web dev",
-    "dev:api": "pnpm run --filter @component-canvas/api dev",
-    "build": "pnpm run --filter @component-canvas/shared build && pnpm run --filter @component-canvas/web build && pnpm run --filter @component-canvas/api build",
-    "build:shared": "pnpm run --filter @component-canvas/shared build",
+    "dev:web": "pnpm run --filter @usemount/web dev",
+    "dev:api": "pnpm run --filter @usemount/api dev",
+    "build": "pnpm run --filter @usemount/shared build && pnpm run --filter @usemount/web build && pnpm run --filter @usemount/api build",
+    "build:shared": "pnpm run --filter @usemount/shared build",
     "lint": "eslint .",
     "fix": "eslint . --fix && prettier --write \"**/*.{ts,tsx,js,mjs,json,css,md}\""
   },

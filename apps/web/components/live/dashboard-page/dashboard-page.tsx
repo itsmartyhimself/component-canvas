@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  Suspense,
   useCallback,
   useLayoutEffect,
   useRef,
@@ -26,7 +27,7 @@ import {
 import { synthesizeUnpinnedBranches } from "@/lib/dashboard/demo"
 import type { Branch } from "@/lib/dashboard/types"
 
-export function DashboardPage() {
+function DashboardScene() {
   const searchParams = useSearchParams()
   const stateParam = searchParams.get("state")
   const isEmpty = stateParam === "empty"
@@ -40,6 +41,14 @@ export function DashboardPage() {
     <DashboardStateProvider initiallyExpandedRepoId={initiallyExpanded}>
       <DashboardContent />
     </DashboardStateProvider>
+  )
+}
+
+export function DashboardPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardScene />
+    </Suspense>
   )
 }
 

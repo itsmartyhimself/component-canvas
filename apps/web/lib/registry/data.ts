@@ -218,7 +218,7 @@ const TEAM: Team = {
 
 const USER: User = {
   name: "Martin Heneby",
-  email: "martin@component-canvas.dev",
+  email: "martin@usemount.dev",
 }
 
 export const DEMO_REGISTRY: Registry = {

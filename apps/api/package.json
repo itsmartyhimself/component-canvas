@@ -1,5 +1,5 @@
 {
-  "name": "@component-canvas/api",
+  "name": "@usemount/api",
   "version": "1.0.0",
   "type": "module",
   "private": true,
@@ -9,13 +9,13 @@
     "start": "node lib/index.js"
   },
   "dependencies": {
-    "hono": "^4",
+    "@usemount/shared": "workspace:*",
     "@hono/node-server": "^1",
-    "@component-canvas/shared": "workspace:*"
+    "hono": "^4.12.18"
   },
   "devDependencies": {
+    "@types/node": "^22",
     "tsx": "^4",
-    "typescript": "^5.9",
-    "@types/node": "^22"
+    "typescript": "^5.9"
   }
 }

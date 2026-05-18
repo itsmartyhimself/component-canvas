@@ -35,11 +35,11 @@ The pipeline scope is therefore concrete: TypeScript prop-type introspection →
 
 **CI (Continuous Integration).** A robot that runs scripts every time you push to GitHub. Used to run tests, type-check, build production bundles. Lives somewhere external like GitHub Actions or CircleCI.
 
-**GitHub App.** A separate thing from your personal GitHub account or your repo being on GitHub. It's a piece of software you create on GitHub's developer page that other people *install* on their repos to grant it access. The Component Canvas GitHub App is what lets the backend read a customer's repo without that customer pasting personal access tokens anywhere.
+**GitHub App.** A separate thing from your personal GitHub account or your repo being on GitHub. It's a piece of software you create on GitHub's developer page that other people *install* on their repos to grant it access. The usemount.dev GitHub App is what lets the backend read a customer's repo without that customer pasting personal access tokens anywhere.
 
 **Webhook.** A URL on the backend that GitHub calls every time something happens (a push, a branch creation, etc.). Provided to GitHub once; from then on GitHub pings the URL whenever there's news. This is how "the design guy pushes and the canvas auto-syncs" works without polling GitHub on a timer.
 
-**OAuth.** A flow where a user clicks "Sign in with GitHub" / "Sign in with Google," gets bounced to that provider, approves, and bounces back signed in. Component Canvas never sees their password. The user's identity is verified by the provider.
+**OAuth.** A flow where a user clicks "Sign in with GitHub" / "Sign in with Google," gets bounced to that provider, approves, and bounces back signed in. usemount.dev never sees their password. The user's identity is verified by the provider.
 
 **Supabase.** A hosted backend at supabase.com. Provides Postgres database (storage for users, workspaces, manifests), authentication (sign in with GitHub, Google, etc.), file storage (where built JS bundles live), and realtime subscriptions (the mechanism for "new version available" notifications). One service, one bill, one SDK from the frontend. Replaces what would otherwise be 4-5 separate services (Auth0/Clerk + Postgres host + S3 + Pusher + email provider).
 
@@ -51,14 +51,14 @@ The pipeline scope is therefore concrete: TypeScript prop-type introspection →
 
 **Iframe runtime.** A small piece of code that runs inside each preview iframe before the customer's component mounts. It supplies the context React expects — router, default theme, mocked server APIs so module evaluation doesn't crash. The component itself runs live and unmodified; the runtime only fills in the surrounding context that would otherwise be supplied by the customer's app shell.
 
-**Tailwind v4.** The CSS framework this repo uses. v1 of Component Canvas only supports Tailwind-based codebases. Other CSS approaches (CSS modules, styled-components, etc.) are deferred.
+**Tailwind v4.** The CSS framework this repo uses. v1 of usemount.dev only supports Tailwind-based codebases. Other CSS approaches (CSS modules, styled-components, etc.) are deferred.
 
 ---
 
 ## What's in this repo today
 
 ```
-component-canvas/
+usemount.dev/
 ├── apps/
 │   ├── web/          ← frontend (Next.js 16, fully working with mock data)
 │   └── api/          ← backend worker (Hono stub, only /health endpoint exists)
@@ -202,7 +202,7 @@ End of step 2: real users, real workspaces in Postgres, dashboard reads from Sup
 
 ### Step 3 (medium): GitHub App + repo connections
 
-- Register the Component Canvas GitHub App on GitHub's developer page (30-minute task).
+- Register the usemount.dev GitHub App on GitHub's developer page (30-minute task).
 - In `apps/api`: install-callback handler, list-installed-repos endpoint, create-repo-connection endpoint.
 
 End of step 3: "Connect repo" flow is real. Connecting writes a `repo_connection` row. Still no builds.
@@ -212,13 +212,13 @@ End of step 3: "Connect repo" flow is real. Connecting writes a `repo_connection
 The hard step. In `apps/api`, build a worker that:
 - Listens for `push` webhooks.
 - Clones the repo via GitHub App installation token.
-- Detects the components folder and CSS entry (configurable via `componentcanvas.config.ts`, with auto-detect fallback).
+- Detects the components folder and CSS entry (configurable via `mount.config.ts`, with auto-detect fallback).
 - Runs esbuild on each component file → produces JS bundles.
 - Auto-generates a `ComponentManifest` for each (TypeScript prop introspection via `react-docgen-typescript`).
 - Uploads manifests + bundles to Supabase Storage.
 - Updates the `instance` row.
 
-End of step 4: connect this Component Canvas repo itself, push a change, see it reflected in the dashboard. Self-hosted dogfood.
+End of step 4: connect this usemount.dev repo itself, push a change, see it reflected in the dashboard. Self-hosted dogfood.
 
 ### Step 5 (medium): Manifest auto-generation polish
 
@@ -306,7 +306,7 @@ Pricing the product itself is out of scope for this doc. Schema includes `worksp
 ## Decisions still open before code begins
 
 1. **Auto-manifest spike target**: confirm `react-docgen-typescript` (or alternative like `ts-morph`) handles this repo's own `ButtonProps` plus one real client codebase. Spike runs in step 4 prep.
-2. **Sample repo content**: what lives in the public `component-canvas/sample-components` repo for the "Try with sample" CTA. Recommend 5–10 well-typed components covering Button, Input, Card, Hero, Modal — variety without bloat.
+2. **Sample repo content**: what lives in the public `usemount.dev/sample-components` repo for the "Try with sample" CTA. Recommend 5–10 well-typed components covering Button, Input, Card, Hero, Modal — variety without bloat.
 3. **Initial CSS support scope**: Tailwind v4 + globals.css for v1, confirmed. Customers using CSS modules / styled-components / vanilla-extract are explicitly out of scope.
 4. **Branch glob defaults**: auto-pin `main`, `feat/*`, `release/*` on first connect, plus user pinning controls. Confirm or adjust.
 5. **Account-linking flow for Google viewers connecting a repo**: prompt to link GitHub identity (recommended) vs. force GitHub-only at the connect step. Link flow recommended.

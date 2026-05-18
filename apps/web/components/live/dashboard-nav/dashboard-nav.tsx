@@ -21,7 +21,7 @@ export function DashboardNav() {
     >
       <Link
         href="/"
-        aria-label="Component Canvas home"
+        aria-label="Mount home"
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -35,13 +35,20 @@ export function DashboardNav() {
         <span
           aria-hidden
           style={{
-            width: 28,
-            height: 28,
-            borderRadius: "var(--radius-2)",
-            background: "var(--gradient-dusk)",
+            display: "inline-block",
+            height: 16,
+            width: "calc(16px * 119 / 24)",
+            backgroundColor: "var(--color-text-primary)",
+            WebkitMaskImage: "url(/SVGs/mount-wordmark.svg)",
+            maskImage: "url(/SVGs/mount-wordmark.svg)",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
           }}
         />
-        <span className="type-4 font-medium">Component Canvas</span>
       </Link>
 
       <div style={{ display: "flex", justifyContent: "center", flex: 1 }}>

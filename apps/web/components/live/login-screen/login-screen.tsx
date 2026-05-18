@@ -4,7 +4,26 @@ import { HeroCard } from "@/components/live/hero-card"
 export function LoginScreen() {
   return (
     <HeroCard
-      brand={<LoginBrandPill />}
+      brand={
+        <span
+          role="img"
+          aria-label="Mount"
+          style={{
+            display: "inline-block",
+            height: 20,
+            width: "calc(20px * 119 / 24)",
+            backgroundColor: "var(--color-text-primary)",
+            WebkitMaskImage: "url(/SVGs/mount-wordmark.svg)",
+            maskImage: "url(/SVGs/mount-wordmark.svg)",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+          }}
+        />
+      }
       title="Sign in and connect your repo"
       subtitle="Browse, preview and share live components from your GitHub repo."
       legal={
@@ -27,34 +46,5 @@ export function LoginScreen() {
         <AuthButton provider="google" href="/" />
       </div>
     </HeroCard>
-  )
-}
-
-function LoginBrandPill() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "var(--spacing-3)",
-        height: 36,
-        paddingInline: "var(--spacing-4)",
-        borderRadius: "var(--radius-full)",
-        background: "var(--color-bg-secondary)",
-        border: "1px solid var(--color-border-secondary)",
-        color: "var(--color-text-primary)",
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          width: 20,
-          height: 20,
-          borderRadius: "var(--radius-1-5)",
-          background: "var(--gradient-dusk)",
-        }}
-      />
-      <span className="type-4 font-medium">Component Canvas</span>
-    </span>
   )
 }

@@ -1,3 +1,10 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Supply-chain hardening (added 2026-05-18, post "Mini Shai-Hulud" npm worm).
+# Refuse any package version published less than 7 days ago — compromised
+# releases are almost always caught and yanked within 24h. Minutes.
+minimumReleaseAge: 10080
+# Only direct deps may use git/URL sources; transitive exotic deps blocked.
+blockExoticSubdeps: true

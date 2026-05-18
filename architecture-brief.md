@@ -1,6 +1,6 @@
-# Component Canvas — Architecture Research Brief
+# usemount.dev — Architecture Research Brief
 
-The architecture decisions for Component Canvas v1. Pairs with `dashboard-build-plan.md`, which covers the dashboard build order. Where the two conflict, the dashboard plan wins.
+The architecture decisions for usemount.dev v1. Pairs with `dashboard-build-plan.md`, which covers the dashboard build order. Where the two conflict, the dashboard plan wins.
 
 ## Foundational decisions
 
@@ -83,7 +83,7 @@ Login is required. Three reasons: (1) repo access requires authenticated GitHub 
 **Primary: GitHub OAuth + a real GitHub App.** Two distinct things, both needed.
 
 - *GitHub OAuth* signs the user in. One click, no password.
-- *GitHub App* ("Component Canvas") gets per-repo, scoped, fine-grained read access plus push-event webhooks. Installed per repo, not org-wide. Cleaner than asking for a broad OAuth `repo` scope, which enterprise security teams refuse.
+- *GitHub App* ("usemount.dev") gets per-repo, scoped, fine-grained read access plus push-event webhooks. Installed per repo, not org-wide. Cleaner than asking for a broad OAuth `repo` scope, which enterprise security teams refuse.
 
 **Secondary: Google OAuth** for viewers — PMs, designers, leadership clicking share links. They never connect repos.
 
@@ -100,7 +100,7 @@ What lives in it:
 - **Per user**: id, email, avatar, OAuth provider, GitHub user id (for matching the GitHub App install).
 - **Per workspace**: id, name, plan, owner_user_id, billing_seats, created_at. Personal workspaces are workspaces with `kind='personal'` and a single member — same table.
 - **Per workspace_member**: user_id, workspace_id, role (owner/admin/member/viewer). Roles can be ignored for v1 logic but the column is cheap to add now.
-- **Per repo_connection**: id, workspace_id, github_install_id, github_repo_id, default_branch, config_json (parsed from `componentcanvas.config.ts` if present), connected_at.
+- **Per repo_connection**: id, workspace_id, github_install_id, github_repo_id, default_branch, config_json (parsed from `mount.config.ts` if present), connected_at.
 - **Per instance**: id, workspace_id, repo_connection_id, branch, last_synced_commit_sha, last_synced_at, build_status. One instance row per `(repo, branch)` tuple.
 - **Per component_manifest**: id, instance_id, slug, folder_path, title, kind, variants_json, states_json, props_schema_json, artifact_url, source_hash. Source_hash lets you skip rebuilds when nothing changed.
 - **Per build_job**: id, instance_id, commit_sha, status, started_at, finished_at, log_url, error.
@@ -147,7 +147,7 @@ A "components-folder-only" import is a leaky boundary. Real components import fr
 
 **Model**: the build mounts the *entire repo on disk*, but the *target list of buildable entry points* is the configured components dir, and the *output styles* are derived from the configured CSS entry. Esbuild resolves whatever the components import naturally. The pipeline ships per-component bundles, not "the whole repo."
 
-**Discovery**: optional `componentcanvas.config.ts` at repo root declaring components dir, globals.css path, and any per-component overrides (hidden components, manifest enrichments). If absent, auto-detect: try `src/components`, `components`, `app/components`, `apps/*/components/live` in order; if both fail, the connect flow surfaces a setup screen asking the user to point at the right directory and writes the config back as a PR.
+**Discovery**: optional `mount.config.ts` at repo root declaring components dir, globals.css path, and any per-component overrides (hidden components, manifest enrichments). If absent, auto-detect: try `src/components`, `components`, `app/components`, `apps/*/components/live` in order; if both fail, the connect flow surfaces a setup screen asking the user to point at the right directory and writes the config back as a PR.
 
 No per-component manifest files required. No `*.stories.tsx`. Manifests are generated, not authored.
 
@@ -176,7 +176,7 @@ This handles the design-guy-pushes-team-is-watching scenario without building re
 Login → empty personal workspace dashboard. Empty dashboards are dead-end patterns. Counter with three concrete affordances on first paint:
 
 1. **Big "Connect GitHub repo" CTA.** Opens the GitHub App install flow, repo picker, branch picker, then a "syncing…" state with build progress, then drops the user on the instance.
-2. **"Try with a sample repo."** One-click connect to a public Component Canvas demo repo. Lets users poke around the UX before committing their own codebase. Every prospective user can play in 30 seconds without auth burden, repo-access concerns, or build-error confusion.
+2. **"Try with a sample repo."** One-click connect to a public usemount.dev demo repo. Lets users poke around the UX before committing their own codebase. Every prospective user can play in 30 seconds without auth burden, repo-access concerns, or build-error confusion.
 3. **"Open a shared instance"** input. For users arriving from a share link they bounced on; paste the URL.
 
 Not on first paint: workspace creation, team invites, billing, settings. None of that exists until the user has a working instance.
@@ -230,7 +230,7 @@ Two refinements on the dashboard model (full UX scope in `dashboard-build-plan.m
 
 **Web.**
 
-Component Canvas is a viewer that needs server-side builds, share-by-URL, always-current branch state. Every value prop — seamless sync, share with PMs, push-and-watch — assumes a centralized backend. Electron adds download/update flow, code signing, OS-specific bugs, no easy "open this link in browser" for stakeholders, worse onboarding.
+usemount.dev is a viewer that needs server-side builds, share-by-URL, always-current branch state. Every value prop — seamless sync, share with PMs, push-and-watch — assumes a centralized backend. Electron adds download/update flow, code signing, OS-specific bugs, no easy "open this link in browser" for stakeholders, worse onboarding.
 
 The repo is already a Next.js app. "Desktop-only" means designed for desktop browser viewports; mobile is unsupported. The codebase already enforces this (`<body>` is `h-full overflow-hidden`).
 
@@ -240,17 +240,17 @@ If a customer ever demands a desktop binary, wrapping the same Next.js app in El
 
 ## 9. Storybook comparison
 
-What Storybook got right and Component Canvas keeps:
+What Storybook got right and usemount.dev keeps:
 
 - The variant/state taxonomy. Component → variants → states → sizes is the right axis.
 - Addons concept for viewport, a11y, docs — equivalents already scaffolded in the canvas roadmap (size selector, properties panel, docs overlay).
 - Decoupling preview from host (Storybook Manager / Preview iframe split). The repo already commits to this.
 
-What Storybook got wrong and Component Canvas avoids:
+What Storybook got wrong and usemount.dev avoids:
 
-- **Story files in the codebase.** `*.stories.tsx` per component is Storybook's single biggest maintenance tax. Component Canvas generates manifests from TypeScript prop introspection. Zero required per-component boilerplate.
-- **Build pipeline lives in the customer's repo.** Storybook requires maintaining `.storybook/` config, webpack/Vite plugins, addon config. Component Canvas owns the build. Customer just commits.
-- **Static deploys for sharing.** Storybook ships are baked-at-deploy-time HTML; sharing means "the URL of your CI deploy." Component Canvas share links are live and always reflect current branch state.
+- **Story files in the codebase.** `*.stories.tsx` per component is Storybook's single biggest maintenance tax. usemount.dev generates manifests from TypeScript prop introspection. Zero required per-component boilerplate.
+- **Build pipeline lives in the customer's repo.** Storybook requires maintaining `.storybook/` config, webpack/Vite plugins, addon config. usemount.dev owns the build. Customer just commits.
+- **Static deploys for sharing.** Storybook ships are baked-at-deploy-time HTML; sharing means "the URL of your CI deploy." usemount.dev share links are live and always reflect current branch state.
 - **MDX as a first-class story format.** MDX-as-stories conflated docs and demos. MDX stays for docs only; demos come from the manifest.
 - **The DSL.** `Meta`, `StoryObj`, decorators, parameters — too much surface. Manifests are JSON. Authoring is invisible. Override is configuration.
 - **Slow boot times.** Storybook in a real codebase takes 30s to load. Per-component lazy bundle fetch + manifest resolution targets first paint under 1s.
@@ -263,13 +263,13 @@ What Storybook got wrong and Component Canvas avoids:
 
 **B. Whole 5-person product+design+dev team at the same startup.** Team workspace, one repo, everyone connected. Designer pushes `feat/cards`, posts the share link, PM and dev open it, comment in Slack (no in-app comments yet). Stress points: PM sign-in must be one click via Google with no GitHub knowledge required; "is this the latest?" must be visually obvious; team workspace creation must take seconds, not setup-wizard minutes.
 
-**C. 7-person design-system team in the 700-person company.** Massive monorepo. 30+ active feature branches. Components have heavy internal dependencies on shared utilities, contexts, providers. Designers and design engineers push multiple times a day. Reviewers (PMs, leadership) come in via share links. Stress points: build can't choke on a 4GB repo; only changed components rebuild; webhook → live in under 60s for a small change; source must be ephemeral or encrypted (legal will ask); need a "private workspace, no public links" toggle. Also: this team probably won't sign up to a SaaS at `componentcanvas.app` without procurement, so the marketing site needs a "contact us" path well before they'd self-serve. Architecture-wise, nothing in the system depends on multi-tenancy assumptions — a single-tenant copy can be deployed in a customer-controlled region/account if it becomes a deal-breaker.
+**C. 7-person design-system team in the 700-person company.** Massive monorepo. 30+ active feature branches. Components have heavy internal dependencies on shared utilities, contexts, providers. Designers and design engineers push multiple times a day. Reviewers (PMs, leadership) come in via share links. Stress points: build can't choke on a 4GB repo; only changed components rebuild; webhook → live in under 60s for a small change; source must be ephemeral or encrypted (legal will ask); need a "private workspace, no public links" toggle. Also: this team probably won't sign up to a SaaS at `usemount.dev` without procurement, so the marketing site needs a "contact us" path well before they'd self-serve. Architecture-wise, nothing in the system depends on multi-tenancy assumptions — a single-tenant copy can be deployed in a customer-controlled region/account if it becomes a deal-breaker.
 
 **D. Public OSS DS library team showcasing their components.** Wants public anonymous share links + custom branding. Lower priority for MVP, but *don't paint the schema into a corner*: the `share_link.scope = 'public'` field and a workspace-level `allow_public_links` toggle should exist from day one even if the UI is hidden behind a feature flag.
 
 **Stress-tests against earlier sections:**
 
-- Persona C breaks if `/components` is hard-coded → resolved by `componentcanvas.config.ts` + auto-detect.
+- Persona C breaks if `/components` is hard-coded → resolved by `mount.config.ts` + auto-detect.
 - Persona C breaks if every sync is a full rebuild → resolved by per-component `source_hash` diffing.
 - Persona C breaks if 30 branches all auto-build on every commit → resolved by the pinned-branch model.
 - Persona B breaks if PM has to install GitHub App or learn what "OAuth scope" means → resolved by Google sign-in for viewers + signed-in-anyone share scope as default.
@@ -301,10 +301,10 @@ Items that will bite the architecture but aren't covered above:
 In rough priority — earlier ones block later ones.
 
 1. **Hosting**: a single **Railway** project hosting both `apps/web` and `apps/api`. Supabase (auth, Postgres, Storage, Realtime, RLS) for data layer. Provision both before any backend code lands.
-2. **GitHub App**: register the "Component Canvas" GitHub App early. Permissions: `contents: read`, `metadata: read`, `pull_requests: read` (for future PR previews). Webhook events: `push`, `installation_repositories`, `repository`. App registration is a 30-minute task that unblocks the rest of the build.
+2. **GitHub App**: register the "usemount.dev" GitHub App early. Permissions: `contents: read`, `metadata: read`, `pull_requests: read` (for future PR previews). Webhook events: `push`, `installation_repositories`, `repository`. App registration is a 30-minute task that unblocks the rest of the build.
 3. **Auth providers**: GitHub OAuth (primary, for repo-connecting users) + Google OAuth (for viewers). No email/password, no magic link.
 4. **Source policy**: ephemeral build, no source persisted at rest. Revisit only if rebuild cost forces it.
-5. **Build target detection**: `componentcanvas.config.ts` optional; auto-detect with sensible fallbacks; the connect flow surfaces a "we couldn't find a components folder, point us at it" screen if both fail.
+5. **Build target detection**: `mount.config.ts` optional; auto-detect with sensible fallbacks; the connect flow surfaces a "we couldn't find a components folder, point us at it" screen if both fail.
 6. **`apps/api` (Hono)**: build worker, webhook handlers, and long-running jobs. Next.js handles short-lived endpoints (auth callbacks, workspace queries, share-link resolution) via route handlers.
 7. **Manifest authoring**: TypeScript prop introspection via `react-docgen-typescript`; no `*.stories.tsx`; optional MDX docs colocated; per-component override file (`Component.canvas.tsx`) only when introspection isn't enough.
 8. **Sync trigger**: webhook auto-sync + visible "Re-sync now" button + every-N-hours reconciler against actual branch HEAD.

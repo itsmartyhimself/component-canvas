@@ -1,11 +1,11 @@
-# Migrate Component Canvas from demo to live (Steps 0 → 5)
+# Migrate usemount.dev from demo to live (Steps 0 → 5)
 
 ## Context
 
 The frontend is feature-complete at the UI/styling layer but runs entirely on hardcoded demo data. The architecture is fully locked in `architecture-brief.md` and `dashboard-build-plan.md` — an 8-step build sequence, Supabase + Railway + GitHub App, ephemeral builds, react-docgen-typescript manifest generation. None of the external infra is provisioned, none of the backend is wired. The migration replaces demo data sources with live ones following the existing plan, with the cutline at **end of Step 5 (Robust MVP)** — a real repo connectable, real sync running, manifest auto-generation honest enough for the first two real clients (Persona A/C).
 
 Two things the user named are already resolved in the docs:
-- **The "install something into customer git"** = a GitHub App (`Component Canvas`) customers install per-repo. **No package goes into customer code.** Optional `componentcanvas.config.ts` at repo root is config only.
+- **The "install something into customer git"** = a GitHub App (`usemount.dev`) customers install per-repo. **No package goes into customer code.** Optional `mount.config.ts` at repo root is config only.
 - **Supabase** is the chosen data layer (auth, Postgres, Storage, Realtime, RLS). No second decision is needed.
 
 The `/playground` route is a dev-only component gallery (10 specimen files), not the app shell. The real app shell is at `/[workspace]/[repo]/[branch]`. Playground stays for internal review but never ships to prod.
@@ -36,9 +36,10 @@ The `/playground` route is a dev-only component gallery (10 specimen files), not
 Manual, one-time. Do before any backend code lands.
 
 1. **Supabase project**: create at supabase.com. Enable Auth (GitHub + Google providers), Postgres, Storage, Realtime, RLS. Capture URL + anon key + service-role key.
-2. **GitHub App**: register at github.com/settings/apps. Name "Component Canvas". Permissions: `contents: read`, `metadata: read`, `pull_requests: read`. Webhook events: `push`, `installation_repositories`, `repository`. Generate private key. Set webhook URL (Railway URL placeholder, update post-deploy).
+2. **GitHub App**: register at github.com/settings/apps. Name "usemount.dev". Permissions: `contents: read`, `metadata: read`, `pull_requests: read`. Webhook events: `push`, `installation_repositories`, `repository`. Generate private key. Set webhook URL (Railway URL placeholder, update post-deploy).
 3. **Railway project**: create at railway.app. Two services from this monorepo: `apps/web` (Next.js) and `apps/api` (Hono). Connect to GitHub repo for auto-deploy.
 4. **Env files**: add `.env.local` to `apps/web` and `apps/api` (gitignored). Add `.env.example` (committed) listing every key without values. Update `apps/api/src/index.ts` to require the keys it needs at boot.
+5. **CI/deploy hardening** (do when the first `.github/workflows/*` lands — the repo has none today): no `pull_request_target` running checkout'd PR code; pin third-party actions by full commit SHA, not tag; least-scope `GITHUB_TOKEN` / OIDC, no long-lived cloud creds in workflow env; enable GitHub Actions cache scoping. This closes the exact "Mini Shai-Hulud" (May 2026) vector — it was CI Pwn-Request + cache poisoning, not malicious packages. Dependency side is already hardened: `pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (7-day quarantine) + `blockExoticSubdeps`, and `onlyBuiltDependencies` gates install scripts. Railway is self-hosted, so before this cutover confirm `next` ≥ 16.2.6 (SSRF CVE-2026-44578 / middleware-bypass fixes are self-hosted-only) and keep it patched.
 
 **Verification**: `pnpm dev` boots both apps without env errors. `curl <api-url>/health` returns ok. Supabase dashboard shows the project. GitHub App page shows the registered app.
 
@@ -51,7 +52,7 @@ Done in one PR before Step 2.
 1. **Gate `/playground` to dev only**: in `apps/web/app/playground/page.tsx`, return `notFound()` when `process.env.NODE_ENV === 'production'`. Same for `/playground/specimens/*` if any have their own pages. Verify a prod build (`pnpm build && pnpm start`) returns 404 on the route.
 2. **Wire route params on AppShell page**: `apps/web/app/[workspace]/[repo]/[branch]/page.tsx` currently mounts AppShell with the demo registry and ignores `params.workspace`, `params.repo`, `params.branch`. **In Next.js 16 `params` is a Promise** — read them with `const { workspace, repo, branch } = await params`. Same applies to every route handler that reads `params`, `cookies()`, `headers()`, `searchParams`. Check `node_modules/next/dist/docs/` before writing (per `AGENTS.md`). Pass params down to AppShell as an `instance` prop. **Don't fetch yet** — just thread params through so Step 3 can drop the fetch in.
 3. **Archive ephemeral planning docs**: move `Initial task research + app shell layout.md` to `docs/archive/` (or `.archive/`). Leave `architecture-brief.md` and `dashboard-build-plan.md` at root through Step 5; consolidate after.
-4. **Disable empty-state secondary CTA until Step 5+**: `dashboard-page/empty-state.tsx` secondary CTA currently points to `/playground/specimens`. The "Try with sample" flow needs a public `component-canvas/sample-components` repo (decision deferred past Step 5 per `dashboard-build-plan.md` Open Decision #2). Hide the CTA entirely for now rather than ship a known-broken affordance — re-enable it once the sample repo is content-complete.
+4. **Disable empty-state secondary CTA until Step 5+**: `dashboard-page/empty-state.tsx` secondary CTA currently points to `/playground/specimens`. The "Try with sample" flow needs a public `usemount.dev/sample-components` repo (decision deferred past Step 5 per `dashboard-build-plan.md` Open Decision #2). Hide the CTA entirely for now rather than ship a known-broken affordance — re-enable it once the sample repo is content-complete.
 
 **Verification**: prod build 404s on `/playground`; AppShell page logs params on mount; archived doc no longer at root.
 
@@ -102,7 +103,7 @@ Connect flow becomes real. Per `dashboard-build-plan.md` Step 3.
 The hard step. Per `dashboard-build-plan.md` Step 4 + `architecture-brief.md` §3.
 
 **Step 4.0 — Day-1 spike (do first)**: write a 200-line standalone Node script (`apps/api/scripts/spike.ts`) that:
-1. Clones this Component Canvas repo to `/tmp`.
+1. Clones this usemount.dev repo to `/tmp`.
 2. Runs `react-docgen-typescript` on `apps/web/components/live/button/`.
 3. Runs esbuild on the same file.
 4. Prints the manifest JSON + reports bundle size + duration.
@@ -124,10 +125,10 @@ Heartbeat `leased_at` while running; a stale lease (>10min) is reclaimable. On s
 
 Per-job worker:
 1. Resolve install token → shallow-clone repo at the pushed commit to a tmpfs sandbox.
-2. Detect components dir + globals.css. Try `componentcanvas.config.ts` first; fall back to `src/components`, `components`, `app/components`. If both fail, write `build_jobs.error = 'no_components_dir'` and surface in UI via the "couldn't find components" connect screen.
+2. Detect components dir + globals.css. Try `mount.config.ts` first; fall back to `src/components`, `components`, `app/components`. If both fail, write `build_jobs.error = 'no_components_dir'` and surface in UI via the "couldn't find components" connect screen.
 3. Diff against `instances.last_synced_commit_sha` to get changed component files (first-sync = all components).
 4. Run esbuild per-component (shared deps graph). Output per-component JS + extracted CSS.
-5. Run `react-docgen-typescript` on each component → emit a `ComponentManifest` from `@component-canvas/shared` (the moved type).
+5. Run `react-docgen-typescript` on each component → emit a `ComponentManifest` from `@usemount/shared` (the moved type).
 6. Upload bundles to Supabase Storage; insert/update `component_manifests` rows with artifact URL + `source_hash`.
 7. Update `instances.last_synced_commit_sha` and `last_synced_at`. Destroy sandbox.
 
@@ -142,7 +143,7 @@ Per-job worker:
 **Step 4.4 — Realtime stale-viewer**:
 1. Replace `apps/web/components/live/app-shell/stale-viewer-trigger.tsx`'s 30s `setTimeout` with `supabase.channel('instance:${id}').on('postgres_changes', { table: 'instances', filter: 'id=eq.${id}' })` listening for `last_synced_commit_sha` changes.
 
-**Verification**: connect this Component Canvas repo to itself. Push a button color change. Watch the dashboard show "syncing → synced" within a minute. Refresh and see the change. Open the same instance in a second tab, push another change → first tab shows the stale-viewer toast.
+**Verification**: connect this usemount.dev repo to itself. Push a button color change. Watch the dashboard show "syncing → synced" within a minute. Refresh and see the change. Open the same instance in a second tab, push another change → first tab shows the stale-viewer toast.
 
 ---
 
@@ -164,7 +165,7 @@ Per `dashboard-build-plan.md` Step 5 + `architecture-brief.md` §11.
 
 **Deferred past Step 5 cutline** (explicit):
 - `LinkGitHubDialog` — only matters once Google-first viewers try to connect a repo (Persona B/D). Not blocking dogfood with Personas A/C.
-- "Try with sample repo" CTA — requires content-complete public `component-canvas/sample-components` repo.
+- "Try with sample repo" CTA — requires content-complete public `usemount.dev/sample-components` repo.
 - Comments / share links / team workspaces — Step 6/7 work.
 
 **Verification**: connect a repo with a `ThemeProvider` → previews render with theme applied. Connect a repo with an RSC → it appears in sidebar with the not-supported note. Connect a JS-only repo → connect flow blocks with clear message. Drop a `Button.canvas.tsx` into this repo and watch new presets show up after sync. Disable GitHub webhooks temporarily, push a change, wait 2 hours → reconciler picks it up and rebuilds.
@@ -237,7 +238,7 @@ Done as each step lands; not a separate phase.
 A new user can:
 1. Visit the deployed Railway URL → land on `/login`.
 2. Sign in with GitHub OAuth → land on empty dashboard, personal workspace auto-created.
-3. Click "+ Connect new repo" → install Component Canvas GitHub App on a real repo → see the repo appear in the dashboard, status "syncing".
+3. Click "+ Connect new repo" → install usemount.dev GitHub App on a real repo → see the repo appear in the dashboard, status "syncing".
 4. Wait ~30–120s → status flips to "synced". Click into the repo → AppShell renders with real components in the sidebar tree.
 5. Click any component leaf → canvas mounts the live iframe preview. Variants/sizes/booleans panel auto-populates from TypeScript prop types. Hover/animations/state all real.
 6. Push a change to the connected branch → within ~60s, an open viewer sees the "new version available — refresh" toast.

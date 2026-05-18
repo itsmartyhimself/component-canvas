@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata = {
-  title: "Component Canvas",
+  title: "Mount",
   description: "An advanced component explorer.",
 }
 

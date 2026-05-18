@@ -20,7 +20,7 @@ export function UserFooterSpecimens() {
           <UserFooter
             user={{
               name: "Martin Heneby",
-              email: "martin@component-canvas.dev",
+              email: "martin@usemount.dev",
             }}
           />
         </Specimen>
@@ -33,7 +33,7 @@ export function UserFooterSpecimens() {
           <UserFooter
             user={{
               name: "Ellie Chen",
-              email: "ellie@component-canvas.dev",
+              email: "ellie@usemount.dev",
               avatarUrl: "https://i.pravatar.cc/96?img=12",
             }}
           />

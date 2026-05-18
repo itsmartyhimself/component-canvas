@@ -86,7 +86,7 @@ export function Playground() {
       <div style={containerStyle}>
         <header style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
           <h1 className="type-8 text-trim" style={{ color: "var(--color-text-primary)" }}>
-            Component Canvas playground
+            Mount playground
           </h1>
           <p className="type-3 text-trim" style={{ color: "var(--color-text-tertiary)" }}>
             Every component we ship, every variant, in one scrollable column. Access via <code>/playground</code>.

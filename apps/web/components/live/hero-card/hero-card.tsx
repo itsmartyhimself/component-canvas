@@ -79,20 +79,6 @@ export function HeroCard({
   )
 }
 
-export function HeroCardBrand() {
-  return (
-    <div
-      aria-hidden
-      style={{
-        width: 56,
-        height: 56,
-        borderRadius: "var(--radius-3)",
-        background: "var(--gradient-dusk)",
-      }}
-    />
-  )
-}
-
 export function HeroCardIconTile({ icon }: { icon?: ReactNode }) {
   return (
     <div

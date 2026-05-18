@@ -1,1 +1,1 @@
-export { HeroCard, HeroCardBrand, HeroCardIconTile } from "./hero-card"
+export { HeroCard, HeroCardIconTile } from "./hero-card"

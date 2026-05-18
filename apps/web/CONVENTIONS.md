@@ -1,4 +1,4 @@
-# Component Canvas — Project Conventions
+# usemount.dev — Project Conventions
 
 ## Component Architecture
 

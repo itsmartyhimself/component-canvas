@@ -55,7 +55,7 @@ const listScrollStyle: CSSProperties = {
   scrollbarColor: "var(--color-border-secondary) transparent",
   display: "flex",
   flexDirection: "column",
-  gap: "var(--spacing-1)",
+  gap: "var(--spacing-0)",
 }
 
 const emptyStyle: CSSProperties = {

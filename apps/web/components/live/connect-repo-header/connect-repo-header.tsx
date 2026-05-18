@@ -33,7 +33,7 @@ export function ConnectRepoHeader() {
           width: "100%",
         }}
       >
-        Component Canvas reads your repo through the GitHub App, builds each
+        Mount reads your repo through the GitHub App, builds each
         component, and streams the live result to the dashboard.
       </p>
     </div>

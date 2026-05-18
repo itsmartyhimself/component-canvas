@@ -9,7 +9,7 @@ export const DOC_TITLES: Record<string, string> = {
 
 export const DOC_BODIES: Record<string, string> = {
   "getting-started":
-    "Welcome to Component Canvas. Browse components from the left sidebar and preview them on the canvas.",
+    "Welcome to Mount. Browse components from the left sidebar and preview them on the canvas.",
   changelog:
     "Changelog placeholder. Release notes will live here once we ship to an audience.",
   "doc-colors":

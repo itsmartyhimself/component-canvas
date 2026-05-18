@@ -1,4 +1,4 @@
-# Component Canvas
+# usemount.dev
 
 Desktop-only UI component preview platform. A substitute for Storybook — for browsing, previewing, demonstrating, and sharing components. Not a component editor.
 
