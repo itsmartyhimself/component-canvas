@@ -23,5 +23,9 @@ Next.js 16, React 19, Tailwind v4, Radix via shadcn, Framer Motion, pnpm workspa
 - `design-philosophy/Knowledge Base/` — animation and research reference
 - `Initial task research + app shell layout.md` — current task brief (ephemeral; delete after shipping)
 
+## Branch model
+- `staging` — active development. All feature branches cut from here, all PRs target here.
+- `main` — stable/release only. Only accepts PRs from `staging`. Never commit or branch directly from main.
+
 ## Maintenance
 Keep under 40 lines. Compress as the product solidifies — this file is the durable WHAT/WHY for future agents, nothing more.
